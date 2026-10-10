@@ -251,6 +251,23 @@ a {
   justify-content: center;
   font-weight: 600;
   font-size: 0.8rem;
+
+  &--sm {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+    font-size: 0.78rem;
+  }
+}
+
+// Icono dentro de un campo de busqueda
+.search-icon {
+  position: absolute;
+  left: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9aa3b2;
+  pointer-events: none;
 }
 
 .badge-dot {
