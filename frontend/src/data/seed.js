@@ -3,6 +3,8 @@
  * Se cargan solo si el navegador no tiene datos guardados.
  * En Fase 2 estos datos vendran de la base de datos MySQL.
  */
+import { TODOS_LOS_PERMISOS } from '@/data/permisos'
+
 export const seedDuenos = [
   {
     id: 1,
@@ -228,4 +230,76 @@ export const seedVentas = [
     total: 58000,
     estado: 'Pendiente',
   },
+]
+
+export const seedRoles = [
+  {
+    id: 1,
+    nombre: 'Administrador',
+    descripcion: 'Acceso total al sistema.',
+    sistema: true,
+    permisos: [...TODOS_LOS_PERMISOS],
+  },
+  {
+    id: 2,
+    nombre: 'Veterinario',
+    descripcion: 'Atencion clinica, pacientes e historia clinica.',
+    sistema: false,
+    permisos: [
+      'pacientes.ver',
+      'pacientes.gestionar',
+      'citas.ver',
+      'citas.gestionar',
+      'consultas.ver',
+      'consultas.gestionar',
+      'historia.ver',
+      'historia.gestionar',
+      'diagnosticos.ver',
+      'farmacia.ver',
+      'reportes.ver',
+    ],
+  },
+  {
+    id: 3,
+    nombre: 'Recepcionista',
+    descripcion: 'Agenda, pacientes y venta en mostrador.',
+    sistema: false,
+    permisos: [
+      'pacientes.ver',
+      'pacientes.gestionar',
+      'citas.ver',
+      'citas.gestionar',
+      'consultas.ver',
+      'historia.ver',
+      'farmacia.ver',
+      'farmacia.vender',
+      'ventas.ver',
+      'ventas.gestionar',
+      'tienda.ver',
+    ],
+  },
+  {
+    id: 4,
+    nombre: 'Farmaceutico',
+    descripcion: 'Inventario, farmacia y tienda online.',
+    sistema: false,
+    permisos: [
+      'farmacia.ver',
+      'farmacia.vender',
+      'inventario.ver',
+      'inventario.gestionar',
+      'tienda.ver',
+      'tienda.gestionar',
+      'ventas.ver',
+      'ventas.gestionar',
+    ],
+  },
+]
+
+export const seedUsuarios = [
+  { id: 1, nombres: 'Ana', apellidos: 'Ramirez', documento: '52987456', email: 'admin@clinica.test', telefono: '+57 300 111 2233', rolId: 1, activo: true, ultimoAcceso: isoOffset(0) },
+  { id: 2, nombres: 'Carlos', apellidos: 'Mena', documento: '79845123', email: 'carlos.mena@clinica.test', telefono: '+57 311 222 3344', rolId: 2, activo: true, ultimoAcceso: isoOffset(-1) },
+  { id: 3, nombres: 'Lucia', apellidos: 'Vega', documento: '43567788', email: 'lucia.vega@clinica.test', telefono: '+57 301 333 4455', rolId: 2, activo: true, ultimoAcceso: isoOffset(-2) },
+  { id: 4, nombres: 'Pedro', apellidos: 'Salas', documento: '10293847', email: 'pedro.salas@clinica.test', telefono: '+57 320 444 5566', rolId: 3, activo: true, ultimoAcceso: isoOffset(-3) },
+  { id: 5, nombres: 'Marta', apellidos: 'Rios', documento: '56473829', email: 'marta.rios@clinica.test', telefono: '+57 312 555 6677', rolId: 4, activo: false, ultimoAcceso: '' },
 ]
