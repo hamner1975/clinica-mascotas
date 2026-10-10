@@ -1,0 +1,7 @@
+// ============================================================================
+//  Punto de entrada de estilos - Clinica Mascotas
+//  Orden: 1) variables propias  2) Bootstrap completo  3) tema personalizado
+// ============================================================================
+@import "./variables";
+@import "bootstrap/scss/bootstrap";
+@import "./theme";

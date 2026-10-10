@@ -1,0 +1,24 @@
+# ---- Dependencias ----
+node_modules/
+vendor/
+
+# ---- Builds ----
+dist/
+build/
+
+# ---- Variables de entorno ----
+.env
+.env.*
+!.env.example
+
+# ---- Sistema operativo / editor ----
+.DS_Store
+Thumbs.db
+.idea/
+*.log
+
+# ---- Backend PHP (Fase 2) ----
+# Estas carpetas contienen datos generados en tiempo de ejecucion.
+backend/storage/logs/
+backend/storage/uploads/
+backend/storage/cache/

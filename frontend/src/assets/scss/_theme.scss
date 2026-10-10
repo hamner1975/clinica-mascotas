@@ -1,0 +1,605 @@
+// ============================================================================
+//  Tema visual - Clinica Mascotas
+//  Estilos propios construidos sobre Bootstrap 5.
+// ============================================================================
+
+:root {
+  --cm-sidebar-width: #{$sidebar-width};
+  --cm-topbar-height: #{$topbar-height};
+  --cm-brand: #{$brand};
+  --cm-brand-dark: #{$brand-dark};
+  --cm-bg: #{$body-bg};
+  --cm-surface: #ffffff;
+  --cm-border: #{$border-color};
+  --cm-text-muted: #8a94a4;
+  --cm-shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.05);
+  --cm-shadow: 0 10px 24px -12px rgba(16, 24, 40, 0.25);
+}
+
+html {
+  scrollbar-width: thin;
+}
+
+body {
+  background-color: var(--cm-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Enlaces con transicion suave
+a {
+  transition: color 0.15s ease;
+}
+
+// ============================================================================
+//  Botones utilitarios
+// ============================================================================
+.btn-icon {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 0.6rem;
+  background: transparent;
+  color: #55606e;
+  font-size: 1.15rem;
+
+  &:hover {
+    background: rgba(15, 23, 42, 0.06);
+    color: var(--cm-brand-dark);
+  }
+  &:focus-visible {
+    outline: 2px solid var(--cm-brand);
+    outline-offset: 2px;
+  }
+}
+
+// ============================================================================
+//  App shell (sidebar + topbar + contenido + footer)
+// ============================================================================
+.app-shell {
+  min-height: 100vh;
+}
+
+.app-sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: var(--cm-sidebar-width);
+  background: var(--cm-surface);
+  border-right: 1px solid var(--cm-border);
+  display: flex;
+  flex-direction: column;
+  z-index: 1045;
+  transition: width 0.2s ease, transform 0.25s ease;
+}
+
+.sidebar-brand {
+  height: var(--cm-topbar-height);
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0 1.1rem;
+  border-bottom: 1px solid var(--cm-border);
+  overflow: hidden;
+  white-space: nowrap;
+
+  &__logo {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    border-radius: 0.7rem;
+    background: linear-gradient(135deg, $brand, $brand-dark);
+    color: #fff;
+    font-size: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 16px -6px rgba($brand, 0.55);
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+    font-size: 1.02rem;
+    color: #1f2430;
+
+    strong {
+      font-weight: 700;
+    }
+    small {
+      font-size: 0.66rem;
+      color: var(--cm-text-muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+  }
+}
+
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.75rem 0.7rem 1.5rem;
+
+  &__title {
+    font-size: 0.66rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: #9aa3b2;
+    font-weight: 700;
+    margin: 1rem 0.6rem 0.35rem;
+  }
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  margin-bottom: 0.15rem;
+  border-radius: 0.6rem;
+  color: #4b5563;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  i {
+    font-size: 1.05rem;
+    flex: 0 0 1.05rem;
+    text-align: center;
+  }
+
+  &:hover {
+    background: $brand-softer;
+    color: $brand-darker;
+  }
+
+  &.router-link-exact-active {
+    background: $brand;
+    color: #fff;
+    box-shadow: 0 10px 18px -10px rgba($brand, 0.8);
+
+    &:hover {
+      color: #fff;
+    }
+  }
+}
+
+.app-main {
+  margin-left: var(--cm-sidebar-width);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: margin-left 0.2s ease;
+}
+
+.app-topbar {
+  height: var(--cm-topbar-height);
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--cm-border);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0 1rem;
+}
+
+.topbar-search {
+  position: relative;
+  flex: 1;
+  max-width: 420px;
+  margin-left: 0.5rem;
+
+  > i {
+    position: absolute;
+    left: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9aa3b2;
+    pointer-events: none;
+  }
+
+  .form-control {
+    padding-left: 2.4rem;
+    background: #f4f5f7;
+    border: 1px solid transparent;
+    border-radius: 0.6rem;
+
+    &:focus {
+      background: #fff;
+      border-color: $primary-border-subtle;
+      box-shadow: 0 0 0 0.2rem rgba($brand, 0.12);
+    }
+  }
+}
+
+.btn-user {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: transparent;
+  border: 0;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.6rem;
+
+  &:hover {
+    background: rgba(15, 23, 42, 0.05);
+  }
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $brand, $brand-dark);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.badge-dot {
+  position: absolute;
+  top: 8px;
+  right: 9px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: $brand;
+  border: 2px solid #fff;
+}
+
+.app-content {
+  flex: 1;
+  padding: 1.5rem;
+}
+
+.app-footer {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  border-top: 1px solid var(--cm-border);
+  background: #fff;
+  padding: 0.9rem 1.5rem;
+  font-size: 0.8rem;
+  color: var(--cm-text-muted);
+}
+
+.app-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1040;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(2px);
+}
+
+// ============================================================================
+//  Encabezado de pagina
+// ============================================================================
+.page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.page-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.page-subtitle {
+  color: var(--cm-text-muted);
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+// ============================================================================
+//  Cards
+// ============================================================================
+.card {
+  border: 1px solid var(--cm-border);
+  border-radius: $border-radius-lg;
+  box-shadow: var(--cm-shadow-sm);
+}
+
+.card-title {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.stat-card {
+  &__label {
+    color: var(--cm-text-muted);
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    margin: 0 0 0.25rem;
+  }
+
+  &__value {
+    font-size: 1.85rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+
+  &__icon {
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+    border-radius: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+
+    &--primary {
+      background: $brand-soft;
+      color: $brand;
+    }
+    &--info {
+      background: #e7f1ff;
+      color: #0d6efd;
+    }
+    &--success {
+      background: #e6f7ef;
+      color: #199a5c;
+    }
+    &--warning {
+      background: #fff5e6;
+      color: #d98a00;
+    }
+    &--danger {
+      background: $brand-soft;
+      color: $brand;
+    }
+  }
+
+  &__trend {
+    margin-top: 0.9rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+}
+
+// ============================================================================
+//  Mini grafico de barras (dashboard)
+// ============================================================================
+.sales-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+
+  &__col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__track {
+    width: 100%;
+    height: 120px; // altura definida: necesaria para que el % de la barra funcione
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  &__bar {
+    width: 100%;
+    max-width: 34px;
+    border-radius: 0.35rem 0.35rem 0 0;
+    background: linear-gradient(180deg, $brand, #ff6b6b);
+    transition: height 0.3s ease;
+  }
+
+  &__label {
+    color: var(--cm-text-muted);
+    font-size: 0.7rem;
+  }
+}
+
+// ============================================================================
+//  Pantalla de login
+// ============================================================================
+.auth {
+  min-height: 100vh;
+  display: flex;
+  background: var(--cm-bg);
+
+  &__brand {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    color: #fff;
+    background: linear-gradient(140deg, $brand-darker 0%, $brand 58%, #ff6060 135%);
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle at 82% 12%, rgba(255, 255, 255, 0.2) 0, transparent 42%),
+        radial-gradient(circle at 8% 92%, rgba(255, 255, 255, 0.12) 0, transparent 38%);
+    }
+  }
+
+  &__brand-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 440px;
+  }
+
+  &__logo {
+    width: 64px;
+    height: 64px;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.32);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin-bottom: 1.25rem;
+
+    &--sm {
+      width: 52px;
+      height: 52px;
+      font-size: 1.6rem;
+      margin: 0 auto;
+      background: $brand;
+      border: 0;
+      box-shadow: 0 10px 20px -8px rgba($brand, 0.6);
+    }
+  }
+
+  h1 {
+    font-weight: 800;
+    font-size: 2.1rem;
+    letter-spacing: -0.02em;
+  }
+
+  &__features {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0 0;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.35rem 0;
+      opacity: 0.95;
+    }
+    i {
+      font-size: 1.15rem;
+    }
+  }
+
+  &__hint {
+    margin-top: 2rem;
+    font-size: 0.78rem;
+    opacity: 0.9;
+
+    code {
+      color: #fff;
+    }
+  }
+
+  &__form-wrap {
+    flex: 0 0 46%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: #fff;
+  }
+
+  &__form {
+    width: 100%;
+    max-width: 400px;
+  }
+}
+
+.coming-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 1rem;
+  background: $brand-soft;
+  color: $brand;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+}
+
+// ============================================================================
+//  Transicion entre rutas
+// ============================================================================
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.fade-enter-from {
+  opacity: 0;
+  transform: translateY(6px);
+}
+.fade-leave-to {
+  opacity: 0;
+}
+
+// ============================================================================
+//  Responsive
+// ============================================================================
+@media (min-width: 992px) {
+  .app-shell--collapsed {
+    .app-sidebar {
+      width: $sidebar-width-collapsed;
+    }
+    .app-main {
+      margin-left: $sidebar-width-collapsed;
+    }
+    .sidebar-brand__text,
+    .sidebar-link__text,
+    .sidebar-nav__title {
+      display: none;
+    }
+    .sidebar-brand {
+      justify-content: center;
+      padding: 0;
+    }
+    .sidebar-link {
+      justify-content: center;
+      padding: 0.7rem;
+    }
+  }
+}
+
+@media (max-width: 991.98px) {
+  .app-sidebar {
+    width: 280px;
+    transform: translateX(-100%);
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.28);
+  }
+  .app-sidebar.is-open {
+    transform: translateX(0);
+  }
+  .app-main {
+    margin-left: 0;
+  }
+  .app-content {
+    padding: 1rem;
+  }
+  .auth__form-wrap {
+    flex: 1;
+  }
+}

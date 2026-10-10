@@ -1,0 +1,17 @@
+# Normaliza los finales de linea a LF en el repositorio (multiplataforma).
+* text=auto eol=lf
+
+# Binarios
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.pdf binary
+
+# Scripts de Windows
+*.bat text eol=crlf
+*.cmd text eol=crlf

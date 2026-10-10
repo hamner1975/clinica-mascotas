@@ -1,0 +1,50 @@
+// ============================================================================
+//  Variables del tema - Clinica Mascotas
+//  Se importan ANTES de Bootstrap para sobreescribir sus valores por defecto.
+// ============================================================================
+@import "bootstrap/scss/functions";
+
+// ---- Marca (brand) ----------------------------------------------------------
+$brand: #db0505;
+$brand-dark: #a80404;
+$brand-darker: #7d0303;
+$brand-soft: #fdecec;
+$brand-softer: #fef7f7;
+
+// ---- Tema Bootstrap ---------------------------------------------------------
+$primary: $brand;
+
+// Variantes generadas automaticamente para Bootstrap 5.3 (bg-*-subtle, text-*-emphasis...)
+$primary-text-emphasis: shade-color($brand, 55%);
+$primary-bg-subtle: tint-color($brand, 90%);
+$primary-border-subtle: tint-color($brand, 65%);
+
+// ---- Tipografia -------------------------------------------------------------
+$font-family-sans-serif: "Inter", "Segoe UI", system-ui, -apple-system,
+  "Helvetica Neue", Arial, sans-serif;
+$font-size-base: 0.9375rem; // 15px
+$headings-font-weight: 600;
+$line-height-base: 1.55;
+
+// ---- Superficies y bordes ---------------------------------------------------
+$body-bg: #f4f5f7;
+$body-color: #1f2430;
+$border-color: #e6e8ec;
+$border-radius: 0.6rem;
+$border-radius-sm: 0.4rem;
+$border-radius-lg: 0.85rem;
+$border-radius-xl: 1rem;
+
+// ---- Componentes ------------------------------------------------------------
+$card-border-color: #eceef2;
+$card-cap-bg: #ffffff;
+$btn-focus-box-shadow: 0 0 0 0.2rem rgba($brand, 0.18);
+$input-focus-border-color: tint-color($brand, 45%);
+$input-focus-box-shadow: 0 0 0 0.2rem rgba($brand, 0.12);
+$link-color: $brand-dark;
+$link-hover-color: $brand-darker;
+
+// ---- Layout personalizado ---------------------------------------------------
+$sidebar-width: 264px;
+$sidebar-width-collapsed: 78px;
+$topbar-height: 64px;
