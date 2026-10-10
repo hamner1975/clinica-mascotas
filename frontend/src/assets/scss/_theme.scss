@@ -769,3 +769,46 @@ a {
   border: 1px solid var(--cm-border);
   border-radius: 0.6rem;
 }
+
+// ============================================================================
+//  Select con busqueda (combobox)
+// ============================================================================
+.search-select {
+  position: relative;
+
+  &__menu {
+    max-height: 260px;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0.25rem;
+    list-style: none;
+    background: #fff;
+    border: 1px solid var(--cm-border);
+    border-radius: 0.6rem;
+    box-shadow: var(--cm-shadow);
+  }
+
+  &__item {
+    padding: 0.45rem 0.6rem;
+    border-radius: 0.45rem;
+    cursor: pointer;
+
+    + .search-select__item {
+      margin-top: 1px;
+    }
+
+    &.is-active {
+      background: $brand-soft;
+    }
+  }
+
+  &__empty {
+    padding: 0.6rem 0.75rem;
+    color: var(--cm-text-muted);
+    font-size: 0.875rem;
+    background: #fff;
+    border: 1px solid var(--cm-border);
+    border-radius: 0.6rem;
+    box-shadow: var(--cm-shadow);
+  }
+}

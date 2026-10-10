@@ -10,33 +10,29 @@
       <div class="row g-3">
         <div class="col-md-6">
           <label class="form-label" for="c-mascota">Mascota <span class="text-danger">*</span></label>
-          <select
+          <SearchSelect
             id="c-mascota"
             v-model="form.mascotaId"
-            class="form-select"
-            :class="invalid('mascotaId')"
+            :options="mascotaOptions"
+            icon="bi-heart"
+            placeholder="Buscar por nombre o dueno..."
+            :invalid="!!(touched.mascotaId && errors.mascotaId)"
             @blur="validateField('mascotaId')"
-          >
-            <option value="">Selecciona una mascota</option>
-            <option v-for="m in pacientes.mascotas" :key="m.id" :value="m.id">
-              {{ m.nombre }} — {{ pacientes.duenoNombre(m.duenoId) }}
-            </option>
-          </select>
+          />
           <p v-if="showError('mascotaId')" class="text-danger small mt-1 mb-0">{{ errors.mascotaId }}</p>
         </div>
 
         <div class="col-md-6">
           <label class="form-label" for="c-vet">Veterinario <span class="text-danger">*</span></label>
-          <select
+          <SearchSelect
             id="c-vet"
             v-model="form.veterinario"
-            class="form-select"
-            :class="invalid('veterinario')"
+            :options="veterinarioOptions"
+            icon="bi-person-badge"
+            placeholder="Buscar veterinario..."
+            :invalid="!!(touched.veterinario && errors.veterinario)"
             @blur="validateField('veterinario')"
-          >
-            <option value="">Selecciona un veterinario</option>
-            <option v-for="v in VETERINARIOS" :key="v" :value="v">{{ v }}</option>
-          </select>
+          />
           <p v-if="showError('veterinario')" class="text-danger small mt-1 mb-0">{{ errors.veterinario }}</p>
         </div>
 
@@ -105,6 +101,7 @@
 <script setup>
 import { computed, watch } from 'vue'
 import BaseModal from '@/components/ui/BaseModal.vue'
+import SearchSelect from '@/components/ui/SearchSelect.vue'
 import { useCitasStore } from '@/stores/citas'
 import { usePacientesStore } from '@/stores/pacientes'
 import { useForm } from '@/composables/useForm'
@@ -121,6 +118,11 @@ const emit = defineEmits(['close', 'saved'])
 
 const citas = useCitasStore()
 const pacientes = usePacientesStore()
+
+const mascotaOptions = computed(() =>
+  pacientes.mascotas.map((m) => ({ value: m.id, label: m.nombre, sublabel: pacientes.duenoNombre(m.duenoId) })),
+)
+const veterinarioOptions = computed(() => VETERINARIOS.map((v) => ({ value: v, label: v })))
 
 function emptyForm() {
   return {

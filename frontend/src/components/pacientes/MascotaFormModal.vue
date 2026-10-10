@@ -85,18 +85,15 @@
 
         <div class="col-md-6">
           <label class="form-label" for="m-dueno">Dueño / Tutor <span class="text-danger">*</span></label>
-          <select
+          <SearchSelect
             id="m-dueno"
             v-model="form.duenoId"
-            class="form-select"
-            :class="invalid('duenoId')"
+            :options="duenoOptions"
+            icon="bi-people"
+            placeholder="Buscar dueno por nombre..."
+            :invalid="!!(touched.duenoId && errors.duenoId)"
             @blur="validateField('duenoId')"
-          >
-            <option value="">Selecciona un dueño</option>
-            <option v-for="d in store.duenos" :key="d.id" :value="d.id">
-              {{ d.nombres }} {{ d.apellidos }}
-            </option>
-          </select>
+          />
           <p v-if="showError('duenoId')" class="text-danger small mt-1 mb-0">{{ errors.duenoId }}</p>
         </div>
 
@@ -126,6 +123,7 @@
 <script setup>
 import { computed, watch } from 'vue'
 import BaseModal from '@/components/ui/BaseModal.vue'
+import SearchSelect from '@/components/ui/SearchSelect.vue'
 import { usePacientesStore } from '@/stores/pacientes'
 import { useForm } from '@/composables/useForm'
 import { ESPECIES, SEXOS } from '@/data/catalogos'
@@ -139,6 +137,10 @@ const props = defineProps({
 const emit = defineEmits(['close', 'saved'])
 
 const store = usePacientesStore()
+
+const duenoOptions = computed(() =>
+  store.duenos.map((d) => ({ value: d.id, label: `${d.nombres} ${d.apellidos}`, sublabel: d.documento || '' })),
+)
 
 const EMPTY = {
   nombre: '',

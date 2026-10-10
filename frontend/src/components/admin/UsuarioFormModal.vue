@@ -39,10 +39,15 @@
 
         <div class="col-md-6">
           <label class="form-label" for="u-rol">Rol <span class="text-danger">*</span></label>
-          <select id="u-rol" v-model="form.rolId" class="form-select" :class="invalid('rolId')" @blur="validateField('rolId')">
-            <option value="">Selecciona un rol</option>
-            <option v-for="r in roles.roles" :key="r.id" :value="r.id">{{ r.nombre }}</option>
-          </select>
+          <SearchSelect
+            id="u-rol"
+            v-model="form.rolId"
+            :options="rolOptions"
+            icon="bi-shield-lock"
+            placeholder="Buscar rol..."
+            :invalid="!!(touched.rolId && errors.rolId)"
+            @blur="validateField('rolId')"
+          />
           <p v-if="showError('rolId')" class="text-danger small mt-1 mb-0">{{ errors.rolId }}</p>
         </div>
 
@@ -87,6 +92,7 @@
 <script setup>
 import { computed, watch } from 'vue'
 import BaseModal from '@/components/ui/BaseModal.vue'
+import SearchSelect from '@/components/ui/SearchSelect.vue'
 import { useUsuariosStore } from '@/stores/usuarios'
 import { useRolesStore } from '@/stores/roles'
 import { useForm } from '@/composables/useForm'
@@ -101,6 +107,10 @@ const emit = defineEmits(['close', 'saved'])
 
 const store = useUsuariosStore()
 const roles = useRolesStore()
+
+const rolOptions = computed(() =>
+  roles.roles.map((r) => ({ value: r.id, label: r.nombre, sublabel: `${r.permisos.length} permisos` })),
+)
 
 function emptyForm() {
   return {
