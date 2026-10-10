@@ -37,7 +37,10 @@
           <div v-for="p in filtrados" :key="p.id" class="col-12 col-sm-6 col-xl-4">
             <div class="card shop-card h-100">
               <div class="card-body d-flex flex-column">
-                <span class="shop-card__icon"><i :class="['bi', iconoCategoria(p.categoria)]"></i></span>
+                <div class="shop-card__media">
+                  <img v-if="p.imagen" :src="p.imagen" :alt="p.nombre" />
+                  <i v-else :class="['bi', iconoCategoria(p.categoria)]"></i>
+                </div>
                 <span class="badge rounded-pill align-self-start mb-2" :class="categoriaVariant(p.categoria)">
                   {{ p.categoria }}
                 </span>
@@ -87,7 +90,7 @@ import { computed, ref } from 'vue'
 import { useProductosStore } from '@/stores/productos'
 import { useCarritoTiendaStore } from '@/stores/carrito'
 import { useVentasStore } from '@/stores/ventas'
-import { CATEGORIAS_PRODUCTO, categoriaVariant } from '@/data/catalogos'
+import { CATEGORIAS_PRODUCTO, categoriaVariant, iconoCategoria } from '@/data/catalogos'
 import { money } from '@/utils/format'
 import CarritoPanel from '@/components/farmacia/CarritoPanel.vue'
 import SearchSelect from '@/components/ui/SearchSelect.vue'
@@ -115,18 +118,6 @@ const filtrados = computed(() => {
     return matchesSearch && matchesCategoria
   })
 })
-
-function iconoCategoria(categoria) {
-  const map = {
-    Medicamentos: 'bi-capsule',
-    Vacunas: 'bi-shield-check',
-    Alimentos: 'bi-bag',
-    Higiene: 'bi-droplet',
-    Accesorios: 'bi-tags',
-    Otros: 'bi-box-seam',
-  }
-  return map[categoria] || 'bi-box-seam'
-}
 
 function agregar(producto) {
   carrito.add(producto, 1)

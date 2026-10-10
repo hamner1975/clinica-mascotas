@@ -25,7 +25,10 @@
                   type="button"
                   @click="select(m.id)"
                 >
-                  <span class="avatar avatar--sm">{{ inicial(m.nombre) }}</span>
+                  <span class="avatar avatar--sm" :class="{ 'avatar--img': m.foto }">
+                    <img v-if="m.foto" :src="m.foto" alt="" />
+                    <template v-else>{{ inicial(m.nombre) }}</template>
+                  </span>
                   <span class="flex-grow-1 overflow-hidden">
                     <span class="d-block fw-semibold">{{ m.nombre }}</span>
                     <small class="text-muted d-block text-truncate">
@@ -51,7 +54,10 @@
             <div class="card-body">
               <div class="d-flex flex-wrap justify-content-between gap-3">
                 <div class="d-flex gap-3">
-                  <span class="avatar avatar--lg">{{ inicial(mascota.nombre) }}</span>
+                  <span class="avatar avatar--lg" :class="{ 'avatar--img': mascota.foto }">
+                    <img v-if="mascota.foto" :src="mascota.foto" alt="" />
+                    <template v-else>{{ inicial(mascota.nombre) }}</template>
+                  </span>
                   <div>
                     <h2 class="h4 mb-1">{{ mascota.nombre }}</h2>
                     <p class="text-muted mb-2">

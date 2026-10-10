@@ -8,6 +8,11 @@
   >
     <form id="producto-form" novalidate @submit.prevent="onSubmit">
       <div class="row g-3">
+        <div class="col-12">
+          <label class="form-label">Imagen</label>
+          <ImageInput v-model="form.imagen" shape="square" placeholder-icon="bi-box-seam" />
+        </div>
+
         <div class="col-md-8">
           <label class="form-label" for="p-nombre">Nombre <span class="text-danger">*</span></label>
           <input id="p-nombre" v-model="form.nombre" class="form-control" :class="invalid('nombre')" placeholder="Ej: Amoxicilina 500mg" @blur="validateField('nombre')" />
@@ -111,6 +116,7 @@
 import { computed, watch } from 'vue'
 import BaseModal from '@/components/ui/BaseModal.vue'
 import SearchSelect from '@/components/ui/SearchSelect.vue'
+import ImageInput from '@/components/ui/ImageInput.vue'
 import { useProductosStore } from '@/stores/productos'
 import { useForm } from '@/composables/useForm'
 import { CATEGORIAS_PRODUCTO, TIPOS_PRODUCTO, UNIDADES } from '@/data/catalogos'
@@ -134,6 +140,7 @@ const unidadOptions = UNIDADES.map((u) => ({ value: u, label: u }))
 
 function emptyForm() {
   return {
+    imagen: '',
     nombre: '',
     categoria: '',
     tipo: 'Medicamento',

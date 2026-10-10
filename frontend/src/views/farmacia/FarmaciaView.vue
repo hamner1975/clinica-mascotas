@@ -32,6 +32,10 @@
             <div v-else class="row g-2">
               <div v-for="p in filtrados" :key="p.id" class="col-12 col-md-6">
                 <div class="pos-item">
+                  <span class="thumb">
+                    <img v-if="p.imagen" :src="p.imagen" alt="" />
+                    <i v-else :class="['bi', iconoCategoria(p.categoria)]"></i>
+                  </span>
                   <div class="flex-grow-1 overflow-hidden">
                     <div class="fw-semibold text-truncate">{{ p.nombre }}</div>
                     <small class="text-muted">{{ money(p.precio) }} &middot; {{ p.stock }} {{ p.unidad }}</small>
@@ -83,7 +87,7 @@ import { computed, ref } from 'vue'
 import { useProductosStore } from '@/stores/productos'
 import { useCarritoFarmaciaStore } from '@/stores/carrito'
 import { useVentasStore } from '@/stores/ventas'
-import { CATEGORIAS_PRODUCTO } from '@/data/catalogos'
+import { CATEGORIAS_PRODUCTO, iconoCategoria } from '@/data/catalogos'
 import { money } from '@/utils/format'
 import CarritoPanel from '@/components/farmacia/CarritoPanel.vue'
 import SearchSelect from '@/components/ui/SearchSelect.vue'

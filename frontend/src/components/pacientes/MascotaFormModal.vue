@@ -8,6 +8,11 @@
   >
     <form id="mascota-form" novalidate @submit.prevent="onSubmit">
       <div class="row g-3">
+        <div class="col-12">
+          <label class="form-label">Foto</label>
+          <ImageInput v-model="form.foto" shape="circle" placeholder-icon="bi-heart" />
+        </div>
+
         <div class="col-md-6">
           <label class="form-label" for="m-nombre">Nombre <span class="text-danger">*</span></label>
           <input
@@ -120,6 +125,7 @@
 import { computed, watch } from 'vue'
 import BaseModal from '@/components/ui/BaseModal.vue'
 import SearchSelect from '@/components/ui/SearchSelect.vue'
+import ImageInput from '@/components/ui/ImageInput.vue'
 import { usePacientesStore } from '@/stores/pacientes'
 import { useForm } from '@/composables/useForm'
 import { ESPECIES, SEXOS } from '@/data/catalogos'
@@ -148,6 +154,7 @@ const sexoOptions = [
 ]
 
 const EMPTY = {
+  foto: '',
   nombre: '',
   especie: '',
   raza: '',

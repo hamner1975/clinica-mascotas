@@ -60,11 +60,19 @@
             <tbody>
               <tr v-for="p in paginated" :key="p.id">
                 <td>
-                  <div class="fw-semibold">{{ p.nombre }}</div>
-                  <span class="badge rounded-pill me-1" :class="categoriaVariant(p.categoria)">{{ p.categoria }}</span>
-                  <span v-if="p.requiereReceta" class="badge rounded-pill text-bg-light border">
-                    <i class="bi bi-shield-check me-1"></i>Receta
-                  </span>
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="thumb">
+                      <img v-if="p.imagen" :src="p.imagen" alt="" />
+                      <i v-else :class="['bi', iconoCategoria(p.categoria)]"></i>
+                    </span>
+                    <div>
+                      <div class="fw-semibold">{{ p.nombre }}</div>
+                      <span class="badge rounded-pill me-1" :class="categoriaVariant(p.categoria)">{{ p.categoria }}</span>
+                      <span v-if="p.requiereReceta" class="badge rounded-pill text-bg-light border">
+                        <i class="bi bi-shield-check me-1"></i>Receta
+                      </span>
+                    </div>
+                  </div>
                 </td>
                 <td class="text-end">{{ money(p.precio) }}</td>
                 <td class="text-center">
@@ -108,7 +116,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { useProductosStore } from '@/stores/productos'
-import { CATEGORIAS_PRODUCTO, categoriaVariant } from '@/data/catalogos'
+import { CATEGORIAS_PRODUCTO, categoriaVariant, iconoCategoria } from '@/data/catalogos'
 import { addDias, formatFecha, money, todayISO } from '@/utils/format'
 import { usePagination } from '@/composables/usePagination'
 import TablePagination from '@/components/ui/TablePagination.vue'

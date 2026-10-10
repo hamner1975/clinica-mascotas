@@ -50,7 +50,10 @@
               <tr v-for="m in paginated" :key="m.id">
                 <td>
                   <div class="d-flex align-items-center gap-2">
-                    <span class="avatar avatar--sm">{{ inicial(m.nombre) }}</span>
+                    <span class="avatar avatar--sm" :class="{ 'avatar--img': m.foto }">
+                      <img v-if="m.foto" :src="m.foto" alt="" />
+                      <template v-else>{{ inicial(m.nombre) }}</template>
+                    </span>
                     <div>
                       <div class="fw-semibold">{{ m.nombre }}</div>
                       <small class="text-muted">{{ m.raza || 'Sin raza' }}</small>

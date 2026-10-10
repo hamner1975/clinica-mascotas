@@ -90,6 +90,19 @@ export function categoriaDiagVariant(categoria) {
 // ---- Configuracion ----
 export const MONEDAS = ['COP', 'USD', 'MXN', 'PEN', 'EUR', 'ARS', 'CLP']
 
+/** Icono representativo segun la categoria del producto. */
+export function iconoCategoria(categoria) {
+  const map = {
+    Medicamentos: 'bi-capsule',
+    Vacunas: 'bi-shield-check',
+    Alimentos: 'bi-bag',
+    Higiene: 'bi-droplet',
+    Accesorios: 'bi-tags',
+    Otros: 'bi-box-seam',
+  }
+  return map[categoria] || 'bi-box-seam'
+}
+
 /** Color de badge segun la especie (para la tabla de mascotas). */
 export function especieVariant(especie) {
   const map = {
