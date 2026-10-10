@@ -303,3 +303,18 @@ export const seedUsuarios = [
   { id: 4, nombres: 'Pedro', apellidos: 'Salas', documento: '10293847', email: 'pedro.salas@clinica.test', telefono: '+57 320 444 5566', rolId: 3, activo: true, ultimoAcceso: isoOffset(-3) },
   { id: 5, nombres: 'Marta', apellidos: 'Rios', documento: '56473829', email: 'marta.rios@clinica.test', telefono: '+57 312 555 6677', rolId: 4, activo: false, ultimoAcceso: '' },
 ]
+
+export const seedDiagnosticos = [
+  { id: 1, codigo: 'DX-001', nombre: 'Otitis externa', categoria: 'Dermatologicas', especie: 'Todas', contagioso: false, activo: true, descripcion: 'Inflamacion del conducto auditivo externo.' },
+  { id: 2, codigo: 'DX-002', nombre: 'Parvovirosis canina', categoria: 'Infecciosas', especie: 'Perro', contagioso: true, activo: true, descripcion: 'Infeccion viral aguda del tracto digestivo.' },
+  { id: 3, codigo: 'DX-003', nombre: 'Sarna demodecica', categoria: 'Parasitarias', especie: 'Perro', contagioso: false, activo: true, descripcion: 'Infestacion por acaros Demodex.' },
+  { id: 4, codigo: 'DX-004', nombre: 'Gastritis', categoria: 'Digestivas', especie: 'Todas', contagioso: false, activo: true, descripcion: 'Inflamacion de la mucosa gastrica.' },
+  { id: 5, codigo: 'DX-005', nombre: 'Moquillo', categoria: 'Infecciosas', especie: 'Perro', contagioso: true, activo: true, descripcion: 'Enfermedad viral multisistemica.' },
+  { id: 6, codigo: 'DX-006', nombre: 'Rinotraqueitis felina', categoria: 'Respiratorias', especie: 'Gato', contagioso: true, activo: true, descripcion: 'Infeccion respiratoria superior felina.' },
+  { id: 7, codigo: 'DX-007', nombre: 'Conjuntivitis', categoria: 'Oftalmologicas', especie: 'Todas', contagioso: false, activo: true, descripcion: 'Inflamacion de la conjuntiva ocular.' },
+  { id: 8, codigo: 'DX-008', nombre: 'Displasia de cadera', categoria: 'Osteomusculares', especie: 'Perro', contagioso: false, activo: true, descripcion: 'Alteracion del desarrollo de la articulacion coxofemoral.' },
+  { id: 9, codigo: 'DX-009', nombre: 'Dermatitis alergica', categoria: 'Dermatologicas', especie: 'Todas', contagioso: false, activo: true, descripcion: 'Reaccion cutanea de origen alergico.' },
+  { id: 10, codigo: 'DX-010', nombre: 'Tos de las perreras', categoria: 'Respiratorias', especie: 'Perro', contagioso: true, activo: true, descripcion: 'Traqueobronquitis infecciosa canina.' },
+  { id: 11, codigo: 'DX-011', nombre: 'Giardiasis', categoria: 'Parasitarias', especie: 'Todas', contagioso: true, activo: true, descripcion: 'Infeccion por el protozoo Giardia.' },
+  { id: 12, codigo: 'DX-012', nombre: 'Leucemia felina', categoria: 'Infecciosas', especie: 'Gato', contagioso: true, activo: true, descripcion: 'Infeccion retroviral felina.' },
+]

@@ -143,9 +143,13 @@
             v-model="form.diagnostico"
             class="form-control"
             :class="invalid('diagnostico')"
-            placeholder="Ej: Dermatitis alergica"
+            list="lista-diagnosticos"
+            placeholder="Ej: Dermatitis alergica (o elige del catalogo)"
             @blur="validateField('diagnostico')"
           />
+          <datalist id="lista-diagnosticos">
+            <option v-for="nombre in diagnosticos.listaNombres" :key="nombre" :value="nombre"></option>
+          </datalist>
           <p v-if="showError('diagnostico')" class="text-danger small mt-1 mb-0">{{ errors.diagnostico }}</p>
         </div>
 
@@ -186,6 +190,7 @@ import { computed, watch } from 'vue'
 import BaseModal from '@/components/ui/BaseModal.vue'
 import { useConsultasStore } from '@/stores/consultas'
 import { usePacientesStore } from '@/stores/pacientes'
+import { useDiagnosticosStore } from '@/stores/diagnosticos'
 import { useForm } from '@/composables/useForm'
 import { VETERINARIOS } from '@/data/catalogos'
 import { todayISO, nowHora } from '@/utils/format'
@@ -202,6 +207,7 @@ const emit = defineEmits(['close', 'saved'])
 
 const consultas = useConsultasStore()
 const pacientes = usePacientesStore()
+const diagnosticos = useDiagnosticosStore()
 
 function emptyForm() {
   return {

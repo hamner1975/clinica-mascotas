@@ -61,6 +61,32 @@ export function canalVariant(canal) {
   return canal === 'Online' ? 'text-bg-info' : 'text-bg-secondary'
 }
 
+// ---- Diagnosticos ----
+export const CATEGORIAS_DIAGNOSTICO = [
+  'Infecciosas',
+  'Parasitarias',
+  'Dermatologicas',
+  'Osteomusculares',
+  'Digestivas',
+  'Respiratorias',
+  'Oftalmologicas',
+  'Otras',
+]
+
+export function categoriaDiagVariant(categoria) {
+  const map = {
+    Infecciosas: 'text-bg-danger',
+    Parasitarias: 'text-bg-warning',
+    Dermatologicas: 'text-bg-info',
+    Osteomusculares: 'text-bg-secondary',
+    Digestivas: 'text-bg-success',
+    Respiratorias: 'text-bg-primary',
+    Oftalmologicas: 'text-bg-dark',
+    Otras: 'text-bg-secondary',
+  }
+  return map[categoria] || 'text-bg-secondary'
+}
+
 /** Color de badge segun la especie (para la tabla de mascotas). */
 export function especieVariant(especie) {
   const map = {
