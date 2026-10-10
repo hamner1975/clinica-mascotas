@@ -40,6 +40,20 @@ export function isFuture(iso) {
   return !!iso && iso > todayISO()
 }
 
+/** Formatea un numero como moneda: 12000 -> "$12.000,00". */
+export function money(value) {
+  const n = Number(value) || 0
+  return `$${n.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+}
+
+/** Suma N dias a una fecha ISO (en hora local). */
+export function addDias(iso, days) {
+  const d = new Date(`${iso}T00:00:00`)
+  d.setDate(d.getDate() + days)
+  const offset = d.getTimezoneOffset()
+  return new Date(d.getTime() - offset * 60000).toISOString().slice(0, 10)
+}
+
 /** "2026-10-10" -> "10 oct". */
 export function formatDiaMes(iso) {
   if (!iso) return '—'

@@ -22,6 +22,45 @@ export function estadoCitaVariant(estado) {
   return map[estado] || 'text-bg-secondary'
 }
 
+// ---- Farmacia / Tienda ----
+export const CATEGORIAS_PRODUCTO = ['Medicamentos', 'Vacunas', 'Alimentos', 'Higiene', 'Accesorios', 'Otros']
+
+export const TIPOS_PRODUCTO = ['Medicamento', 'Producto']
+
+export const UNIDADES = ['Unidad', 'Caja', 'Blister', 'Frasco', 'Kg', 'Bolsa']
+
+export const CANALES_VENTA = ['Mostrador', 'Online']
+
+export const ESTADOS_VENTA = ['Pendiente', 'Completada', 'Enviado', 'Cancelada']
+
+/** Color de badge segun la categoria del producto. */
+export function categoriaVariant(categoria) {
+  const map = {
+    Medicamentos: 'text-bg-primary',
+    Vacunas: 'text-bg-danger',
+    Alimentos: 'text-bg-success',
+    Higiene: 'text-bg-info',
+    Accesorios: 'text-bg-warning',
+    Otros: 'text-bg-secondary',
+  }
+  return map[categoria] || 'text-bg-secondary'
+}
+
+/** Color de badge segun el estado de la venta. */
+export function estadoVentaVariant(estado) {
+  const map = {
+    Pendiente: 'text-bg-warning',
+    Completada: 'text-bg-success',
+    Enviado: 'text-bg-primary',
+    Cancelada: 'text-bg-danger',
+  }
+  return map[estado] || 'text-bg-secondary'
+}
+
+export function canalVariant(canal) {
+  return canal === 'Online' ? 'text-bg-info' : 'text-bg-secondary'
+}
+
 /** Color de badge segun la especie (para la tabla de mascotas). */
 export function especieVariant(especie) {
   const map = {

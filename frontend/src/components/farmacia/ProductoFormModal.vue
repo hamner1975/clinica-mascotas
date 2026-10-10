@@ -1,0 +1,179 @@
+<template>
+  <BaseModal
+    :open="open"
+    :title="isEdit ? 'Editar producto' : 'Nuevo producto'"
+    icon="bi-box-seam"
+    size="lg"
+    @close="$emit('close')"
+  >
+    <form id="producto-form" novalidate @submit.prevent="onSubmit">
+      <div class="row g-3">
+        <div class="col-md-8">
+          <label class="form-label" for="p-nombre">Nombre <span class="text-danger">*</span></label>
+          <input id="p-nombre" v-model="form.nombre" class="form-control" :class="invalid('nombre')" placeholder="Ej: Amoxicilina 500mg" @blur="validateField('nombre')" />
+          <p v-if="showError('nombre')" class="text-danger small mt-1 mb-0">{{ errors.nombre }}</p>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label" for="p-tipo">Tipo</label>
+          <select id="p-tipo" v-model="form.tipo" class="form-select">
+            <option v-for="t in TIPOS_PRODUCTO" :key="t" :value="t">{{ t }}</option>
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label" for="p-categoria">Categoria <span class="text-danger">*</span></label>
+          <select id="p-categoria" v-model="form.categoria" class="form-select" :class="invalid('categoria')" @blur="validateField('categoria')">
+            <option value="">Selecciona una categoria</option>
+            <option v-for="c in CATEGORIAS_PRODUCTO" :key="c" :value="c">{{ c }}</option>
+          </select>
+          <p v-if="showError('categoria')" class="text-danger small mt-1 mb-0">{{ errors.categoria }}</p>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label" for="p-unidad">Unidad</label>
+          <select id="p-unidad" v-model="form.unidad" class="form-select">
+            <option v-for="u in UNIDADES" :key="u" :value="u">{{ u }}</option>
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label" for="p-precio">Precio de venta <span class="text-danger">*</span></label>
+          <div class="input-group">
+            <span class="input-group-text">$</span>
+            <input id="p-precio" v-model="form.precio" type="number" step="0.01" min="0" class="form-control" :class="invalid('precio')" @blur="validateField('precio')" />
+          </div>
+          <p v-if="showError('precio')" class="text-danger small mt-1 mb-0">{{ errors.precio }}</p>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label" for="p-costo">Costo</label>
+          <div class="input-group">
+            <span class="input-group-text">$</span>
+            <input id="p-costo" v-model="form.costo" type="number" step="0.01" min="0" class="form-control" :class="invalid('costo')" @blur="validateField('costo')" />
+          </div>
+          <p v-if="showError('costo')" class="text-danger small mt-1 mb-0">{{ errors.costo }}</p>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label" for="p-stock">Stock <span class="text-danger">*</span></label>
+          <input id="p-stock" v-model="form.stock" type="number" min="0" class="form-control" :class="invalid('stock')" @blur="validateField('stock')" />
+          <p v-if="showError('stock')" class="text-danger small mt-1 mb-0">{{ errors.stock }}</p>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label" for="p-min">Stock minimo</label>
+          <input id="p-min" v-model="form.stockMinimo" type="number" min="0" class="form-control" :class="invalid('stockMinimo')" @blur="validateField('stockMinimo')" />
+          <p v-if="showError('stockMinimo')" class="text-danger small mt-1 mb-0">{{ errors.stockMinimo }}</p>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label" for="p-venc">Vencimiento</label>
+          <input id="p-venc" v-model="form.vencimiento" type="date" class="form-control" />
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label" for="p-lote">Lote</label>
+          <input id="p-lote" v-model="form.lote" class="form-control" placeholder="Ej: AMX-2401" />
+        </div>
+
+        <div class="col-md-6 d-flex align-items-end">
+          <div class="w-100">
+            <div class="form-check form-switch">
+              <input id="p-receta" v-model="form.requiereReceta" class="form-check-input" type="checkbox" />
+              <label class="form-check-label" for="p-receta">Requiere receta</label>
+            </div>
+            <div class="form-check form-switch">
+              <input id="p-activo" v-model="form.activo" class="form-check-input" type="checkbox" />
+              <label class="form-check-label" for="p-activo">Activo (visible en tienda)</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label" for="p-desc">Descripcion</label>
+          <textarea id="p-desc" v-model="form.descripcion" class="form-control" rows="2"></textarea>
+        </div>
+      </div>
+    </form>
+
+    <template #footer>
+      <button class="btn btn-light" type="button" @click="$emit('close')">Cancelar</button>
+      <button class="btn btn-primary" type="submit" form="producto-form">
+        <i class="bi bi-check2 me-1"></i>{{ isEdit ? 'Guardar cambios' : 'Registrar producto' }}
+      </button>
+    </template>
+  </BaseModal>
+</template>
+
+<script setup>
+import { computed, watch } from 'vue'
+import BaseModal from '@/components/ui/BaseModal.vue'
+import { useProductosStore } from '@/stores/productos'
+import { useForm } from '@/composables/useForm'
+import { CATEGORIAS_PRODUCTO, TIPOS_PRODUCTO, UNIDADES } from '@/data/catalogos'
+import { notifyValidation, toastSuccess } from '@/utils/alerts'
+
+const props = defineProps({
+  open: { type: Boolean, default: false },
+  producto: { type: Object, default: null },
+})
+
+const emit = defineEmits(['close', 'saved'])
+
+const store = useProductosStore()
+
+function emptyForm() {
+  return {
+    nombre: '',
+    categoria: '',
+    tipo: 'Medicamento',
+    precio: '',
+    costo: '',
+    stock: 0,
+    stockMinimo: 5,
+    unidad: 'Unidad',
+    lote: '',
+    vencimiento: '',
+    requiereReceta: false,
+    activo: true,
+    descripcion: '',
+  }
+}
+
+const { form, errors, touched, validate, validateField, firstError, reset } = useForm(emptyForm(), {
+  nombre: { label: 'Nombre', required: true, min: 2 },
+  categoria: { label: 'Categoria', required: true },
+  precio: { label: 'Precio de venta', required: true, number: true, minValue: 0 },
+  costo: { label: 'Costo', number: true, minValue: 0 },
+  stock: { label: 'Stock', required: true, number: true, minValue: 0 },
+  stockMinimo: { label: 'Stock minimo', number: true, minValue: 0 },
+})
+
+const isEdit = computed(() => !!props.producto?.id)
+
+function invalid(field) {
+  return { 'is-invalid': touched[field] && errors[field] }
+}
+function showError(field) {
+  return touched[field] && errors[field]
+}
+
+watch(
+  () => props.open,
+  (open) => {
+    if (open) reset(props.producto ? { ...emptyForm(), ...props.producto } : emptyForm())
+  },
+)
+
+function onSubmit() {
+  if (!validate()) {
+    notifyValidation(firstError())
+    return
+  }
+  store.save({ ...form })
+  toastSuccess(isEdit.value ? 'Producto actualizado' : 'Producto registrado', `${form.nombre} se guardo correctamente.`)
+  emit('saved')
+  emit('close')
+}
+</script>

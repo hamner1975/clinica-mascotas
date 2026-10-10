@@ -180,3 +180,52 @@ export const seedConsultas = [
     proximaCita: '',
   },
 ]
+
+export const seedProductos = [
+  { id: 1, nombre: 'Amoxicilina 500mg', categoria: 'Medicamentos', tipo: 'Medicamento', precio: 12000, costo: 7000, stock: 2, stockMinimo: 10, unidad: 'Caja', lote: 'AMX-2401', vencimiento: isoOffset(150), requiereReceta: true, activo: true, descripcion: 'Antibiotico de amplio espectro.' },
+  { id: 2, nombre: 'Vacuna antirrabica', categoria: 'Vacunas', tipo: 'Medicamento', precio: 45000, costo: 30000, stock: 3, stockMinimo: 5, unidad: 'Unidad', lote: 'VAR-2312', vencimiento: isoOffset(200), requiereReceta: true, activo: true, descripcion: 'Dosis unica anual.' },
+  { id: 3, nombre: 'Antipulgas (pipeta)', categoria: 'Medicamentos', tipo: 'Medicamento', precio: 18000, costo: 11000, stock: 5, stockMinimo: 8, unidad: 'Unidad', lote: 'APU-2403', vencimiento: isoOffset(300), requiereReceta: false, activo: true, descripcion: 'Proteccion por 30 dias.' },
+  { id: 4, nombre: 'Suero fisiologico 500ml', categoria: 'Medicamentos', tipo: 'Medicamento', precio: 9000, costo: 5000, stock: 24, stockMinimo: 6, unidad: 'Frasco', lote: 'SUE-2405', vencimiento: isoOffset(400), requiereReceta: false, activo: true, descripcion: 'Solucion isotonica esteril.' },
+  { id: 5, nombre: 'Shampoo dermatologico', categoria: 'Higiene', tipo: 'Producto', precio: 26000, costo: 15000, stock: 15, stockMinimo: 5, unidad: 'Frasco', lote: 'SHA-2402', vencimiento: isoOffset(500), requiereReceta: false, activo: true, descripcion: 'Para pieles sensibles.' },
+  { id: 6, nombre: 'Alimento premium perro 3kg', categoria: 'Alimentos', tipo: 'Producto', precio: 58000, costo: 40000, stock: 20, stockMinimo: 6, unidad: 'Bolsa', lote: 'ALP-2406', vencimiento: isoOffset(360), requiereReceta: false, activo: true, descripcion: 'Balanceado adulto razas medianas.' },
+  { id: 7, nombre: 'Alimento gato 1.5kg', categoria: 'Alimentos', tipo: 'Producto', precio: 38000, costo: 26000, stock: 0, stockMinimo: 5, unidad: 'Bolsa', lote: 'ALG-2406', vencimiento: isoOffset(330), requiereReceta: false, activo: true, descripcion: 'Balanceado gatos adultos.' },
+  { id: 8, nombre: 'Collar antipulgas', categoria: 'Accesorios', tipo: 'Producto', precio: 22000, costo: 12000, stock: 12, stockMinimo: 4, unidad: 'Unidad', lote: 'COL-2404', vencimiento: isoOffset(540), requiereReceta: false, activo: true, descripcion: 'Proteccion hasta 5 meses.' },
+  { id: 9, nombre: 'Vitamina B complex', categoria: 'Medicamentos', tipo: 'Medicamento', precio: 15000, costo: 8000, stock: 6, stockMinimo: 6, unidad: 'Blister', lote: 'VIT-2405', vencimiento: isoOffset(210), requiereReceta: false, activo: true, descripcion: 'Suplemento vitaminico.' },
+  { id: 10, nombre: 'Desparasitante oral', categoria: 'Medicamentos', tipo: 'Medicamento', precio: 20000, costo: 12000, stock: 9, stockMinimo: 4, unidad: 'Blister', lote: 'DES-2407', vencimiento: isoOffset(20), requiereReceta: true, activo: true, descripcion: 'Contra parasitos internos.' },
+]
+
+export const seedVentas = [
+  {
+    id: 1,
+    fecha: isoOffset(0),
+    hora: '10:30',
+    canal: 'Mostrador',
+    cliente: 'Cliente mostrador',
+    items: [{ productoId: 3, nombre: 'Antipulgas (pipeta)', precio: 18000, cantidad: 2 }],
+    total: 36000,
+    estado: 'Completada',
+  },
+  {
+    id: 2,
+    fecha: isoOffset(-1),
+    hora: '16:05',
+    canal: 'Online',
+    cliente: 'Maria Gomez',
+    items: [
+      { productoId: 5, nombre: 'Shampoo dermatologico', precio: 26000, cantidad: 1 },
+      { productoId: 8, nombre: 'Collar antipulgas', precio: 22000, cantidad: 2 },
+    ],
+    total: 70000,
+    estado: 'Enviado',
+  },
+  {
+    id: 3,
+    fecha: isoOffset(0),
+    hora: '11:15',
+    canal: 'Online',
+    cliente: 'Jose Perez',
+    items: [{ productoId: 6, nombre: 'Alimento premium perro 3kg', precio: 58000, cantidad: 1 }],
+    total: 58000,
+    estado: 'Pendiente',
+  },
+]

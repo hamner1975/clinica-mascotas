@@ -715,3 +715,47 @@ a {
     flex: 1;
   }
 }
+
+// ============================================================================
+//  Punto de venta (farmacia)
+// ============================================================================
+.pos-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 100%;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--cm-border);
+  border-radius: 0.6rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    border-color: $primary-border-subtle;
+    box-shadow: var(--cm-shadow-sm);
+  }
+}
+
+// ============================================================================
+//  Tienda online
+// ============================================================================
+.shop-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--cm-shadow);
+  }
+
+  &__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 0.8rem;
+    background: $brand-soft;
+    color: $brand;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 0.75rem;
+  }
+}
