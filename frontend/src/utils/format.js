@@ -1,0 +1,41 @@
+/**
+ * Utilidades de fecha/hora (trabajan en hora local para evitar
+ * desfases de un dia tipicos de UTC).
+ */
+
+/** Fecha de hoy en formato YYYY-MM-DD (zona horaria local). */
+export function todayISO() {
+  const d = new Date()
+  const offset = d.getTimezoneOffset()
+  return new Date(d.getTime() - offset * 60000).toISOString().slice(0, 10)
+}
+
+/** Hora actual en formato HH:mm. */
+export function nowHora() {
+  const d = new Date()
+  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+}
+
+/** "2026-10-10" -> "10 oct 2026". */
+export function formatFecha(iso) {
+  if (!iso) return '—'
+  const d = new Date(`${iso}T00:00:00`)
+  if (Number.isNaN(d.getTime())) return iso
+  return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
+}
+
+/** "2026-10-10" -> "sab, 10 oct". */
+export function formatFechaCorta(iso) {
+  if (!iso) return '—'
+  const d = new Date(`${iso}T00:00:00`)
+  if (Number.isNaN(d.getTime())) return iso
+  return d.toLocaleDateString('es-ES', { weekday: 'short', day: '2-digit', month: 'short' })
+}
+
+export function isToday(iso) {
+  return iso === todayISO()
+}
+
+export function isFuture(iso) {
+  return !!iso && iso > todayISO()
+}

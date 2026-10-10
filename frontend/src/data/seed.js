@@ -126,3 +126,57 @@ export const seedMascotas = [
     notas: '',
   },
 ]
+
+/** Fecha en formato YYYY-MM-DD desplazada N dias respecto a hoy. */
+function isoOffset(days) {
+  const d = new Date()
+  d.setDate(d.getDate() + days)
+  const offset = d.getTimezoneOffset()
+  return new Date(d.getTime() - offset * 60000).toISOString().slice(0, 10)
+}
+
+export const seedCitas = [
+  { id: 1, mascotaId: 1, fecha: isoOffset(0), hora: '09:00', motivo: 'Vacunacion anual', veterinario: 'Dra. Ana Ramirez', estado: 'Confirmada', notas: '' },
+  { id: 2, mascotaId: 2, fecha: isoOffset(0), hora: '09:30', motivo: 'Control post-operatorio', veterinario: 'Dr. Carlos Mena', estado: 'En sala', notas: '' },
+  { id: 3, mascotaId: 3, fecha: isoOffset(0), hora: '10:15', motivo: 'Revision general', veterinario: 'Dra. Lucia Vega', estado: 'Pendiente', notas: '' },
+  { id: 4, mascotaId: 4, fecha: isoOffset(0), hora: '11:00', motivo: 'Desparasitacion', veterinario: 'Dra. Ana Ramirez', estado: 'Pendiente', notas: '' },
+  { id: 5, mascotaId: 5, fecha: isoOffset(1), hora: '08:30', motivo: 'Control de peso', veterinario: 'Dr. Carlos Mena', estado: 'Confirmada', notas: '' },
+  { id: 6, mascotaId: 6, fecha: isoOffset(1), hora: '10:00', motivo: 'Corte de unas', veterinario: 'Dra. Lucia Vega', estado: 'Pendiente', notas: '' },
+  { id: 7, mascotaId: 1, fecha: isoOffset(-3), hora: '15:00', motivo: 'Reaccion alergica', veterinario: 'Dra. Ana Ramirez', estado: 'Atendida', notas: '' },
+  { id: 8, mascotaId: 3, fecha: isoOffset(-1), hora: '16:30', motivo: 'Tos persistente', veterinario: 'Dr. Carlos Mena', estado: 'Cancelada', notas: '' },
+]
+
+export const seedConsultas = [
+  {
+    id: 1,
+    citaId: 7,
+    mascotaId: 1,
+    fecha: isoOffset(-3),
+    hora: '15:10',
+    motivo: 'Reaccion alergica',
+    temperatura: 38.5,
+    peso: 28.5,
+    frecuenciaCardiaca: 90,
+    diagnostico: 'Dermatitis alergica',
+    tratamiento: 'Antihistaminico por 5 dias',
+    observaciones: 'Revisar en 1 semana.',
+    veterinario: 'Dra. Ana Ramirez',
+    proximaCita: isoOffset(4),
+  },
+  {
+    id: 2,
+    citaId: null,
+    mascotaId: 2,
+    fecha: isoOffset(-5),
+    hora: '11:20',
+    motivo: 'Vomito',
+    temperatura: 38.1,
+    peso: 4.1,
+    frecuenciaCardiaca: 160,
+    diagnostico: 'Gastritis leve',
+    tratamiento: 'Dieta blanda 3 dias',
+    observaciones: '',
+    veterinario: 'Dr. Carlos Mena',
+    proximaCita: '',
+  },
+]
