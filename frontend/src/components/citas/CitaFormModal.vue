@@ -15,7 +15,7 @@
             v-model="form.mascotaId"
             :options="mascotaOptions"
             icon="bi-heart"
-            placeholder="Buscar por nombre o dueno..."
+            placeholder="Buscar mascota..."
             :invalid="!!(touched.mascotaId && errors.mascotaId)"
             @blur="validateField('mascotaId')"
           />
@@ -64,9 +64,7 @@
 
         <div class="col-md-4">
           <label class="form-label" for="c-estado">Estado</label>
-          <select id="c-estado" v-model="form.estado" class="form-select">
-            <option v-for="e in ESTADOS_CITA" :key="e" :value="e">{{ e }}</option>
-          </select>
+          <SearchSelect id="c-estado" v-model="form.estado" :options="estadoOptions" icon="" :clearable="false" placeholder="Estado" />
         </div>
 
         <div class="col-12">
@@ -123,6 +121,7 @@ const mascotaOptions = computed(() =>
   pacientes.mascotas.map((m) => ({ value: m.id, label: m.nombre, sublabel: pacientes.duenoNombre(m.duenoId) })),
 )
 const veterinarioOptions = computed(() => VETERINARIOS.map((v) => ({ value: v, label: v })))
+const estadoOptions = ESTADOS_CITA.map((e) => ({ value: e, label: e }))
 
 function emptyForm() {
   return {

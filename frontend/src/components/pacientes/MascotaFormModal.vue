@@ -23,16 +23,15 @@
 
         <div class="col-md-6">
           <label class="form-label" for="m-especie">Especie <span class="text-danger">*</span></label>
-          <select
+          <SearchSelect
             id="m-especie"
             v-model="form.especie"
-            class="form-select"
-            :class="invalid('especie')"
+            :options="especieOptions"
+            icon="bi-heart"
+            placeholder="Especie"
+            :invalid="!!(touched.especie && errors.especie)"
             @blur="validateField('especie')"
-          >
-            <option value="">Selecciona una especie</option>
-            <option v-for="e in ESPECIES" :key="e" :value="e">{{ e }}</option>
-          </select>
+          />
           <p v-if="showError('especie')" class="text-danger small mt-1 mb-0">{{ errors.especie }}</p>
         </div>
 
@@ -43,10 +42,7 @@
 
         <div class="col-md-6">
           <label class="form-label" for="m-sexo">Sexo</label>
-          <select id="m-sexo" v-model="form.sexo" class="form-select">
-            <option value="">Sin especificar</option>
-            <option v-for="s in SEXOS" :key="s" :value="s">{{ s }}</option>
-          </select>
+          <SearchSelect id="m-sexo" v-model="form.sexo" :options="sexoOptions" icon="" :clearable="false" placeholder="Sexo" />
         </div>
 
         <div class="col-md-6">
@@ -90,7 +86,7 @@
             v-model="form.duenoId"
             :options="duenoOptions"
             icon="bi-people"
-            placeholder="Buscar dueno por nombre..."
+            placeholder="Buscar dueno..."
             :invalid="!!(touched.duenoId && errors.duenoId)"
             @blur="validateField('duenoId')"
           />
@@ -141,6 +137,15 @@ const store = usePacientesStore()
 const duenoOptions = computed(() =>
   store.duenos.map((d) => ({ value: d.id, label: `${d.nombres} ${d.apellidos}`, sublabel: d.documento || '' })),
 )
+
+const especieOptions = [
+  { value: '', label: 'Selecciona una especie' },
+  ...ESPECIES.map((e) => ({ value: e, label: e })),
+]
+const sexoOptions = [
+  { value: '', label: 'Sin especificar' },
+  ...SEXOS.map((s) => ({ value: s, label: s })),
+]
 
 const EMPTY = {
   nombre: '',

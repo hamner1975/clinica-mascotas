@@ -16,25 +16,26 @@
 
         <div class="col-md-4">
           <label class="form-label" for="p-tipo">Tipo</label>
-          <select id="p-tipo" v-model="form.tipo" class="form-select">
-            <option v-for="t in TIPOS_PRODUCTO" :key="t" :value="t">{{ t }}</option>
-          </select>
+          <SearchSelect id="p-tipo" v-model="form.tipo" :options="tipoOptions" icon="" :clearable="false" placeholder="Tipo" />
         </div>
 
         <div class="col-md-6">
           <label class="form-label" for="p-categoria">Categoria <span class="text-danger">*</span></label>
-          <select id="p-categoria" v-model="form.categoria" class="form-select" :class="invalid('categoria')" @blur="validateField('categoria')">
-            <option value="">Selecciona una categoria</option>
-            <option v-for="c in CATEGORIAS_PRODUCTO" :key="c" :value="c">{{ c }}</option>
-          </select>
+          <SearchSelect
+            id="p-categoria"
+            v-model="form.categoria"
+            :options="categoriaOptions"
+            icon="bi-tags"
+            placeholder="Categoria"
+            :invalid="!!(touched.categoria && errors.categoria)"
+            @blur="validateField('categoria')"
+          />
           <p v-if="showError('categoria')" class="text-danger small mt-1 mb-0">{{ errors.categoria }}</p>
         </div>
 
         <div class="col-md-6">
           <label class="form-label" for="p-unidad">Unidad</label>
-          <select id="p-unidad" v-model="form.unidad" class="form-select">
-            <option v-for="u in UNIDADES" :key="u" :value="u">{{ u }}</option>
-          </select>
+          <SearchSelect id="p-unidad" v-model="form.unidad" :options="unidadOptions" icon="" :clearable="false" placeholder="Unidad" />
         </div>
 
         <div class="col-md-6">
@@ -109,6 +110,7 @@
 <script setup>
 import { computed, watch } from 'vue'
 import BaseModal from '@/components/ui/BaseModal.vue'
+import SearchSelect from '@/components/ui/SearchSelect.vue'
 import { useProductosStore } from '@/stores/productos'
 import { useForm } from '@/composables/useForm'
 import { CATEGORIAS_PRODUCTO, TIPOS_PRODUCTO, UNIDADES } from '@/data/catalogos'
@@ -122,6 +124,13 @@ const props = defineProps({
 const emit = defineEmits(['close', 'saved'])
 
 const store = useProductosStore()
+
+const tipoOptions = TIPOS_PRODUCTO.map((t) => ({ value: t, label: t }))
+const categoriaOptions = [
+  { value: '', label: 'Selecciona una categoria' },
+  ...CATEGORIAS_PRODUCTO.map((c) => ({ value: c, label: c })),
+]
+const unidadOptions = UNIDADES.map((u) => ({ value: u, label: u }))
 
 function emptyForm() {
   return {

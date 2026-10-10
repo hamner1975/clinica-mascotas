@@ -37,17 +37,10 @@
             </div>
           </div>
           <div class="col-6 col-md-3">
-            <select v-model="rolFiltro" class="form-select">
-              <option value="">Todos los roles</option>
-              <option v-for="r in roles.roles" :key="r.id" :value="r.id">{{ r.nombre }}</option>
-            </select>
+            <SearchSelect v-model="rolFiltro" :options="rolOptions" icon="bi-funnel" placeholder="Rol" />
           </div>
           <div class="col-6 col-md-3">
-            <select v-model="estadoFiltro" class="form-select">
-              <option value="">Todos</option>
-              <option value="activo">Activos</option>
-              <option value="inactivo">Inactivos</option>
-            </select>
+            <SearchSelect v-model="estadoFiltro" :options="estadoOptions" icon="bi-funnel" placeholder="Estado" />
           </div>
         </div>
 
@@ -129,6 +122,7 @@ import { formatFecha } from '@/utils/format'
 import { usePagination } from '@/composables/usePagination'
 import TablePagination from '@/components/ui/TablePagination.vue'
 import StatCard from '@/components/ui/StatCard.vue'
+import SearchSelect from '@/components/ui/SearchSelect.vue'
 import UsuarioFormModal from '@/components/admin/UsuarioFormModal.vue'
 import { confirmDialog, toastSuccess, toastInfo } from '@/utils/alerts'
 
@@ -152,6 +146,16 @@ const filtered = computed(() => {
 })
 
 const { page, perPage, total, paginated, setPage } = usePagination(filtered, 8)
+
+const rolOptions = computed(() => [
+  { value: '', label: 'Todos los roles' },
+  ...roles.roles.map((r) => ({ value: r.id, label: r.nombre })),
+])
+const estadoOptions = [
+  { value: '', label: 'Todos' },
+  { value: 'activo', label: 'Activos' },
+  { value: 'inactivo', label: 'Inactivos' },
+]
 
 const modalOpen = ref(false)
 const editing = ref(null)

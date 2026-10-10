@@ -1,7 +1,7 @@
 <template>
   <div class="search-select">
     <div class="input-group" :class="{ 'is-invalid': invalid }">
-      <span class="input-group-text"><i :class="['bi', icon]"></i></span>
+      <span v-if="icon" class="input-group-text"><i :class="['bi', icon]"></i></span>
       <input
         :id="id || undefined"
         ref="inputEl"
@@ -20,7 +20,7 @@
         @blur="onBlur"
       />
       <button
-        v-if="modelValue !== '' && modelValue !== null"
+        v-if="clearable && modelValue !== '' && modelValue !== null"
         class="btn btn-outline-secondary"
         type="button"
         tabindex="-1"
@@ -62,6 +62,8 @@ const props = defineProps({
   id: { type: String, default: '' },
   invalid: { type: Boolean, default: false },
   disabled: { type: Boolean, default: false },
+  /** Mostrar el boton para limpiar la seleccion. */
+  clearable: { type: Boolean, default: true },
 })
 
 const emit = defineEmits(['update:modelValue', 'blur'])
@@ -72,7 +74,10 @@ const text = ref('') // lo que se ve en el input
 const highlighted = ref(0)
 const menuStyle = ref({})
 
-const selected = computed(() => props.options.find((o) => o.value === props.modelValue) || null)
+const selected = computed(() => {
+  if (props.modelValue === '' || props.modelValue === null || props.modelValue === undefined) return null
+  return props.options.find((o) => o.value === props.modelValue) || null
+})
 
 // Si cambia la seleccion (y no se esta escribiendo), reflejarla en el input.
 watch(

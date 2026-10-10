@@ -20,7 +20,7 @@
             v-model="form.mascotaId"
             :options="mascotaOptions"
             icon="bi-heart"
-            placeholder="Buscar por nombre o dueno..."
+            placeholder="Buscar mascota..."
             :invalid="!!(touched.mascotaId && errors.mascotaId)"
             @blur="validateField('mascotaId')"
           />

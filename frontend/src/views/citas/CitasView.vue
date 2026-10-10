@@ -37,10 +37,7 @@
             </div>
           </div>
           <div class="col-6 col-md-3">
-            <select v-model="estadoFiltro" class="form-select">
-              <option value="">Todos los estados</option>
-              <option v-for="e in ESTADOS_CITA" :key="e" :value="e">{{ e }}</option>
-            </select>
+            <SearchSelect v-model="estadoFiltro" :options="estadoOptions" icon="bi-funnel" placeholder="Estado" />
           </div>
           <div class="col-6 col-md-4">
             <input v-model="fechaFiltro" type="date" class="form-control" />
@@ -127,6 +124,7 @@ import { formatFechaCorta, isToday } from '@/utils/format'
 import { usePagination } from '@/composables/usePagination'
 import TablePagination from '@/components/ui/TablePagination.vue'
 import StatCard from '@/components/ui/StatCard.vue'
+import SearchSelect from '@/components/ui/SearchSelect.vue'
 import CitaFormModal from '@/components/citas/CitaFormModal.vue'
 import ConsultaFormModal from '@/components/consultas/ConsultaFormModal.vue'
 import { confirmDialog, toastSuccess } from '@/utils/alerts'
@@ -154,6 +152,8 @@ const filtered = computed(() => {
 })
 
 const { page, perPage, total, paginated, setPage } = usePagination(filtered, 8)
+
+const estadoOptions = [{ value: '', label: 'Todos los estados' }, ...ESTADOS_CITA.map((e) => ({ value: e, label: e }))]
 
 const modalOpen = ref(false)
 const editing = ref(null)

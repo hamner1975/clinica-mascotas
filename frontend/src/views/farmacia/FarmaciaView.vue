@@ -20,10 +20,7 @@
                 </div>
               </div>
               <div class="col-12 col-md-5">
-                <select v-model="categoriaFiltro" class="form-select">
-                  <option value="">Todas las categorias</option>
-                  <option v-for="c in CATEGORIAS_PRODUCTO" :key="c" :value="c">{{ c }}</option>
-                </select>
+                <SearchSelect v-model="categoriaFiltro" :options="categoriaOptions" icon="bi-funnel" placeholder="Categoria" />
               </div>
             </div>
 
@@ -89,6 +86,7 @@ import { useVentasStore } from '@/stores/ventas'
 import { CATEGORIAS_PRODUCTO } from '@/data/catalogos'
 import { money } from '@/utils/format'
 import CarritoPanel from '@/components/farmacia/CarritoPanel.vue'
+import SearchSelect from '@/components/ui/SearchSelect.vue'
 import { notifyValidation, toastSuccess } from '@/utils/alerts'
 
 const productos = useProductosStore()
@@ -98,6 +96,11 @@ const ventas = useVentasStore()
 const search = ref('')
 const categoriaFiltro = ref('')
 const cliente = ref('')
+
+const categoriaOptions = [
+  { value: '', label: 'Todas las categorias' },
+  ...CATEGORIAS_PRODUCTO.map((c) => ({ value: c, label: c })),
+]
 
 const filtrados = computed(() => {
   const q = search.value.trim().toLowerCase()

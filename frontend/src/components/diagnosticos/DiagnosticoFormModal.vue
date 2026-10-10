@@ -22,19 +22,21 @@
 
         <div class="col-md-6">
           <label class="form-label" for="dg-categoria">Categoria <span class="text-danger">*</span></label>
-          <select id="dg-categoria" v-model="form.categoria" class="form-select" :class="invalid('categoria')" @blur="validateField('categoria')">
-            <option value="">Selecciona una categoria</option>
-            <option v-for="c in CATEGORIAS_DIAGNOSTICO" :key="c" :value="c">{{ c }}</option>
-          </select>
+          <SearchSelect
+            id="dg-categoria"
+            v-model="form.categoria"
+            :options="categoriaOptions"
+            icon="bi-tags"
+            placeholder="Categoria"
+            :invalid="!!(touched.categoria && errors.categoria)"
+            @blur="validateField('categoria')"
+          />
           <p v-if="showError('categoria')" class="text-danger small mt-1 mb-0">{{ errors.categoria }}</p>
         </div>
 
         <div class="col-md-6">
           <label class="form-label" for="dg-especie">Especie afectada</label>
-          <select id="dg-especie" v-model="form.especie" class="form-select">
-            <option value="Todas">Todas</option>
-            <option v-for="e in ESPECIES" :key="e" :value="e">{{ e }}</option>
-          </select>
+          <SearchSelect id="dg-especie" v-model="form.especie" :options="especieOptions" icon="bi-heart" :clearable="false" placeholder="Especie" />
         </div>
 
         <div class="col-12">
@@ -67,6 +69,7 @@
 <script setup>
 import { computed, watch } from 'vue'
 import BaseModal from '@/components/ui/BaseModal.vue'
+import SearchSelect from '@/components/ui/SearchSelect.vue'
 import { useDiagnosticosStore } from '@/stores/diagnosticos'
 import { useForm } from '@/composables/useForm'
 import { CATEGORIAS_DIAGNOSTICO, ESPECIES } from '@/data/catalogos'
@@ -80,6 +83,15 @@ const props = defineProps({
 const emit = defineEmits(['close', 'saved'])
 
 const store = useDiagnosticosStore()
+
+const categoriaOptions = [
+  { value: '', label: 'Selecciona una categoria' },
+  ...CATEGORIAS_DIAGNOSTICO.map((c) => ({ value: c, label: c })),
+]
+const especieOptions = [
+  { value: 'Todas', label: 'Todas' },
+  ...ESPECIES.map((e) => ({ value: e, label: e })),
+]
 
 function emptyForm() {
   return {

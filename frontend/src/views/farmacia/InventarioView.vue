@@ -37,18 +37,10 @@
             </div>
           </div>
           <div class="col-6 col-md-3">
-            <select v-model="categoriaFiltro" class="form-select">
-              <option value="">Todas las categorias</option>
-              <option v-for="c in CATEGORIAS_PRODUCTO" :key="c" :value="c">{{ c }}</option>
-            </select>
+            <SearchSelect v-model="categoriaFiltro" :options="categoriaOptions" icon="bi-funnel" placeholder="Categoria" />
           </div>
           <div class="col-6 col-md-4">
-            <select v-model="stockFiltro" class="form-select">
-              <option value="">Cualquier stock</option>
-              <option value="Ok">Stock saludable</option>
-              <option value="Bajo">Bajo stock</option>
-              <option value="Agotado">Agotado</option>
-            </select>
+            <SearchSelect v-model="stockFiltro" :options="stockOptions" icon="bi-funnel" placeholder="Stock" />
           </div>
         </div>
 
@@ -121,6 +113,7 @@ import { addDias, formatFecha, money, todayISO } from '@/utils/format'
 import { usePagination } from '@/composables/usePagination'
 import TablePagination from '@/components/ui/TablePagination.vue'
 import StatCard from '@/components/ui/StatCard.vue'
+import SearchSelect from '@/components/ui/SearchSelect.vue'
 import ProductoFormModal from '@/components/farmacia/ProductoFormModal.vue'
 import { confirmDialog, toastSuccess } from '@/utils/alerts'
 
@@ -141,6 +134,17 @@ const filtered = computed(() => {
 })
 
 const { page, perPage, total, paginated, setPage } = usePagination(filtered, 8)
+
+const categoriaOptions = [
+  { value: '', label: 'Todas las categorias' },
+  ...CATEGORIAS_PRODUCTO.map((c) => ({ value: c, label: c })),
+]
+const stockOptions = [
+  { value: '', label: 'Cualquier stock' },
+  { value: 'Ok', label: 'Stock saludable' },
+  { value: 'Bajo', label: 'Bajo stock' },
+  { value: 'Agotado', label: 'Agotado' },
+]
 
 const modalOpen = ref(false)
 const editing = ref(null)

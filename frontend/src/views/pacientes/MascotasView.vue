@@ -25,18 +25,10 @@
             </div>
           </div>
           <div class="col-6 col-md-3">
-            <select v-model="especieFiltro" class="form-select">
-              <option value="">Todas las especies</option>
-              <option v-for="e in ESPECIES" :key="e" :value="e">{{ e }}</option>
-            </select>
+            <SearchSelect v-model="especieFiltro" :options="especieOptions" icon="bi-funnel" placeholder="Especie" />
           </div>
           <div class="col-6 col-md-3">
-            <select v-model="duenoFiltro" class="form-select">
-              <option value="">Todos los dueños</option>
-              <option v-for="d in store.duenos" :key="d.id" :value="d.id">
-                {{ d.nombres }} {{ d.apellidos }}
-              </option>
-            </select>
+            <SearchSelect v-model="duenoFiltro" :options="duenoOptions" icon="bi-funnel" placeholder="Dueño" />
           </div>
         </div>
 
@@ -110,6 +102,7 @@ import { ESPECIES, especieVariant } from '@/data/catalogos'
 import { edadDesde } from '@/utils/format'
 import { usePagination } from '@/composables/usePagination'
 import TablePagination from '@/components/ui/TablePagination.vue'
+import SearchSelect from '@/components/ui/SearchSelect.vue'
 import MascotaFormModal from '@/components/pacientes/MascotaFormModal.vue'
 import { confirmDialog, toastSuccess } from '@/utils/alerts'
 
@@ -135,6 +128,12 @@ const filtered = computed(() => {
 })
 
 const { page, perPage, total, paginated, setPage } = usePagination(filtered, 8)
+
+const especieOptions = [{ value: '', label: 'Todas las especies' }, ...ESPECIES.map((e) => ({ value: e, label: e }))]
+const duenoOptions = computed(() => [
+  { value: '', label: 'Todos los dueños' },
+  ...store.duenos.map((d) => ({ value: d.id, label: `${d.nombres} ${d.apellidos}` })),
+])
 
 const modalOpen = ref(false)
 const editing = ref(null)

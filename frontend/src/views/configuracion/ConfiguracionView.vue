@@ -54,9 +54,7 @@
               <div class="row g-3">
                 <div class="col-md-3">
                   <label class="form-label" for="cfg-moneda">Moneda</label>
-                  <select id="cfg-moneda" v-model="form.moneda" class="form-select">
-                    <option v-for="m in MONEDAS" :key="m" :value="m">{{ m }}</option>
-                  </select>
+                  <SearchSelect id="cfg-moneda" v-model="form.moneda" :options="monedaOptions" icon="bi-currency-exchange" :clearable="false" placeholder="Moneda" />
                 </div>
                 <div class="col-md-3">
                   <label class="form-label" for="cfg-apertura">Hora apertura</label>
@@ -138,12 +136,15 @@
 import { ref } from 'vue'
 import { useConfigStore } from '@/stores/config'
 import { MONEDAS } from '@/data/catalogos'
+import SearchSelect from '@/components/ui/SearchSelect.vue'
 import { useForm } from '@/composables/useForm'
 import { todayISO } from '@/utils/format'
 import { confirmDialog, notifyValidation, toastError, toastSuccess } from '@/utils/alerts'
 
 const store = useConfigStore()
 const archivoInput = ref(null)
+
+const monedaOptions = MONEDAS.map((m) => ({ value: m, label: m }))
 
 const { form, errors, touched, validate, validateField, firstError, reset } = useForm(
   { ...store.config },

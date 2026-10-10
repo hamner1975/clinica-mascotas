@@ -34,16 +34,10 @@
             </div>
           </div>
           <div class="col-6 col-md-3">
-            <select v-model="canalFiltro" class="form-select">
-              <option value="">Todos los canales</option>
-              <option v-for="c in CANALES_VENTA" :key="c" :value="c">{{ c }}</option>
-            </select>
+            <SearchSelect v-model="canalFiltro" :options="canalOptions" icon="bi-funnel" placeholder="Canal" />
           </div>
           <div class="col-6 col-md-3">
-            <select v-model="estadoFiltro" class="form-select">
-              <option value="">Todos los estados</option>
-              <option v-for="e in ESTADOS_VENTA" :key="e" :value="e">{{ e }}</option>
-            </select>
+            <SearchSelect v-model="estadoFiltro" :options="estadoOptions" icon="bi-funnel" placeholder="Estado" />
           </div>
         </div>
 
@@ -127,6 +121,7 @@ import { formatFecha, money } from '@/utils/format'
 import { usePagination } from '@/composables/usePagination'
 import TablePagination from '@/components/ui/TablePagination.vue'
 import StatCard from '@/components/ui/StatCard.vue'
+import SearchSelect from '@/components/ui/SearchSelect.vue'
 import VentaDetalleModal from '@/components/farmacia/VentaDetalleModal.vue'
 import { confirmDialog, toastSuccess } from '@/utils/alerts'
 
@@ -149,6 +144,9 @@ const filtered = computed(() => {
 })
 
 const { page, perPage, total, paginated, setPage } = usePagination(filtered, 8)
+
+const canalOptions = [{ value: '', label: 'Todos los canales' }, ...CANALES_VENTA.map((c) => ({ value: c, label: c }))]
+const estadoOptions = [{ value: '', label: 'Todos los estados' }, ...ESTADOS_VENTA.map((e) => ({ value: e, label: e }))]
 
 const detalleOpen = ref(false)
 const detalle = ref(null)

@@ -34,10 +34,7 @@
             </div>
           </div>
           <div class="col-12 col-md-4">
-            <select v-model="categoriaFiltro" class="form-select">
-              <option value="">Todas las categorias</option>
-              <option v-for="c in CATEGORIAS_DIAGNOSTICO" :key="c" :value="c">{{ c }}</option>
-            </select>
+            <SearchSelect v-model="categoriaFiltro" :options="categoriaOptions" icon="bi-funnel" placeholder="Categoria" />
           </div>
         </div>
 
@@ -108,6 +105,7 @@ import { CATEGORIAS_DIAGNOSTICO, categoriaDiagVariant } from '@/data/catalogos'
 import { usePagination } from '@/composables/usePagination'
 import TablePagination from '@/components/ui/TablePagination.vue'
 import StatCard from '@/components/ui/StatCard.vue'
+import SearchSelect from '@/components/ui/SearchSelect.vue'
 import DiagnosticoFormModal from '@/components/diagnosticos/DiagnosticoFormModal.vue'
 import { confirmDialog, toastSuccess } from '@/utils/alerts'
 
@@ -127,6 +125,11 @@ const filtered = computed(() => {
 })
 
 const { page, perPage, total, paginated, setPage } = usePagination(filtered, 8)
+
+const categoriaOptions = [
+  { value: '', label: 'Todas las categorias' },
+  ...CATEGORIAS_DIAGNOSTICO.map((c) => ({ value: c, label: c })),
+]
 
 const modalOpen = ref(false)
 const editing = ref(null)
