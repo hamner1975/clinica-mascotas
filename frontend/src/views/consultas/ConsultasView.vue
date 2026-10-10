@@ -44,8 +44,13 @@
               <tr v-for="c in paginated" :key="c.id">
                 <td class="text-nowrap">{{ formatFecha(c.fecha) }}</td>
                 <td>
-                  <div class="fw-semibold">{{ nombreMascota(c.mascotaId) }}</div>
-                  <small class="text-muted">{{ duenoMascota(c.mascotaId) }}</small>
+                  <router-link
+                    class="fw-semibold text-decoration-none"
+                    :to="{ name: 'historia-clinica', query: { mascota: c.mascotaId } }"
+                  >
+                    {{ nombreMascota(c.mascotaId) }}
+                  </router-link>
+                  <small class="text-muted d-block">{{ duenoMascota(c.mascotaId) }}</small>
                 </td>
                 <td>{{ c.motivo }}</td>
                 <td><span class="badge rounded-pill text-bg-light border">{{ c.diagnostico }}</span></td>

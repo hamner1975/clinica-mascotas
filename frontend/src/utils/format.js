@@ -39,3 +39,29 @@ export function isToday(iso) {
 export function isFuture(iso) {
   return !!iso && iso > todayISO()
 }
+
+/** "2026-10-10" -> "10 oct". */
+export function formatDiaMes(iso) {
+  if (!iso) return '—'
+  const d = new Date(`${iso}T00:00:00`)
+  if (Number.isNaN(d.getTime())) return iso
+  return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })
+}
+
+/** Edad legible a partir de una fecha de nacimiento ISO. */
+export function edadDesde(iso) {
+  if (!iso) return '—'
+  const nacimiento = new Date(`${iso}T00:00:00`)
+  if (Number.isNaN(nacimiento.getTime())) return '—'
+
+  const hoy = new Date()
+  let years = hoy.getFullYear() - nacimiento.getFullYear()
+  const meses = hoy.getMonth() - nacimiento.getMonth()
+  if (meses < 0 || (meses === 0 && hoy.getDate() < nacimiento.getDate())) years -= 1
+
+  if (years < 1) {
+    const diff = Math.max(0, Math.round((hoy - nacimiento) / (1000 * 60 * 60 * 24 * 30.44)))
+    return `${diff} ${diff === 1 ? 'mes' : 'meses'}`
+  }
+  return `${years} ${years === 1 ? 'año' : 'años'}`
+}

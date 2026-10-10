@@ -67,10 +67,13 @@
                 </td>
                 <td><span class="badge rounded-pill" :class="especieVariant(m.especie)">{{ m.especie }}</span></td>
                 <td>{{ m.sexo || '&mdash;' }}</td>
-                <td>{{ edad(m.fechaNacimiento) }}</td>
+                <td>{{ edadDesde(m.fechaNacimiento) }}</td>
                 <td>{{ m.peso != null ? `${m.peso} kg` : '—' }}</td>
                 <td>{{ store.duenoNombre(m.duenoId) }}</td>
                 <td class="text-end text-nowrap">
+                  <button class="btn btn-sm btn-light text-primary" type="button" title="Ver historia clinica" @click="verHistoria(m)">
+                    <i class="bi bi-journal-medical"></i>
+                  </button>
                   <button class="btn btn-sm btn-light" type="button" title="Editar" @click="openEdit(m)">
                     <i class="bi bi-pencil"></i>
                   </button>
@@ -101,14 +104,17 @@
 
 <script setup>
 import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { usePacientesStore } from '@/stores/pacientes'
 import { ESPECIES, especieVariant } from '@/data/catalogos'
+import { edadDesde } from '@/utils/format'
 import { usePagination } from '@/composables/usePagination'
 import TablePagination from '@/components/ui/TablePagination.vue'
 import MascotaFormModal from '@/components/pacientes/MascotaFormModal.vue'
 import { confirmDialog, toastSuccess } from '@/utils/alerts'
 
 const store = usePacientesStore()
+const router = useRouter()
 
 const search = ref('')
 const especieFiltro = ref('')
@@ -162,18 +168,7 @@ function inicial(nombre) {
   return (nombre || '?').charAt(0).toUpperCase()
 }
 
-function edad(fecha) {
-  if (!fecha) return '—'
-  const nacimiento = new Date(fecha)
-  const hoy = new Date()
-  let years = hoy.getFullYear() - nacimiento.getFullYear()
-  const meses = hoy.getMonth() - nacimiento.getMonth()
-  if (meses < 0 || (meses === 0 && hoy.getDate() < nacimiento.getDate())) years -= 1
-
-  if (years < 1) {
-    const diff = Math.max(0, Math.round((hoy - nacimiento) / (1000 * 60 * 60 * 24 * 30.44)))
-    return `${diff} ${diff === 1 ? 'mes' : 'meses'}`
-  }
-  return `${years} ${years === 1 ? 'año' : 'años'}`
+function verHistoria(mascota) {
+  router.push({ name: 'historia-clinica', query: { mascota: mascota.id } })
 }
 </script>

@@ -26,7 +26,7 @@ const routes = [
       // ---- Modulos (maqueta: "En construccion" por ahora) ----
       { path: 'citas', name: 'citas', component: () => import('@/views/citas/CitasView.vue'), meta: { title: 'Citas' } },
       { path: 'consultas', name: 'consultas', component: () => import('@/views/consultas/ConsultasView.vue'), meta: { title: 'Consultas' } },
-      { path: 'historia-clinica', name: 'historia-clinica', component: () => import('@/views/ComingSoonView.vue'), meta: { title: 'Historia clinica' } },
+      { path: 'historia-clinica', name: 'historia-clinica', component: () => import('@/views/historia-clinica/HistoriaClinicaView.vue'), meta: { title: 'Historia clinica' } },
       { path: 'diagnosticos', name: 'diagnosticos', component: () => import('@/views/ComingSoonView.vue'), meta: { title: 'Diagnosticos' } },
       { path: 'mascotas', name: 'mascotas', component: () => import('@/views/pacientes/MascotasView.vue'), meta: { title: 'Mascotas' } },
       { path: 'duenos', name: 'duenos', component: () => import('@/views/pacientes/DuenosView.vue'), meta: { title: 'Duenos / Tutores' } },

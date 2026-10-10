@@ -195,6 +195,7 @@ const props = defineProps({
   open: { type: Boolean, default: false },
   consulta: { type: Object, default: null },
   cita: { type: Object, default: null },
+  mascotaId: { type: [Number, String], default: '' },
 })
 
 const emit = defineEmits(['close', 'saved'])
@@ -258,7 +259,7 @@ watch(
         veterinario: props.cita.veterinario,
       })
     } else {
-      reset(emptyForm())
+      reset({ ...emptyForm(), mascotaId: props.mascotaId || '' })
     }
   },
 )
