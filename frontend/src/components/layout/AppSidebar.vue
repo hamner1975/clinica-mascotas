@@ -5,8 +5,8 @@
         <i class="bi bi-heart-pulse-fill"></i>
       </span>
       <span class="sidebar-brand__text">
-        <span><strong>Clinica</strong> Mascotas</span>
-        <small>Sistema integral</small>
+        <span class="fw-bold">{{ config.config.nombre }}</span>
+        <small>{{ config.config.eslogan }}</small>
       </span>
     </div>
 
@@ -34,6 +34,8 @@
 <script setup>
 import { menuSections } from '@/data/menu'
 import { useUiStore } from '@/stores/ui'
+import { useConfigStore } from '@/stores/config'
 
 const ui = useUiStore()
+const config = useConfigStore()
 </script>

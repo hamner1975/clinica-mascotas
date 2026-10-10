@@ -67,12 +67,18 @@ Abrir `http://localhost:5173`.
 
 ## Hoja de ruta
 
-- [x] **Fase 1** - Diseno: Login, Layout y Dashboard.
-- [ ] **Fase 2** - Backend PHP + MySQL (API REST, login real, roles).
-- [ ] **Fase 2** - Modulos: Citas, Consultas, Historia clinica, Diagnosticos,
-      Farmacia, Inventario, Tienda, Pedidos, Usuarios, Roles, Reportes.
-- [ ] **Fase 3** - PWA (instalable en movil).
-- [ ] **Fase 4** - Despliegue (GitHub + hosting cPanel, staging/produccion).
+- [x] **Fase 1** - Diseno (maqueta navegable completa):
+  - [x] Shell: Login, Layout (sidebar/topbar) y Dashboard.
+  - [x] Pacientes: Mascotas y Duenos/Tutores.
+  - [x] Citas y Consultas (con flujo "Atender" que genera la consulta).
+  - [x] Historia clinica (expediente por mascota: resumen, consultas y evolucion).
+  - [x] Farmacia (punto de venta), Inventario, Tienda online y Pedidos/Ventas.
+  - [x] Diagnosticos (catalogo + autocompletado en el formulario de consulta).
+  - [x] Usuarios y Roles (RBAC con matriz de permisos).
+  - [x] Reportes y Configuracion (con respaldo de datos).
+- [ ] **Fase 2** - Backend PHP + MySQL: API REST, login real, RBAC y persistencia.
+- [ ] **Fase 3** - PWA: instalable en movil (manifest + service worker).
+- [ ] **Fase 4** - Despliegue: GitHub + hosting cPanel (staging/produccion).
 
 ## Paleta de marca
 

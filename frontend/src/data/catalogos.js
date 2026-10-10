@@ -87,6 +87,9 @@ export function categoriaDiagVariant(categoria) {
   return map[categoria] || 'text-bg-secondary'
 }
 
+// ---- Configuracion ----
+export const MONEDAS = ['COP', 'USD', 'MXN', 'PEN', 'EUR', 'ARS', 'CLP']
+
 /** Color de badge segun la especie (para la tabla de mascotas). */
 export function especieVariant(especie) {
   const map = {
