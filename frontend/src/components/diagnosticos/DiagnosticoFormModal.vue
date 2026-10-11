@@ -73,7 +73,7 @@ import SearchSelect from '@/components/ui/SearchSelect.vue'
 import { useDiagnosticosStore } from '@/stores/diagnosticos'
 import { useForm } from '@/composables/useForm'
 import { CATEGORIAS_DIAGNOSTICO, ESPECIES } from '@/data/catalogos'
-import { notifyValidation, toastSuccess } from '@/utils/alerts'
+import { notifyValidation, toastError, toastSuccess } from '@/utils/alerts'
 
 const props = defineProps({
   open: { type: Boolean, default: false },
@@ -127,14 +127,18 @@ watch(
   },
 )
 
-function onSubmit() {
+async function onSubmit() {
   if (!validate()) {
     notifyValidation(firstError())
     return
   }
-  store.save({ ...form })
-  toastSuccess(isEdit.value ? 'Diagnostico actualizado' : 'Diagnostico registrado', `${form.nombre} se guardo correctamente.`)
-  emit('saved')
-  emit('close')
+  try {
+    await store.save({ ...form })
+    toastSuccess(isEdit.value ? 'Diagnostico actualizado' : 'Diagnostico registrado', `${form.nombre} se guardo correctamente.`)
+    emit('saved')
+    emit('close')
+  } catch (error) {
+    toastError('No se pudo guardar', error?.message || 'Intenta de nuevo.')
+  }
 }
 </script>

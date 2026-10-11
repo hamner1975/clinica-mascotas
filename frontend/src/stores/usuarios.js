@@ -1,64 +1,57 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import { seedUsuarios } from '@/data/seed'
+import api from '@/services/api'
 
-const KEY = 'cm_usuarios'
-
-function load(fallback) {
-  try {
-    const raw = localStorage.getItem(KEY)
-    return raw ? JSON.parse(raw) : structuredClone(fallback)
-  } catch {
-    return structuredClone(fallback)
-  }
-}
-
-function nextId(list) {
-  return list.reduce((max, item) => Math.max(max, item.id), 0) + 1
-}
-
-/** Store de usuarios del sistema. */
+/**
+ * Store de usuarios del sistema.
+ * FASE 2: los datos viven en MySQL; aqui se consultan via la API.
+ */
 export const useUsuariosStore = defineStore('usuarios', () => {
-  const usuarios = ref(load(seedUsuarios))
+  const usuarios = ref([])
+  const loading = ref(false)
+  const loaded = ref(false)
 
-  function persist() {
-    localStorage.setItem(KEY, JSON.stringify(usuarios.value))
+  async function load(force = false) {
+    if (loading.value) return
+    if (loaded.value && !force) return
+    loading.value = true
+    try {
+      const { data } = await api.get('/usuarios')
+      usuarios.value = data.data ?? []
+      loaded.value = true
+    } finally {
+      loading.value = false
+    }
   }
 
   const total = computed(() => usuarios.value.length)
   const activos = computed(() => usuarios.value.filter((u) => u.activo).length)
   const inactivos = computed(() => usuarios.value.filter((u) => !u.activo).length)
 
-  function byId(id) {
-    return usuarios.value.find((u) => u.id === Number(id)) || null
-  }
+  const byId = (id) => usuarios.value.find((u) => u.id === Number(id)) || null
+  const byRol = (rolId) => usuarios.value.filter((u) => u.rolId === Number(rolId))
 
-  function byRol(rolId) {
-    return usuarios.value.filter((u) => u.rolId === Number(rolId))
-  }
-
-  function save(payload) {
+  async function save(payload) {
     if (payload.id) {
+      const { data } = await api.put(`/usuarios/${payload.id}`, payload)
       const index = usuarios.value.findIndex((u) => u.id === payload.id)
-      if (index !== -1) usuarios.value[index] = { ...usuarios.value[index], ...payload }
+      if (index !== -1) usuarios.value[index] = data.data
     } else {
-      usuarios.value.push({ ...payload, id: nextId(usuarios.value), ultimoAcceso: '' })
-    }
-    persist()
-  }
-
-  function setActivo(id, activo) {
-    const index = usuarios.value.findIndex((u) => u.id === id)
-    if (index !== -1) {
-      usuarios.value[index] = { ...usuarios.value[index], activo }
-      persist()
+      const { data } = await api.post('/usuarios', payload)
+      usuarios.value.push(data.data)
     }
   }
 
-  function remove(id) {
-    usuarios.value = usuarios.value.filter((u) => u.id !== id)
-    persist()
+  async function setActivo(id, activo) {
+    const { data } = await api.put(`/usuarios/${id}/estado`, { activo })
+    const index = usuarios.value.findIndex((u) => u.id === Number(id))
+    if (index !== -1) usuarios.value[index] = data.data
   }
 
-  return { usuarios, total, activos, inactivos, byId, byRol, save, setActivo, remove }
+  async function remove(id) {
+    await api.delete(`/usuarios/${id}`)
+    usuarios.value = usuarios.value.filter((u) => u.id !== Number(id))
+  }
+
+  return { usuarios, loading, loaded, total, activos, inactivos, byId, byRol, load, save, setActivo, remove }
 })

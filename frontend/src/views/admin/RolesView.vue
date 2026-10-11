@@ -58,7 +58,6 @@ import { useRolesStore } from '@/stores/roles'
 import { useUsuariosStore } from '@/stores/usuarios'
 import RolFormModal from '@/components/admin/RolFormModal.vue'
 import { confirmDialog, toastError, toastSuccess } from '@/utils/alerts'
-
 const store = useRolesStore()
 const usuarios = useUsuariosStore()
 
@@ -90,7 +89,17 @@ async function onDelete(rol) {
     icon: 'warning',
   })
   if (result.isConfirmed) {
-    if (store.remove(rol.id)) toastSuccess('Rol eliminado', `El rol "${rol.nombre}" fue eliminado.`)
+    try {
+      await store.remove(rol.id)
+      toastSuccess('Rol eliminado', `El rol "${rol.nombre}" fue eliminado.`)
+    } catch (error) {
+      toastError('No se pudo eliminar', error?.message || 'Intenta de nuevo.')
+    }
   }
 }
+
+onMounted(() => {
+  store.load().catch(() => {})
+  usuarios.load().catch(() => {})
+})
 </script>

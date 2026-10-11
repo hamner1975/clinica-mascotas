@@ -115,7 +115,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useUsuariosStore } from '@/stores/usuarios'
 import { useRolesStore } from '@/stores/roles'
 import { formatFecha } from '@/utils/format'
@@ -124,7 +124,7 @@ import TablePagination from '@/components/ui/TablePagination.vue'
 import StatCard from '@/components/ui/StatCard.vue'
 import SearchSelect from '@/components/ui/SearchSelect.vue'
 import UsuarioFormModal from '@/components/admin/UsuarioFormModal.vue'
-import { confirmDialog, toastSuccess, toastInfo } from '@/utils/alerts'
+import { confirmDialog, toastError, toastInfo, toastSuccess } from '@/utils/alerts'
 
 const store = useUsuariosStore()
 const roles = useRolesStore()
@@ -178,12 +178,16 @@ function onSaved() {
   // El store ya persistio.
 }
 
-function toggleActivo(usuario, event) {
-  store.setActivo(usuario.id, event.target.checked)
-  toastInfo(
-    event.target.checked ? 'Usuario activado' : 'Usuario desactivado',
-    `${usuario.nombres} ${usuario.apellidos} ahora esta ${event.target.checked ? 'activo' : 'inactivo'}.`,
-  )
+async function toggleActivo(usuario, event) {
+  try {
+    await store.setActivo(usuario.id, event.target.checked)
+    toastInfo(
+      event.target.checked ? 'Usuario activado' : 'Usuario desactivado',
+      `${usuario.nombres} ${usuario.apellidos} ahora esta ${event.target.checked ? 'activo' : 'inactivo'}.`,
+    )
+  } catch (error) {
+    toastError('No se pudo actualizar', error?.message || 'Intenta de nuevo.')
+  }
 }
 
 async function onDelete(usuario) {
@@ -194,8 +198,17 @@ async function onDelete(usuario) {
     icon: 'warning',
   })
   if (result.isConfirmed) {
-    store.remove(usuario.id)
-    toastSuccess('Usuario eliminado', `${usuario.nombres} ${usuario.apellidos} fue eliminado.`)
+    try {
+      await store.remove(usuario.id)
+      toastSuccess('Usuario eliminado', `${usuario.nombres} ${usuario.apellidos} fue eliminado.`)
+    } catch (error) {
+      toastError('No se pudo eliminar', error?.message || 'Intenta de nuevo.')
+    }
   }
 }
+
+onMounted(() => {
+  store.load().catch(() => {})
+  roles.load().catch(() => {})
+})
 </script>

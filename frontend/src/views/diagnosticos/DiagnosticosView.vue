@@ -98,7 +98,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useDiagnosticosStore } from '@/stores/diagnosticos'
 import { useConsultasStore } from '@/stores/consultas'
 import { CATEGORIAS_DIAGNOSTICO, categoriaDiagVariant } from '@/data/catalogos'
@@ -107,7 +107,7 @@ import TablePagination from '@/components/ui/TablePagination.vue'
 import StatCard from '@/components/ui/StatCard.vue'
 import SearchSelect from '@/components/ui/SearchSelect.vue'
 import DiagnosticoFormModal from '@/components/diagnosticos/DiagnosticoFormModal.vue'
-import { confirmDialog, toastSuccess } from '@/utils/alerts'
+import { confirmDialog, toastError, toastSuccess } from '@/utils/alerts'
 
 const store = useDiagnosticosStore()
 const consultas = useConsultasStore()
@@ -159,8 +159,17 @@ async function onDelete(diagnostico) {
     icon: 'warning',
   })
   if (result.isConfirmed) {
-    store.remove(diagnostico.id)
-    toastSuccess('Diagnostico eliminado', `${diagnostico.nombre} fue eliminado del catalogo.`)
+    try {
+      await store.remove(diagnostico.id)
+      toastSuccess('Diagnostico eliminado', `${diagnostico.nombre} fue eliminado del catalogo.`)
+    } catch (error) {
+      toastError('No se pudo eliminar', error?.message || 'Intenta de nuevo.')
+    }
   }
 }
+
+onMounted(() => {
+  store.load().catch(() => {})
+  consultas.load().catch(() => {})
+})
 </script>

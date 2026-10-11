@@ -73,7 +73,7 @@ import BaseModal from '@/components/ui/BaseModal.vue'
 import { useRolesStore } from '@/stores/roles'
 import { useForm } from '@/composables/useForm'
 import { GRUPOS_PERMISOS } from '@/data/permisos'
-import { notifyValidation, toastSuccess } from '@/utils/alerts'
+import { notifyValidation, toastError, toastSuccess } from '@/utils/alerts'
 
 const props = defineProps({
   open: { type: Boolean, default: false },
@@ -129,19 +129,23 @@ watch(
   },
 )
 
-function onSubmit() {
+async function onSubmit() {
   if (!validate()) {
     notifyValidation(firstError())
     return
   }
-  store.save({
-    id: form.id,
-    nombre: form.nombre,
-    descripcion: form.descripcion,
-    permisos: [...form.permisos],
-  })
-  toastSuccess(isEdit.value ? 'Rol actualizado' : 'Rol creado', `El rol "${form.nombre}" se guardo correctamente.`)
-  emit('saved')
-  emit('close')
+  try {
+    await store.save({
+      id: form.id,
+      nombre: form.nombre,
+      descripcion: form.descripcion,
+      permisos: [...form.permisos],
+    })
+    toastSuccess(isEdit.value ? 'Rol actualizado' : 'Rol creado', `El rol "${form.nombre}" se guardo correctamente.`)
+    emit('saved')
+    emit('close')
+  } catch (error) {
+    toastError('No se pudo guardar', error?.message || 'Intenta de nuevo.')
+  }
 }
 </script>

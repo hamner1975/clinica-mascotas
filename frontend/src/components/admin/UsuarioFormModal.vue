@@ -96,7 +96,7 @@ import SearchSelect from '@/components/ui/SearchSelect.vue'
 import { useUsuariosStore } from '@/stores/usuarios'
 import { useRolesStore } from '@/stores/roles'
 import { useForm } from '@/composables/useForm'
-import { notifyValidation, toastSuccess } from '@/utils/alerts'
+import { notifyValidation, toastError, toastSuccess } from '@/utils/alerts'
 
 const props = defineProps({
   open: { type: Boolean, default: false },
@@ -168,19 +168,27 @@ watch(
   },
 )
 
-function onSubmit() {
+async function onSubmit() {
   if (!validate()) {
     notifyValidation(firstError())
     return
   }
-  // La contrasena NO se guarda en el frontend (Fase 2: se envia al backend).
-  const { password, password2, ...payload } = form
-  store.save({ ...payload, rolId: Number(payload.rolId) })
-  toastSuccess(
-    isEdit.value ? 'Usuario actualizado' : 'Usuario creado',
-    `${form.nombres} ${form.apellidos} se guardo correctamente.`,
-  )
-  emit('saved')
-  emit('close')
+  const payload = { ...form, rolId: Number(form.rolId) }
+  delete payload.password2
+  // En edicion, si no se escribio contrasena, no se envia (se conserva la actual).
+  if (isEdit.value && !form.password) {
+    delete payload.password
+  }
+  try {
+    await store.save(payload)
+    toastSuccess(
+      isEdit.value ? 'Usuario actualizado' : 'Usuario creado',
+      `${form.nombres} ${form.apellidos} se guardo correctamente.`,
+    )
+    emit('saved')
+    emit('close')
+  } catch (error) {
+    toastError('No se pudo guardar', error?.message || 'Intenta de nuevo.')
+  }
 }
 </script>

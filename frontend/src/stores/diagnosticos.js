@@ -1,28 +1,27 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import { seedDiagnosticos } from '@/data/seed'
+import api from '@/services/api'
 
-const KEY = 'cm_diagnosticos'
-
-function load(fallback) {
-  try {
-    const raw = localStorage.getItem(KEY)
-    return raw ? JSON.parse(raw) : structuredClone(fallback)
-  } catch {
-    return structuredClone(fallback)
-  }
-}
-
-function nextId(list) {
-  return list.reduce((max, item) => Math.max(max, item.id), 0) + 1
-}
-
-/** Store del catalogo de diagnosticos. */
+/**
+ * Store del catalogo de diagnosticos.
+ * FASE 2: los datos viven en MySQL; aqui se consultan via la API.
+ */
 export const useDiagnosticosStore = defineStore('diagnosticos', () => {
-  const diagnosticos = ref(load(seedDiagnosticos))
+  const diagnosticos = ref([])
+  const loading = ref(false)
+  const loaded = ref(false)
 
-  function persist() {
-    localStorage.setItem(KEY, JSON.stringify(diagnosticos.value))
+  async function load(force = false) {
+    if (loading.value) return
+    if (loaded.value && !force) return
+    loading.value = true
+    try {
+      const { data } = await api.get('/diagnosticos')
+      diagnosticos.value = data.data ?? []
+      loaded.value = true
+    } finally {
+      loading.value = false
+    }
   }
 
   const total = computed(() => diagnosticos.value.length)
@@ -30,24 +29,23 @@ export const useDiagnosticosStore = defineStore('diagnosticos', () => {
 
   const listaNombres = computed(() => diagnosticos.value.map((d) => d.nombre))
 
-  function byId(id) {
-    return diagnosticos.value.find((d) => d.id === Number(id)) || null
-  }
+  const byId = (id) => diagnosticos.value.find((d) => d.id === Number(id)) || null
 
-  function save(payload) {
+  async function save(payload) {
     if (payload.id) {
+      const { data } = await api.put(`/diagnosticos/${payload.id}`, payload)
       const index = diagnosticos.value.findIndex((d) => d.id === payload.id)
-      if (index !== -1) diagnosticos.value[index] = { ...diagnosticos.value[index], ...payload }
+      if (index !== -1) diagnosticos.value[index] = data.data
     } else {
-      diagnosticos.value.push({ ...payload, id: nextId(diagnosticos.value) })
+      const { data } = await api.post('/diagnosticos', payload)
+      diagnosticos.value.push(data.data)
     }
-    persist()
   }
 
-  function remove(id) {
-    diagnosticos.value = diagnosticos.value.filter((d) => d.id !== id)
-    persist()
+  async function remove(id) {
+    await api.delete(`/diagnosticos/${id}`)
+    diagnosticos.value = diagnosticos.value.filter((d) => d.id !== Number(id))
   }
 
-  return { diagnosticos, total, contagiosos, listaNombres, byId, save, remove }
+  return { diagnosticos, loading, loaded, total, contagiosos, listaNombres, byId, load, save, remove }
 })

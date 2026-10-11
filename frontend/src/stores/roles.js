@@ -1,58 +1,49 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import { seedRoles } from '@/data/seed'
+import api from '@/services/api'
 
-const KEY = 'cm_roles'
-
-function load(fallback) {
-  try {
-    const raw = localStorage.getItem(KEY)
-    return raw ? JSON.parse(raw) : structuredClone(fallback)
-  } catch {
-    return structuredClone(fallback)
-  }
-}
-
-function nextId(list) {
-  return list.reduce((max, item) => Math.max(max, item.id), 0) + 1
-}
-
-/** Store de roles (RBAC). */
+/**
+ * Store de roles (RBAC).
+ * FASE 2: los datos viven en MySQL; aqui se consultan via la API.
+ */
 export const useRolesStore = defineStore('roles', () => {
-  const roles = ref(load(seedRoles))
+  const roles = ref([])
+  const loading = ref(false)
+  const loaded = ref(false)
 
-  function persist() {
-    localStorage.setItem(KEY, JSON.stringify(roles.value))
+  async function load(force = false) {
+    if (loading.value) return
+    if (loaded.value && !force) return
+    loading.value = true
+    try {
+      const { data } = await api.get('/roles')
+      roles.value = data.data ?? []
+      loaded.value = true
+    } finally {
+      loading.value = false
+    }
   }
 
   const total = computed(() => roles.value.length)
 
-  function byId(id) {
-    return roles.value.find((rol) => rol.id === Number(id)) || null
-  }
+  const byId = (id) => roles.value.find((rol) => rol.id === Number(id)) || null
+  const nombre = (id) => byId(id)?.nombre || 'Sin rol'
 
-  function nombre(id) {
-    return byId(id)?.nombre || 'Sin rol'
-  }
-
-  function save(payload) {
+  async function save(payload) {
     if (payload.id) {
-      const index = roles.value.findIndex((rol) => rol.id === payload.id)
-      if (index !== -1) roles.value[index] = { ...roles.value[index], ...payload }
+      const { data } = await api.put(`/roles/${payload.id}`, payload)
+      const index = roles.value.findIndex((r) => r.id === payload.id)
+      if (index !== -1) roles.value[index] = data.data
     } else {
-      roles.value.push({ ...payload, id: nextId(roles.value), sistema: false })
+      const { data } = await api.post('/roles', payload)
+      roles.value.push(data.data)
     }
-    persist()
   }
 
-  /** No se puede eliminar un rol de sistema. Devuelve true si elimino. */
-  function remove(id) {
-    const rol = byId(id)
-    if (!rol || rol.sistema) return false
-    roles.value = roles.value.filter((r) => r.id !== id)
-    persist()
-    return true
+  async function remove(id) {
+    await api.delete(`/roles/${id}`)
+    roles.value = roles.value.filter((r) => r.id !== Number(id))
   }
 
-  return { roles, total, byId, nombre, save, remove }
+  return { roles, loading, loaded, total, byId, nombre, load, save, remove }
 })

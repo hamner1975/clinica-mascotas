@@ -12,10 +12,13 @@ require __DIR__ . '/../bootstrap.php';
 use App\Controllers\AuthController;
 use App\Controllers\CitaController;
 use App\Controllers\ConsultaController;
+use App\Controllers\DiagnosticoController;
 use App\Controllers\DuenoController;
 use App\Controllers\HealthController;
 use App\Controllers\MascotaController;
 use App\Controllers\ProductoController;
+use App\Controllers\RolController;
+use App\Controllers\UsuarioController;
 use App\Controllers\VentaController;
 use App\Core\Response;
 use App\Core\Router;
@@ -81,5 +84,27 @@ $router->delete('/api/ventas/{id}', static fn (string $id) => VentaController::d
 
 // Tienda publica: registro de pedidos (sin login)
 $router->post('/api/tienda/pedidos', static fn () => VentaController::online());
+
+// Administracion: usuarios
+$router->get('/api/usuarios', static fn () => UsuarioController::index());
+$router->get('/api/usuarios/{id}', static fn (string $id) => UsuarioController::show($id));
+$router->post('/api/usuarios', static fn () => UsuarioController::store());
+$router->put('/api/usuarios/{id}', static fn (string $id) => UsuarioController::update($id));
+$router->put('/api/usuarios/{id}/estado', static fn (string $id) => UsuarioController::setEstado($id));
+$router->delete('/api/usuarios/{id}', static fn (string $id) => UsuarioController::destroy($id));
+
+// Administracion: roles
+$router->get('/api/roles', static fn () => RolController::index());
+$router->get('/api/roles/{id}', static fn (string $id) => RolController::show($id));
+$router->post('/api/roles', static fn () => RolController::store());
+$router->put('/api/roles/{id}', static fn (string $id) => RolController::update($id));
+$router->delete('/api/roles/{id}', static fn (string $id) => RolController::destroy($id));
+
+// Diagnosticos
+$router->get('/api/diagnosticos', static fn () => DiagnosticoController::index());
+$router->get('/api/diagnosticos/{id}', static fn (string $id) => DiagnosticoController::show($id));
+$router->post('/api/diagnosticos', static fn () => DiagnosticoController::store());
+$router->put('/api/diagnosticos/{id}', static fn (string $id) => DiagnosticoController::update($id));
+$router->delete('/api/diagnosticos/{id}', static fn (string $id) => DiagnosticoController::destroy($id));
 
 $router->dispatch($method, $_SERVER['REQUEST_URI'] ?? '/');
