@@ -15,6 +15,8 @@ use App\Controllers\ConsultaController;
 use App\Controllers\DuenoController;
 use App\Controllers\HealthController;
 use App\Controllers\MascotaController;
+use App\Controllers\ProductoController;
+use App\Controllers\VentaController;
 use App\Core\Response;
 use App\Core\Router;
 
@@ -62,5 +64,22 @@ $router->get('/api/consultas/{id}', static fn (string $id) => ConsultaController
 $router->post('/api/consultas', static fn () => ConsultaController::store());
 $router->put('/api/consultas/{id}', static fn (string $id) => ConsultaController::update($id));
 $router->delete('/api/consultas/{id}', static fn (string $id) => ConsultaController::destroy($id));
+
+// Farmacia: productos
+$router->get('/api/productos', static fn () => ProductoController::index());
+$router->get('/api/productos/{id}', static fn (string $id) => ProductoController::show($id));
+$router->post('/api/productos', static fn () => ProductoController::store());
+$router->put('/api/productos/{id}', static fn (string $id) => ProductoController::update($id));
+$router->delete('/api/productos/{id}', static fn (string $id) => ProductoController::destroy($id));
+
+// Ventas / pedidos
+$router->get('/api/ventas', static fn () => VentaController::index());
+$router->get('/api/ventas/{id}', static fn (string $id) => VentaController::show($id));
+$router->post('/api/ventas', static fn () => VentaController::store());
+$router->put('/api/ventas/{id}', static fn (string $id) => VentaController::update($id));
+$router->delete('/api/ventas/{id}', static fn (string $id) => VentaController::destroy($id));
+
+// Tienda publica: registro de pedidos (sin login)
+$router->post('/api/tienda/pedidos', static fn () => VentaController::online());
 
 $router->dispatch($method, $_SERVER['REQUEST_URI'] ?? '/');

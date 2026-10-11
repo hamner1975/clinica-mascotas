@@ -139,7 +139,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useProductosStore } from '@/stores/productos'
 import { useCarritoTiendaStore } from '@/stores/carrito'
 import { useVentasStore } from '@/stores/ventas'
@@ -153,7 +153,7 @@ import {
 import { money } from '@/utils/format'
 import CarritoPanel from '@/components/farmacia/CarritoPanel.vue'
 import SearchSelect from '@/components/ui/SearchSelect.vue'
-import { notifyValidation, toastInfo, toastSuccess } from '@/utils/alerts'
+import { notifyValidation, toastError, toastInfo, toastSuccess } from '@/utils/alerts'
 
 const productos = useProductosStore()
 const carrito = useCarritoTiendaStore()
@@ -186,7 +186,7 @@ function agregar(producto) {
   carrito.add(producto, 1)
 }
 
-function realizarPedido() {
+async function realizarPedido() {
   if (carrito.vacio) {
     notifyValidation('Tu carrito esta vacio.')
     return
@@ -199,16 +199,25 @@ function realizarPedido() {
     notifyValidation('Selecciona un metodo de pago.')
     return
   }
-  const venta = ventas.registrar({
-    canal: 'Online',
-    cliente: cliente.value.trim(),
-    items: carrito.items,
-    metodoPago: metodoPago.value,
-  })
-  toastSuccess('Pedido realizado', `Pedido #${venta.id} por ${money(venta.total)}. Pago: ${venta.metodoPago}.`)
-  toastInfo('Seguimiento', 'Te contactaremos para coordinar el pago y la entrega.')
-  carrito.clear()
-  cliente.value = ''
-  metodoPago.value = ''
+  try {
+    const venta = await ventas.registrarPedido({
+      canal: 'Online',
+      cliente: cliente.value.trim(),
+      items: carrito.items,
+      metodoPago: metodoPago.value,
+    })
+    toastSuccess('Pedido realizado', `Pedido #${venta.id} por ${money(venta.total)}. Pago: ${venta.metodoPago}.`)
+    toastInfo('Seguimiento', 'Te contactaremos para coordinar el pago y la entrega.')
+    carrito.clear()
+    cliente.value = ''
+    metodoPago.value = ''
+    productos.load(true).catch(() => {})
+  } catch (error) {
+    toastError('No se pudo realizar el pedido', error?.message || 'Intenta de nuevo.')
+  }
 }
+
+onMounted(() => {
+  productos.load().catch(() => {})
+})
 </script>

@@ -158,6 +158,28 @@ foreach ($consultas as $c) {
     $stmt->execute($c);
 }
 
+// --------------------------------- Ventas ----------------------------------
+$ventas = [
+    [1, $day(0), '10:30', 'Mostrador', 'Cliente mostrador', 'Efectivo', 36000, 'Completada'],
+    [2, $day(-1), '16:05', 'Online', 'Maria Gomez', 'Mercado Pago', 70000, 'Enviado'],
+    [3, $day(0), '11:15', 'Online', 'Jose Perez', 'Yape', 58000, 'Pendiente'],
+];
+$stmt = $pdo->prepare('INSERT INTO ventas (id, fecha, hora, canal, cliente, metodo_pago, total, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+foreach ($ventas as $v) {
+    $stmt->execute($v);
+}
+
+$detalle = [
+    [1, 3, 'Antipulgas (pipeta)', 18000, 2],
+    [2, 5, 'Shampoo dermatologico', 26000, 1],
+    [2, 8, 'Collar antipulgas', 22000, 2],
+    [3, 6, 'Alimento premium perro 3kg', 58000, 1],
+];
+$stmt = $pdo->prepare('INSERT INTO venta_detalle (venta_id, producto_id, nombre, precio, cantidad) VALUES (?, ?, ?, ?, ?)');
+foreach ($detalle as $d) {
+    $stmt->execute($d);
+}
+
 // ------------------------------- Ajustes -----------------------------------
 $config = [
     'nombre' => 'Veterinaria Mascotas',

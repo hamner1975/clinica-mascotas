@@ -1,30 +1,27 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import { seedVentas } from '@/data/seed'
-import { nowHora, todayISO } from '@/utils/format'
-import { useProductosStore } from '@/stores/productos'
+import api from '@/services/api'
 
-const KEY = 'cm_ventas'
-
-function load(fallback) {
-  try {
-    const raw = localStorage.getItem(KEY)
-    return raw ? JSON.parse(raw) : structuredClone(fallback)
-  } catch {
-    return structuredClone(fallback)
-  }
-}
-
-function nextId(list) {
-  return list.reduce((max, item) => Math.max(max, item.id), 0) + 1
-}
-
-/** Store de ventas y pedidos (mostrador + online). */
+/**
+ * Store de ventas y pedidos (mostrador + online).
+ * FASE 2: los datos viven en MySQL; aqui se consultan via la API.
+ */
 export const useVentasStore = defineStore('ventas', () => {
-  const ventas = ref(load(seedVentas))
+  const ventas = ref([])
+  const loading = ref(false)
+  const loaded = ref(false)
 
-  function persist() {
-    localStorage.setItem(KEY, JSON.stringify(ventas.value))
+  async function load(force = false) {
+    if (loading.value) return
+    if (loaded.value && !force) return
+    loading.value = true
+    try {
+      const { data } = await api.get('/ventas')
+      ventas.value = data.data ?? []
+      loaded.value = true
+    } finally {
+      loading.value = false
+    }
   }
 
   const total = computed(() => ventas.value.length)
@@ -33,52 +30,52 @@ export const useVentasStore = defineStore('ventas', () => {
     const base = { Pendiente: 0, Completada: 0, Enviado: 0, Cancelada: 0, recaudado: 0 }
     ventas.value.forEach((venta) => {
       base[venta.estado] = (base[venta.estado] || 0) + 1
-      if (venta.estado !== 'Cancelada') base.recaudado += venta.total
+      if (venta.estado !== 'Cancelada') base.recaudado += Number(venta.total) || 0
     })
     return base
   })
 
   /**
-   * Registra una venta/pedido y descuenta el stock.
-   * @param {{ canal: 'Mostrador'|'Online', cliente?: string, items: Array }} payload
+   * Registra una venta/pedido. El servidor calcula precios, total y descuenta stock.
+   * @returns la venta creada
    */
-  function registrar({ canal, cliente, items, metodoPago }) {
-    const productos = useProductosStore()
-    const totalVenta = items.reduce((sum, item) => sum + item.precio * item.cantidad, 0)
-    const venta = {
-      id: nextId(ventas.value),
-      fecha: todayISO(),
-      hora: nowHora(),
+  async function registrar({ canal, cliente, items, metodoPago }) {
+    const payload = {
       canal,
-      cliente: cliente || (canal === 'Online' ? 'Cliente online' : 'Cliente mostrador'),
-      metodoPago: metodoPago || (canal === 'Online' ? 'Mercado Pago' : 'Efectivo'),
-      items: items.map((item) => ({
-        productoId: item.productoId,
-        nombre: item.nombre,
-        precio: item.precio,
-        cantidad: item.cantidad,
-      })),
-      total: totalVenta,
-      estado: canal === 'Online' ? 'Pendiente' : 'Completada',
+      cliente,
+      metodoPago,
+      items: items.map((i) => ({ productoId: i.productoId, cantidad: i.cantidad })),
     }
+    const { data } = await api.post('/ventas', payload)
+    const venta = data.data
     ventas.value.push(venta)
-    productos.descontarStock(venta.items)
-    persist()
     return venta
   }
 
-  function setEstado(id, estado) {
-    const index = ventas.value.findIndex((venta) => venta.id === id)
-    if (index !== -1) {
-      ventas.value[index] = { ...ventas.value[index], estado }
-      persist()
+  /** Pedido desde la tienda publica (sin sesion). */
+  async function registrarPedido({ canal, cliente, items, metodoPago }) {
+    const payload = {
+      canal: canal || 'Online',
+      cliente,
+      metodoPago,
+      items: items.map((i) => ({ productoId: i.productoId, cantidad: i.cantidad })),
     }
+    const { data } = await api.post('/tienda/pedidos', payload)
+    const venta = data.data
+    ventas.value.push(venta)
+    return venta
   }
 
-  function remove(id) {
-    ventas.value = ventas.value.filter((venta) => venta.id !== id)
-    persist()
+  async function setEstado(id, estado) {
+    const { data } = await api.put(`/ventas/${id}`, { estado })
+    const index = ventas.value.findIndex((v) => v.id === Number(id))
+    if (index !== -1) ventas.value[index] = data.data
   }
 
-  return { ventas, total, resumen, registrar, setEstado, remove }
+  async function remove(id) {
+    await api.delete(`/ventas/${id}`)
+    ventas.value = ventas.value.filter((v) => v.id !== Number(id))
+  }
+
+  return { ventas, loading, loaded, total, resumen, load, registrar, registrarPedido, setEstado, remove }
 })

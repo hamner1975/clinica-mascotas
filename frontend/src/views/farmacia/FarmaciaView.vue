@@ -88,7 +88,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useProductosStore } from '@/stores/productos'
 import { useCarritoFarmaciaStore } from '@/stores/carrito'
 import { useVentasStore } from '@/stores/ventas'
@@ -96,7 +96,7 @@ import { CATEGORIAS_PRODUCTO, METODOS_PAGO_MOSTRADOR, iconoCategoria, precioConD
 import { money } from '@/utils/format'
 import CarritoPanel from '@/components/farmacia/CarritoPanel.vue'
 import SearchSelect from '@/components/ui/SearchSelect.vue'
-import { notifyValidation, toastSuccess } from '@/utils/alerts'
+import { notifyValidation, toastError, toastSuccess } from '@/utils/alerts'
 
 const productos = useProductosStore()
 const carrito = useCarritoFarmaciaStore()
@@ -126,20 +126,29 @@ function agregar(producto) {
   carrito.add(producto, 1)
 }
 
-function registrarVenta() {
+async function registrarVenta() {
   if (carrito.vacio) {
     notifyValidation('El carrito esta vacio.')
     return
   }
-  const venta = ventas.registrar({
-    canal: 'Mostrador',
-    cliente: cliente.value,
-    items: carrito.items,
-    metodoPago: metodoPago.value,
-  })
-  toastSuccess('Venta registrada', `Total ${money(venta.total)}. Pago: ${venta.metodoPago}.`)
-  carrito.clear()
-  cliente.value = ''
-  metodoPago.value = 'Efectivo'
+  try {
+    const venta = await ventas.registrar({
+      canal: 'Mostrador',
+      cliente: cliente.value,
+      items: carrito.items,
+      metodoPago: metodoPago.value,
+    })
+    toastSuccess('Venta registrada', `Total ${money(venta.total)}. Pago: ${venta.metodoPago}.`)
+    carrito.clear()
+    cliente.value = ''
+    metodoPago.value = 'Efectivo'
+    productos.load(true).catch(() => {})
+  } catch (error) {
+    toastError('No se pudo registrar la venta', error?.message || 'Intenta de nuevo.')
+  }
 }
+
+onMounted(() => {
+  productos.load().catch(() => {})
+})
 </script>

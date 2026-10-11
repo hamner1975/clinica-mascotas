@@ -114,7 +114,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useVentasStore } from '@/stores/ventas'
 import { CANALES_VENTA, ESTADOS_VENTA, canalVariant, estadoVentaVariant } from '@/data/catalogos'
 import { formatFecha, money } from '@/utils/format'
@@ -123,7 +123,7 @@ import TablePagination from '@/components/ui/TablePagination.vue'
 import StatCard from '@/components/ui/StatCard.vue'
 import SearchSelect from '@/components/ui/SearchSelect.vue'
 import VentaDetalleModal from '@/components/farmacia/VentaDetalleModal.vue'
-import { confirmDialog, toastSuccess } from '@/utils/alerts'
+import { confirmDialog, toastError, toastSuccess } from '@/utils/alerts'
 
 const store = useVentasStore()
 
@@ -160,9 +160,13 @@ function verDetalle(venta) {
   detalleOpen.value = true
 }
 
-function cambiarEstado(venta, estado) {
-  store.setEstado(venta.id, estado)
-  toastSuccess('Estado actualizado', `La venta #${venta.id} ahora esta "${estado}".`)
+async function cambiarEstado(venta, estado) {
+  try {
+    await store.setEstado(venta.id, estado)
+    toastSuccess('Estado actualizado', `La venta #${venta.id} ahora esta "${estado}".`)
+  } catch (error) {
+    toastError('No se pudo actualizar', error?.message || 'Intenta de nuevo.')
+  }
 }
 
 async function onDelete(venta) {
@@ -173,8 +177,16 @@ async function onDelete(venta) {
     icon: 'warning',
   })
   if (result.isConfirmed) {
-    store.remove(venta.id)
-    toastSuccess('Registro eliminado', `La venta #${venta.id} fue eliminada.`)
+    try {
+      await store.remove(venta.id)
+      toastSuccess('Registro eliminado', `La venta #${venta.id} fue eliminada.`)
+    } catch (error) {
+      toastError('No se pudo eliminar', error?.message || 'Intenta de nuevo.')
+    }
   }
 }
+
+onMounted(() => {
+  store.load().catch(() => {})
+})
 </script>

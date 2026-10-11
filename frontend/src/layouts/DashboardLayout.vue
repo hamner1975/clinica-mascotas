@@ -30,11 +30,15 @@ import { useUiStore } from '@/stores/ui'
 import { usePacientesStore } from '@/stores/pacientes'
 import { useCitasStore } from '@/stores/citas'
 import { useConsultasStore } from '@/stores/consultas'
+import { useProductosStore } from '@/stores/productos'
+import { useVentasStore } from '@/stores/ventas'
 
 const ui = useUiStore()
 const pacientes = usePacientesStore()
 const citas = useCitasStore()
 const consultas = useConsultasStore()
+const productos = useProductosStore()
+const ventas = useVentasStore()
 
 // Cierra el menu movil al agrandar la ventana.
 function onResize() {
@@ -48,6 +52,8 @@ onMounted(() => {
   pacientes.load().catch(() => {})
   citas.load().catch(() => {})
   consultas.load().catch(() => {})
+  productos.load().catch(() => {})
+  ventas.load().catch(() => {})
 })
 onUnmounted(() => window.removeEventListener('resize', onResize))
 </script>

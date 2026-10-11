@@ -121,7 +121,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useProductosStore } from '@/stores/productos'
 import { CATEGORIAS_PRODUCTO, categoriaVariant, iconoCategoria, precioConDescuento } from '@/data/catalogos'
 import { addDias, formatFecha, money, todayISO } from '@/utils/format'
@@ -130,7 +130,7 @@ import TablePagination from '@/components/ui/TablePagination.vue'
 import StatCard from '@/components/ui/StatCard.vue'
 import SearchSelect from '@/components/ui/SearchSelect.vue'
 import ProductoFormModal from '@/components/farmacia/ProductoFormModal.vue'
-import { confirmDialog, toastSuccess } from '@/utils/alerts'
+import { confirmDialog, toastError, toastSuccess } from '@/utils/alerts'
 
 const store = useProductosStore()
 
@@ -194,8 +194,16 @@ async function onDelete(producto) {
     icon: 'warning',
   })
   if (result.isConfirmed) {
-    store.remove(producto.id)
-    toastSuccess('Producto eliminado', `${producto.nombre} fue eliminado del catalogo.`)
+    try {
+      await store.remove(producto.id)
+      toastSuccess('Producto eliminado', `${producto.nombre} fue eliminado del catalogo.`)
+    } catch (error) {
+      toastError('No se pudo eliminar', error?.message || 'Intenta de nuevo.')
+    }
   }
 }
+
+onMounted(() => {
+  store.load().catch(() => {})
+})
 </script>
