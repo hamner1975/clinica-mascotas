@@ -152,3 +152,29 @@ revisar que el `.env` no cambie.
 - [ ] Contrasena del usuario `admin` cambiada.
 - [ ] El `.env` **nunca** dentro de `public_html`.
 - [ ] Respaldos periodicos de la base de datos (phpMyAdmin → Exportar).
+
+---
+
+## Despliegue realizado (InfinityFree) - registro
+
+Hosting gratuito **InfinityFree** (sin subdominio propio), todo en una subcarpeta:
+
+- **Web:** https://dulceria.infinityfreeapp.com/clinica/
+- **API:**  https://dulceria.infinityfreeapp.com/clinica/backend/public/api
+- **Ruta servidor:** /htdocs/clinica
+- **Base de datos:** if0_43071431_clinica en sql201.infinityfree.com
+
+### Estructura en el servidor (/htdocs/clinica)
+
+\\\
+/htdocs/clinica/
+├── index.html, assets/, .htaccess, sw.js, manifest.webmanifest, pwa-*.png
+├── backend/        (codigo + .env de produccion; .htaccess protege .env/src/database)
+└── database/       (schema.sql, seed.sql)
+\\\
+
+### Detalles clave
+- \ackend/.env\: \API_BASE=/clinica/backend/public\ (o se autodetecta), \DB_HOST=sql201.infinityfree.com\, \CORS_ORIGIN=https://dulceria.infinityfreeapp.com\.
+- Frontend compilado con \VITE_BASE=/clinica/\ y \VITE_API_URL=https://dulceria.infinityfreeapp.com/clinica/backend/public/api\.
+- El router usa \createWebHistory(import.meta.env.BASE_URL)\.
+- La API se sirve desde una subcarpeta (no en la raiz).

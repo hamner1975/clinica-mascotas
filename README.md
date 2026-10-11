@@ -78,7 +78,7 @@ Abrir `http://localhost:5173`.
   - [x] Reportes y Configuracion (con respaldo de datos).
 - [ ] **Fase 2** - Backend PHP + MySQL: API REST, login real, RBAC y persistencia.
 - [x] **Fase 3** - PWA: instalable en movil (manifest + service worker).
-- [ ] **Fase 4** - Despliegue: GitHub + hosting cPanel (staging/produccion).
+- [x] **Fase 4** - Despliegue: GitHub + hosting (realizado en InfinityFree).
 
 ## Pendientes / mejoras futuras
 
