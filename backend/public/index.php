@@ -113,10 +113,25 @@ $router->put('/api/configuracion', static fn () => ConfiguracionController::upda
 // Desarrollo (solo local)
 $router->post('/api/dev/reseed', static fn () => DevController::reseed(), 'configuracion.gestionar');
 
-// Soporta servir la API dentro de una subcarpeta (ej. /clinica/backend/public).
-// Define API_BASE en el .env (sin barra final) cuando el API no este en la raiz.
+// Detecta la base del API para servirlo dentro de una subcarpeta
+// (ej. /clinica/backend/public). Orden:
+//   1) API_BASE del .env (si esta definido).
+//   2) Autodeteccion desde la ubicacion real del script.
 $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+
 $base = rtrim((string) Env::get('API_BASE', ''), '/');
+if ($base === '') {
+    $docroot = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT'] ?? ''), '/');
+    $scriptFile = str_replace('\\', '/', $_SERVER['SCRIPT_FILENAME'] ?? '');
+    if ($docroot !== '' && str_starts_with($scriptFile, $docroot)) {
+        $base = str_replace('\\', '/', dirname(substr($scriptFile, strlen($docroot))));
+        $base = rtrim($base, '/');
+        if ($base === '.' ) {
+            $base = '';
+        }
+    }
+}
+
 if ($base !== '' && str_starts_with($uri, $base)) {
     $uri = substr($uri, strlen($base));
 }
