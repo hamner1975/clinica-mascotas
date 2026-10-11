@@ -29,7 +29,7 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <h2 class="card-title mb-0"><i class="bi bi-calendar2-week me-2 text-primary"></i>Proximas citas</h2>
-              <router-link to="/citas" class="small text-decoration-none">Ver todas</router-link>
+              <router-link :to="{ name: 'citas' }" class="small text-decoration-none">Ver todas</router-link>
             </div>
             <div class="table-responsive">
               <table class="table align-middle mb-0">

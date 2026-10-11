@@ -2,8 +2,8 @@
   <div>
     <div class="page-head">
       <div>
-        <h1 class="page-title">Tienda online</h1>
-        <p class="page-subtitle">Catalogo publico &middot; pedidos de clientes</p>
+        <h1 class="page-title">Nuestros productos</h1>
+        <p class="page-subtitle">Medicamentos, alimentos y accesorios para tu mascota</p>
       </div>
     </div>
 
@@ -64,6 +64,8 @@
           <div class="card-body pb-2">
             <label class="form-label" for="t-cliente">Tu nombre <span class="text-danger">*</span></label>
             <input id="t-cliente" v-model="cliente" class="form-control" placeholder="Ej: Maria Gomez" />
+            <label class="form-label mt-3" for="t-pago">Metodo de pago <span class="text-danger">*</span></label>
+            <SearchSelect id="t-pago" v-model="metodoPago" :options="metodosOptions" icon="bi-credit-card" :clearable="false" placeholder="Elige como pagar" />
           </div>
         </div>
 
@@ -90,7 +92,7 @@ import { computed, ref } from 'vue'
 import { useProductosStore } from '@/stores/productos'
 import { useCarritoTiendaStore } from '@/stores/carrito'
 import { useVentasStore } from '@/stores/ventas'
-import { CATEGORIAS_PRODUCTO, categoriaVariant, iconoCategoria } from '@/data/catalogos'
+import { CATEGORIAS_PRODUCTO, METODOS_PAGO_TIENDA, categoriaVariant, iconoCategoria } from '@/data/catalogos'
 import { money } from '@/utils/format'
 import CarritoPanel from '@/components/farmacia/CarritoPanel.vue'
 import SearchSelect from '@/components/ui/SearchSelect.vue'
@@ -103,6 +105,8 @@ const ventas = useVentasStore()
 const search = ref('')
 const categoriaFiltro = ref('')
 const cliente = ref('')
+const metodoPago = ref('')
+const metodosOptions = METODOS_PAGO_TIENDA.map((m) => ({ value: m, label: m }))
 
 const categoriaOptions = [
   { value: '', label: 'Todas las categorias' },
@@ -132,10 +136,20 @@ function realizarPedido() {
     notifyValidation('El campo "Tu nombre" es obligatorio para el pedido.')
     return
   }
-  const venta = ventas.registrar({ canal: 'Online', cliente: cliente.value.trim(), items: carrito.items })
-  toastSuccess('Pedido realizado', `Pedido #${venta.id} por ${money(venta.total)}. Estado: Pendiente.`)
-  toastInfo('Seguimiento', 'Puedes ver el estado del pedido en "Pedidos y ventas".')
+  if (!metodoPago.value) {
+    notifyValidation('Selecciona un metodo de pago.')
+    return
+  }
+  const venta = ventas.registrar({
+    canal: 'Online',
+    cliente: cliente.value.trim(),
+    items: carrito.items,
+    metodoPago: metodoPago.value,
+  })
+  toastSuccess('Pedido realizado', `Pedido #${venta.id} por ${money(venta.total)}. Pago: ${venta.metodoPago}.`)
+  toastInfo('Seguimiento', 'Te contactaremos para coordinar el pago y la entrega.')
   carrito.clear()
   cliente.value = ''
+  metodoPago.value = ''
 }
 </script>

@@ -96,6 +96,11 @@
         <p class="text-center text-muted small mt-4 mb-0">
           &copy; {{ year }} Clinica Mascotas. Todos los derechos reservados.
         </p>
+        <p class="text-center mt-2 mb-0">
+          <router-link :to="{ name: 'tienda' }" class="small text-decoration-none">
+            <i class="bi bi-arrow-left me-1"></i>Volver a la tienda
+          </router-link>
+        </p>
       </div>
     </section>
   </div>

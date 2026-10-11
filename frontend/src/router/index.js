@@ -2,28 +2,40 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
 /**
- * Definicion de rutas.
- * - Las rutas con `meta.public: true` no requieren sesion.
- * - El resto se renderiza dentro de DashboardLayout (el "shell").
+ * Estructura de rutas:
+ *  - "/"          -> Tienda publica (sin login).
+ *  - "/admin"     -> Panel interno (requiere sesion).
+ *  - "/admin/login" -> Acceso del personal.
  */
 const routes = [
+  // ------------------------- Tienda publica -------------------------
   {
-    path: '/login',
+    path: '/',
+    component: () => import('@/layouts/StoreLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'tienda',
+        component: () => import('@/views/tienda/TiendaView.vue'),
+        meta: { public: true, title: 'Tienda' },
+      },
+    ],
+  },
+
+  // ------------------------- Acceso del personal -------------------------
+  {
+    path: '/admin/login',
     name: 'login',
     component: () => import('@/views/auth/LoginView.vue'),
     meta: { public: true, title: 'Iniciar sesion' },
   },
+
+  // ------------------------- Panel interno -------------------------
   {
-    path: '/',
+    path: '/admin',
     component: () => import('@/layouts/DashboardLayout.vue'),
     children: [
-      {
-        path: '',
-        name: 'dashboard',
-        component: () => import('@/views/DashboardView.vue'),
-        meta: { title: 'Dashboard' },
-      },
-      // ---- Modulos (maqueta: "En construccion" por ahora) ----
+      { path: '', name: 'dashboard', component: () => import('@/views/DashboardView.vue'), meta: { title: 'Dashboard' } },
       { path: 'citas', name: 'citas', component: () => import('@/views/citas/CitasView.vue'), meta: { title: 'Citas' } },
       { path: 'consultas', name: 'consultas', component: () => import('@/views/consultas/ConsultasView.vue'), meta: { title: 'Consultas' } },
       { path: 'historia-clinica', name: 'historia-clinica', component: () => import('@/views/historia-clinica/HistoriaClinicaView.vue'), meta: { title: 'Historia clinica' } },
@@ -32,7 +44,6 @@ const routes = [
       { path: 'duenos', name: 'duenos', component: () => import('@/views/pacientes/DuenosView.vue'), meta: { title: 'Duenos / Tutores' } },
       { path: 'farmacia', name: 'farmacia', component: () => import('@/views/farmacia/FarmaciaView.vue'), meta: { title: 'Farmacia' } },
       { path: 'inventario', name: 'inventario', component: () => import('@/views/farmacia/InventarioView.vue'), meta: { title: 'Inventario' } },
-      { path: 'tienda', name: 'tienda', component: () => import('@/views/tienda/TiendaView.vue'), meta: { title: 'Tienda online' } },
       { path: 'pedidos', name: 'pedidos', component: () => import('@/views/ventas/VentasView.vue'), meta: { title: 'Pedidos y ventas' } },
       { path: 'usuarios', name: 'usuarios', component: () => import('@/views/admin/UsuariosView.vue'), meta: { title: 'Usuarios' } },
       { path: 'roles', name: 'roles', component: () => import('@/views/admin/RolesView.vue'), meta: { title: 'Roles y permisos' } },
@@ -40,6 +51,8 @@ const routes = [
       { path: 'configuracion', name: 'configuracion', component: () => import('@/views/configuracion/ConfiguracionView.vue'), meta: { title: 'Configuracion' } },
     ],
   },
+
+  // ------------------------- 404 -------------------------
   {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
@@ -56,11 +69,12 @@ const router = createRouter({
   },
 })
 
-// Guarda de navegacion: protege las rutas privadas.
+// Guarda de navegacion: protege el panel interno (/admin).
 router.beforeEach((to) => {
   const auth = useAuthStore()
+  const isAdminArea = to.path.startsWith('/admin') && to.name !== 'login'
 
-  if (!to.meta.public && !auth.isAuthenticated) {
+  if (isAdminArea && !auth.isAuthenticated) {
     return { name: 'login', query: { redirect: to.fullPath } }
   }
   if (to.name === 'login' && auth.isAuthenticated) {

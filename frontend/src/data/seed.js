@@ -205,6 +205,7 @@ export const seedVentas = [
     cliente: 'Cliente mostrador',
     items: [{ productoId: 3, nombre: 'Antipulgas (pipeta)', precio: 18000, cantidad: 2 }],
     total: 36000,
+    metodoPago: 'Efectivo',
     estado: 'Completada',
   },
   {
@@ -218,6 +219,7 @@ export const seedVentas = [
       { productoId: 8, nombre: 'Collar antipulgas', precio: 22000, cantidad: 2 },
     ],
     total: 70000,
+    metodoPago: 'Mercado Pago',
     estado: 'Enviado',
   },
   {
@@ -228,6 +230,7 @@ export const seedVentas = [
     cliente: 'Jose Perez',
     items: [{ productoId: 6, nombre: 'Alimento premium perro 3kg', precio: 58000, cantidad: 1 }],
     total: 58000,
+    metodoPago: 'Yape',
     estado: 'Pendiente',
   },
 ]

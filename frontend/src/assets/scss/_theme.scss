@@ -901,3 +901,83 @@ a {
     box-shadow: var(--cm-shadow);
   }
 }
+
+// ============================================================================
+//  Tienda publica (layout)
+// ============================================================================
+.store-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--cm-bg);
+}
+
+.store-header {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--cm-border);
+
+  .container {
+    height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.store-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  text-decoration: none;
+  color: inherit;
+
+  &__logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 0.7rem;
+    background: linear-gradient(135deg, $brand, $brand-dark);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    box-shadow: 0 8px 16px -6px rgba($brand, 0.55);
+  }
+}
+
+.store-main {
+  flex: 1;
+}
+
+.store-footer {
+  border-top: 1px solid var(--cm-border);
+  background: #fff;
+  padding: 1rem 0;
+  font-size: 0.82rem;
+  color: var(--cm-text-muted);
+}
+
+// Boton "Ver tienda" en la barra lateral del panel
+.sidebar-store-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0.7rem 1rem;
+  padding: 0.55rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--primary-border-subtle);
+  background: $brand-softer;
+  color: $brand-darker;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+
+  &:hover {
+    background: $brand-soft;
+  }
+}

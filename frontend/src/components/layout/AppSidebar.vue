@@ -28,6 +28,11 @@
         </ul>
       </template>
     </nav>
+
+    <a href="/" target="_blank" rel="noopener" class="sidebar-store-link">
+      <i class="bi bi-shop"></i>
+      <span>Ver tienda online</span>
+    </a>
   </aside>
 </template>
 

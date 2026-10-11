@@ -16,6 +16,11 @@
         <i class="bi bi-person me-1 text-muted"></i><strong>Cliente:</strong> {{ venta.cliente }}
       </p>
 
+      <p class="mb-3 small">
+        <i class="bi me-1 text-muted" :class="metodoPagoIcon(venta.metodoPago)"></i>
+        <strong>Metodo de pago:</strong> {{ venta.metodoPago || '—' }}
+      </p>
+
       <div class="table-responsive">
         <table class="table table-sm align-middle">
           <thead>
@@ -52,7 +57,7 @@
 
 <script setup>
 import BaseModal from '@/components/ui/BaseModal.vue'
-import { canalVariant, estadoVentaVariant } from '@/data/catalogos'
+import { canalVariant, estadoVentaVariant, metodoPagoIcon } from '@/data/catalogos'
 import { formatFecha, money } from '@/utils/format'
 
 defineProps({

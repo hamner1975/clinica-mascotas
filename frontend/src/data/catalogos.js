@@ -103,6 +103,24 @@ export function iconoCategoria(categoria) {
   return map[categoria] || 'bi-box-seam'
 }
 
+// ---- Metodos de pago ----
+/** Metodos de pago de la tienda online. */
+export const METODOS_PAGO_TIENDA = ['Yape', 'Plin', 'Transferencia bancaria', 'Mercado Pago']
+
+/** Metodos de pago en farmacia (mostrador): los de la tienda + efectivo. */
+export const METODOS_PAGO_MOSTRADOR = ['Efectivo', ...METODOS_PAGO_TIENDA]
+
+export function metodoPagoIcon(metodo) {
+  const map = {
+    Efectivo: 'bi-cash-coin',
+    Yape: 'bi-phone',
+    Plin: 'bi-phone',
+    'Transferencia bancaria': 'bi-bank',
+    'Mercado Pago': 'bi-credit-card',
+  }
+  return map[metodo] || 'bi-credit-card'
+}
+
 /** Color de badge segun la especie (para la tabla de mascotas). */
 export function especieVariant(especie) {
   const map = {

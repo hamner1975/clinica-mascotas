@@ -42,7 +42,7 @@ export const useVentasStore = defineStore('ventas', () => {
    * Registra una venta/pedido y descuenta el stock.
    * @param {{ canal: 'Mostrador'|'Online', cliente?: string, items: Array }} payload
    */
-  function registrar({ canal, cliente, items }) {
+  function registrar({ canal, cliente, items, metodoPago }) {
     const productos = useProductosStore()
     const totalVenta = items.reduce((sum, item) => sum + item.precio * item.cantidad, 0)
     const venta = {
@@ -51,6 +51,7 @@ export const useVentasStore = defineStore('ventas', () => {
       hora: nowHora(),
       canal,
       cliente: cliente || (canal === 'Online' ? 'Cliente online' : 'Cliente mostrador'),
+      metodoPago: metodoPago || (canal === 'Online' ? 'Mercado Pago' : 'Efectivo'),
       items: items.map((item) => ({
         productoId: item.productoId,
         nombre: item.nombre,

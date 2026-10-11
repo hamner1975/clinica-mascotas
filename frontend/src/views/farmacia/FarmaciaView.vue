@@ -61,6 +61,8 @@
           <div class="card-body pb-2">
             <label class="form-label" for="f-cliente">Cliente (opcional)</label>
             <input id="f-cliente" v-model="cliente" class="form-control" placeholder="Cliente mostrador" />
+            <label class="form-label mt-3" for="f-pago">Metodo de pago</label>
+            <SearchSelect id="f-pago" v-model="metodoPago" :options="metodosOptions" icon="bi-credit-card" :clearable="false" placeholder="Metodo de pago" />
           </div>
         </div>
 
@@ -87,7 +89,7 @@ import { computed, ref } from 'vue'
 import { useProductosStore } from '@/stores/productos'
 import { useCarritoFarmaciaStore } from '@/stores/carrito'
 import { useVentasStore } from '@/stores/ventas'
-import { CATEGORIAS_PRODUCTO, iconoCategoria } from '@/data/catalogos'
+import { CATEGORIAS_PRODUCTO, METODOS_PAGO_MOSTRADOR, iconoCategoria } from '@/data/catalogos'
 import { money } from '@/utils/format'
 import CarritoPanel from '@/components/farmacia/CarritoPanel.vue'
 import SearchSelect from '@/components/ui/SearchSelect.vue'
@@ -100,6 +102,8 @@ const ventas = useVentasStore()
 const search = ref('')
 const categoriaFiltro = ref('')
 const cliente = ref('')
+const metodoPago = ref('Efectivo')
+const metodosOptions = METODOS_PAGO_MOSTRADOR.map((m) => ({ value: m, label: m }))
 
 const categoriaOptions = [
   { value: '', label: 'Todas las categorias' },
@@ -124,9 +128,15 @@ function registrarVenta() {
     notifyValidation('El carrito esta vacio.')
     return
   }
-  const venta = ventas.registrar({ canal: 'Mostrador', cliente: cliente.value, items: carrito.items })
-  toastSuccess('Venta registrada', `Total ${money(venta.total)}. Se desconto el stock.`)
+  const venta = ventas.registrar({
+    canal: 'Mostrador',
+    cliente: cliente.value,
+    items: carrito.items,
+    metodoPago: metodoPago.value,
+  })
+  toastSuccess('Venta registrada', `Total ${money(venta.total)}. Pago: ${venta.metodoPago}.`)
   carrito.clear()
   cliente.value = ''
+  metodoPago.value = 'Efectivo'
 }
 </script>
