@@ -986,7 +986,7 @@ a {
 //  Web publica (landing) y slider de ofertas
 // ============================================================================
 .store-social {
-  color: var(--cm-text-muted);
+  color: #1f2430;
   font-size: 1.35rem;
 
   &:hover {
@@ -994,7 +994,7 @@ a {
   }
 }
 
-// Botones de redes (seccion de contacto)
+// Botones de redes (seccion de contacto) - negro mate
 .social-btn {
   width: 46px;
   height: 46px;
@@ -1005,26 +1005,13 @@ a {
   font-size: 1.35rem;
   color: #fff;
   text-decoration: none;
-  background: #6b7280;
-  transition: transform 0.15s ease, filter 0.15s ease;
+  background: #1f2430;
+  transition: transform 0.15s ease, background 0.15s ease;
 
   &:hover {
     transform: translateY(-2px);
-    filter: brightness(1.06);
+    background: #2b303b;
     color: #fff;
-  }
-
-  &--fb {
-    background: #1877f2;
-  }
-  &--ig {
-    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-  }
-  &--wa {
-    background: #25d366;
-  }
-  &--tk {
-    background: #000000;
   }
 }
 
