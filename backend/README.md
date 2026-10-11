@@ -48,6 +48,13 @@ backend/
 | GET | `/api/health` | Estado del servicio y de la base de datos |
 | POST | `/api/auth/login` | Login (devuelve token JWT + usuario) |
 | GET | `/api/auth/me` | Usuario autenticado (requiere `Authorization: Bearer`) |
+| GET / POST | `/api/duenos` | Listar / crear dueños |
+| GET / PUT / DELETE | `/api/duenos/{id}` | Ver / editar / eliminar dueño |
+| GET / POST | `/api/mascotas` | Listar / crear mascotas |
+| GET / PUT / DELETE | `/api/mascotas/{id}` | Ver / editar / eliminar mascota |
+
+> Todas las rutas (excepto `/api/health` y `/api/auth/login`) requieren el header
+> `Authorization: Bearer <token>`.
 
 ## Credenciales de ejemplo
 

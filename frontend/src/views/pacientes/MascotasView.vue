@@ -98,7 +98,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { usePacientesStore } from '@/stores/pacientes'
 import { ESPECIES, especieVariant } from '@/data/catalogos'
@@ -107,7 +107,7 @@ import { usePagination } from '@/composables/usePagination'
 import TablePagination from '@/components/ui/TablePagination.vue'
 import SearchSelect from '@/components/ui/SearchSelect.vue'
 import MascotaFormModal from '@/components/pacientes/MascotaFormModal.vue'
-import { confirmDialog, toastSuccess } from '@/utils/alerts'
+import { confirmDialog, toastError, toastSuccess } from '@/utils/alerts'
 
 const store = usePacientesStore()
 const router = useRouter()
@@ -161,8 +161,12 @@ async function onDelete(mascota) {
     icon: 'warning',
   })
   if (result.isConfirmed) {
-    store.deleteMascota(mascota.id)
-    toastSuccess('Mascota eliminada', `${mascota.nombre} fue eliminada del sistema.`)
+    try {
+      await store.deleteMascota(mascota.id)
+      toastSuccess('Mascota eliminada', `${mascota.nombre} fue eliminada del sistema.`)
+    } catch (error) {
+      toastError('No se pudo eliminar', error?.message || 'Intenta de nuevo.')
+    }
   }
 }
 
@@ -173,4 +177,8 @@ function inicial(nombre) {
 function verHistoria(mascota) {
   router.push({ name: 'historia-clinica', query: { mascota: mascota.id } })
 }
+
+onMounted(() => {
+  store.load().catch(() => {})
+})
 </script>

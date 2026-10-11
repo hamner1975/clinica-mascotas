@@ -100,7 +100,7 @@ import { computed, watch } from 'vue'
 import BaseModal from '@/components/ui/BaseModal.vue'
 import { usePacientesStore } from '@/stores/pacientes'
 import { useForm } from '@/composables/useForm'
-import { notifyValidation, toastSuccess } from '@/utils/alerts'
+import { notifyValidation, toastError, toastSuccess } from '@/utils/alerts'
 
 const props = defineProps({
   open: { type: Boolean, default: false },
@@ -148,17 +148,21 @@ watch(
   },
 )
 
-function onSubmit() {
+async function onSubmit() {
   if (!validate()) {
     notifyValidation(firstError())
     return
   }
-  store.saveDueno({ ...form })
-  toastSuccess(
-    isEdit.value ? 'Dueño actualizado' : 'Dueño registrado',
-    `${form.nombres} ${form.apellidos} se guardo correctamente.`,
-  )
-  emit('saved')
-  emit('close')
+  try {
+    await store.saveDueno({ ...form })
+    toastSuccess(
+      isEdit.value ? 'Dueño actualizado' : 'Dueño registrado',
+      `${form.nombres} ${form.apellidos} se guardo correctamente.`,
+    )
+    emit('saved')
+    emit('close')
+  } catch (error) {
+    toastError('No se pudo guardar', error?.message || 'Intenta de nuevo.')
+  }
 }
 </script>

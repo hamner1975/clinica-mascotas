@@ -1,90 +1,87 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import { seedDuenos, seedMascotas } from '@/data/seed'
-
-const DUENOS_KEY = 'cm_duenos'
-const MASCOTAS_KEY = 'cm_mascotas'
-
-function load(key, fallback) {
-  try {
-    const raw = localStorage.getItem(key)
-    return raw ? JSON.parse(raw) : structuredClone(fallback)
-  } catch {
-    return structuredClone(fallback)
-  }
-}
-
-function nextId(list) {
-  return list.reduce((max, item) => Math.max(max, item.id), 0) + 1
-}
+import api from '@/services/api'
 
 /**
- * Store de pacientes: dueños (tutores) y mascotas.
- * Fase 1: datos en localStorage. Fase 2: API PHP/MySQL.
+ * Store de pacientes (dueños y mascotas).
+ * FASE 2: los datos viven en MySQL; aqui se consultan via la API.
  */
 export const usePacientesStore = defineStore('pacientes', () => {
-  const duenos = ref(load(DUENOS_KEY, seedDuenos))
-  const mascotas = ref(load(MASCOTAS_KEY, seedMascotas))
-
-  function persist() {
-    localStorage.setItem(DUENOS_KEY, JSON.stringify(duenos.value))
-    localStorage.setItem(MASCOTAS_KEY, JSON.stringify(mascotas.value))
-  }
+  const duenos = ref([])
+  const mascotas = ref([])
+  const loading = ref(false)
+  const loaded = ref(false)
 
   const totalDuenos = computed(() => duenos.value.length)
   const totalMascotas = computed(() => mascotas.value.length)
 
-  function duenoById(id) {
-    return duenos.value.find((dueno) => dueno.id === Number(id)) || null
+  async function load(force = false) {
+    if (loading.value) return
+    if (loaded.value && !force) return
+    loading.value = true
+    try {
+      const [resDuenos, resMascotas] = await Promise.all([
+        api.get('/duenos'),
+        api.get('/mascotas'),
+      ])
+      duenos.value = resDuenos.data.data ?? []
+      mascotas.value = resMascotas.data.data ?? []
+      loaded.value = true
+    } finally {
+      loading.value = false
+    }
   }
 
-  function mascotasByDueno(id) {
-    return mascotas.value.filter((mascota) => mascota.duenoId === Number(id))
-  }
+  const duenoById = (id) => duenos.value.find((d) => d.id === Number(id)) || null
+  const mascotasByDueno = (id) => mascotas.value.filter((m) => m.duenoId === Number(id))
 
-  /** Devuelve el nombre completo del dueño o un texto por defecto. */
   function duenoNombre(id) {
     const dueno = duenoById(id)
     return dueno ? `${dueno.nombres} ${dueno.apellidos}` : 'Sin asignar'
   }
 
   // ---- Duenos ---------------------------------------------------------------
-  function saveDueno(payload) {
+  async function saveDueno(payload) {
     if (payload.id) {
-      const index = duenos.value.findIndex((dueno) => dueno.id === payload.id)
-      if (index !== -1) duenos.value[index] = { ...duenos.value[index], ...payload }
+      const { data } = await api.put(`/duenos/${payload.id}`, payload)
+      const index = duenos.value.findIndex((d) => d.id === payload.id)
+      if (index !== -1) duenos.value[index] = data.data
     } else {
-      duenos.value.push({ ...payload, id: nextId(duenos.value) })
+      const { data } = await api.post('/duenos', payload)
+      duenos.value.push(data.data)
     }
-    persist()
   }
 
-  function deleteDueno(id) {
-    duenos.value = duenos.value.filter((dueno) => dueno.id !== id)
-    persist()
+  async function deleteDueno(id) {
+    await api.delete(`/duenos/${id}`)
+    duenos.value = duenos.value.filter((d) => d.id !== id)
   }
 
   // ---- Mascotas -------------------------------------------------------------
-  function saveMascota(payload) {
+  async function saveMascota(payload) {
     if (payload.id) {
-      const index = mascotas.value.findIndex((mascota) => mascota.id === payload.id)
-      if (index !== -1) mascotas.value[index] = { ...mascotas.value[index], ...payload }
+      const { data } = await api.put(`/mascotas/${payload.id}`, payload)
+      const index = mascotas.value.findIndex((m) => m.id === payload.id)
+      if (index !== -1) mascotas.value[index] = data.data
     } else {
-      mascotas.value.push({ ...payload, id: nextId(mascotas.value) })
+      const { data } = await api.post('/mascotas', payload)
+      mascotas.value.push(data.data)
     }
-    persist()
   }
 
-  function deleteMascota(id) {
-    mascotas.value = mascotas.value.filter((mascota) => mascota.id !== id)
-    persist()
+  async function deleteMascota(id) {
+    await api.delete(`/mascotas/${id}`)
+    mascotas.value = mascotas.value.filter((m) => m.id !== id)
   }
 
   return {
     duenos,
     mascotas,
+    loading,
+    loaded,
     totalDuenos,
     totalMascotas,
+    load,
     duenoById,
     mascotasByDueno,
     duenoNombre,

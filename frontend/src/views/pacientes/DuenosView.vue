@@ -93,12 +93,12 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { usePacientesStore } from '@/stores/pacientes'
 import { usePagination } from '@/composables/usePagination'
 import TablePagination from '@/components/ui/TablePagination.vue'
 import DuenoFormModal from '@/components/pacientes/DuenoFormModal.vue'
-import { confirmDialog, toastSuccess, toastWarning } from '@/utils/alerts'
+import { confirmDialog, toastError, toastSuccess, toastWarning } from '@/utils/alerts'
 
 const store = usePacientesStore()
 
@@ -152,8 +152,12 @@ async function onDelete(dueno) {
     icon: 'warning',
   })
   if (result.isConfirmed) {
-    store.deleteDueno(dueno.id)
-    toastSuccess('Dueño eliminado', `${dueno.nombres} ${dueno.apellidos} fue eliminado del sistema.`)
+    try {
+      await store.deleteDueno(dueno.id)
+      toastSuccess('Dueño eliminado', `${dueno.nombres} ${dueno.apellidos} fue eliminado del sistema.`)
+    } catch (error) {
+      toastError('No se pudo eliminar', error?.message || 'Intenta de nuevo.')
+    }
   }
 }
 
@@ -162,4 +166,8 @@ function iniciales(dueno) {
   const b = (dueno.apellidos || '').charAt(0)
   return `${a}${b}`.toUpperCase() || 'DT'
 }
+
+onMounted(() => {
+  store.load().catch(() => {})
+})
 </script>

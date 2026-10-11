@@ -129,7 +129,7 @@ import ImageInput from '@/components/ui/ImageInput.vue'
 import { usePacientesStore } from '@/stores/pacientes'
 import { useForm } from '@/composables/useForm'
 import { ESPECIES, SEXOS } from '@/data/catalogos'
-import { notifyValidation, toastSuccess } from '@/utils/alerts'
+import { notifyValidation, toastError, toastSuccess } from '@/utils/alerts'
 
 const props = defineProps({
   open: { type: Boolean, default: false },
@@ -199,21 +199,25 @@ watch(
   },
 )
 
-function onSubmit() {
+async function onSubmit() {
   if (!validate()) {
     notifyValidation(firstError())
     return
   }
-  store.saveMascota({
-    ...form,
-    duenoId: Number(form.duenoId),
-    peso: form.peso === '' ? null : Number(form.peso),
-  })
-  toastSuccess(
-    isEdit.value ? 'Mascota actualizada' : 'Mascota registrada',
-    `${form.nombre} se guardo correctamente.`,
-  )
-  emit('saved')
-  emit('close')
+  try {
+    await store.saveMascota({
+      ...form,
+      duenoId: Number(form.duenoId),
+      peso: form.peso === '' ? null : Number(form.peso),
+    })
+    toastSuccess(
+      isEdit.value ? 'Mascota actualizada' : 'Mascota registrada',
+      `${form.nombre} se guardo correctamente.`,
+    )
+    emit('saved')
+    emit('close')
+  } catch (error) {
+    toastError('No se pudo guardar', error?.message || 'Intenta de nuevo.')
+  }
 }
 </script>

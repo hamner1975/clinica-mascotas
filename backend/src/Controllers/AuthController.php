@@ -4,19 +4,20 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Config\Database;
+use App\Core\Auth;
 use App\Core\Jwt;
 use App\Core\Response;
 use Throwable;
 
-class AuthController
+class AuthController extends Controller
 {
     /**
      * POST /api/auth/login  { email, password }
      */
     public static function login(): void
     {
-        $input = self::jsonInput();
-        $email = trim((string) ($input['email'] ?? ''));
+        $input = self::input();
+        $email = self::str($input, 'email');
         $password = (string) ($input['password'] ?? '');
 
         if ($email === '' || $password === '') {
@@ -64,45 +65,16 @@ class AuthController
     }
 
     /**
-     * GET /api/auth/me  (requiere Authorization: Bearer <token>)
+     * GET /api/auth/me  (Authorization: Bearer <token>)
      */
     public static function me(): void
     {
-        $user = self::currentUser();
+        $user = Auth::user();
         if ($user === null) {
             Response::error('No autenticado.', 401);
             return;
         }
-        Response::json(['user' => $user]);
-    }
-
-    /** Devuelve el usuario autenticado o null. */
-    public static function currentUser(): ?array
-    {
-        $header = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
-        if (!preg_match('/Bearer\s+(.+)/i', $header, $matches)) {
-            return null;
-        }
-
-        $payload = Jwt::decode(trim($matches[1]));
-        if ($payload === null || empty($payload['sub'])) {
-            return null;
-        }
-
-        try {
-            $stmt = Database::connection()->prepare(
-                'SELECT u.*, r.nombre AS rol
-                 FROM usuarios u
-                 LEFT JOIN roles r ON r.id = u.rol_id
-                 WHERE u.id = ? LIMIT 1'
-            );
-            $stmt->execute([$payload['sub']]);
-            $user = $stmt->fetch();
-        } catch (Throwable) {
-            return null;
-        }
-
-        return $user ? self::publicUser($user) : null;
+        Response::json(['user' => self::publicUser($user)]);
     }
 
     private static function publicUser(array $u): array
@@ -116,12 +88,5 @@ class AuthController
             'rol' => $u['rol'] ?? null,
             'activo' => (int) $u['activo'] === 1,
         ];
-    }
-
-    private static function jsonInput(): array
-    {
-        $raw = file_get_contents('php://input') ?: '';
-        $data = json_decode($raw, true);
-        return is_array($data) ? $data : $_POST;
     }
 }

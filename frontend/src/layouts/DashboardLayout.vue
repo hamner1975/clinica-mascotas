@@ -27,8 +27,10 @@ import AppSidebar from '@/components/layout/AppSidebar.vue'
 import AppNavbar from '@/components/layout/AppNavbar.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
 import { useUiStore } from '@/stores/ui'
+import { usePacientesStore } from '@/stores/pacientes'
 
 const ui = useUiStore()
+const pacientes = usePacientesStore()
 
 // Cierra el menu movil al agrandar la ventana.
 function onResize() {
@@ -38,6 +40,8 @@ function onResize() {
 onMounted(() => {
   ui.closeMobileSidebar()
   window.addEventListener('resize', onResize)
+  // Carga inicial de datos desde la API (Fase 2)
+  pacientes.load().catch(() => {})
 })
 onUnmounted(() => window.removeEventListener('resize', onResize))
 </script>
