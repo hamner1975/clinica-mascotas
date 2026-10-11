@@ -1,35 +1,61 @@
 # Backend - Clinica Mascotas (Fase 2)
 
-API REST en **PHP + MySQL**. Aun no implementada: esta carpeta queda reservada
-para la Fase 2 del proyecto.
+API REST en **PHP + MySQL/MariaDB** (sin frameworks). Corre con el **servidor
+embebido de PHP** desde la propia carpeta del proyecto — **no requiere copiar
+nada a `htdocs`**.
 
-## Estructura prevista
+## Requisitos
+
+- PHP 8+ (usamos el de XAMPP: `C:\xampp\php\php.exe`).
+- MySQL/MariaDB (usamos el de XAMPP, en el puerto **3307**).
+
+## Puesta en marcha
+
+```bash
+# 1) Crear la base de datos y las tablas (una sola vez)
+#    (desde la raiz del proyecto)
+Get-Content database/schema.sql -Raw | & C:\xampp\mysql\bin\mysql.exe -u clinica -pclinica123 -h 127.0.0.1 -P 3307 clinica_mascotas
+
+# 2) Cargar datos iniciales (roles, admin, catalogos, ejemplos)
+& C:\xampp\php\php.exe backend/database/seed.php
+
+# 3) Iniciar la API (desde la raiz del proyecto)
+powershell -ExecutionPolicy Bypass -File backend/serve.ps1
+# -> http://127.0.0.1:8000
+```
+
+## Estructura
 
 ```
 backend/
-├── public/              # DocumentRoot: unico punto de entrada publico
-│   ├── index.php        # Front controller (enruta las peticiones a la API)
-│   └── .htaccess        # Reescritura de URLs
+├── public/
+│   └── index.php          # Punto de entrada (router de la API)
 ├── src/
-│   ├── Config/          # Conexion a la base de datos (PDO)
-│   ├── Core/            # Router, Request, Response, Middleware
-│   ├── Controllers/     # Controladores por modulo
-│   ├── Models/          # Acceso a datos
-│   ├── Services/        # Logica de negocio
-│   └── Middleware/      # Autenticacion (JWT), roles, CORS
-├── storage/
-│   ├── logs/            # Registros
-│   └── uploads/         # Archivos subidos (recetas, fotos de pacientes)
-├── .env.example
-└── README.md
+│   ├── Config/Database.php
+│   ├── Core/              # Env, Response (CORS/JSON), Router, Jwt
+│   └── Controllers/       # HealthController, AuthController
+├── database/
+│   └── seed.php           # Datos iniciales
+├── .env / .env.example    # Credenciales y ajustes
+├── bootstrap.php          # Autoload + entorno
+└── serve.ps1              # Arranque del servidor embebido
 ```
 
-## Convenciones previstas
+## Endpoints actuales
 
-- Acceso a datos con **PDO** y consultas preparadas (evita inyeccion SQL).
-- Contrasenas con `password_hash()` / `password_verify()`.
-- Autenticacion por **token JWT** en el header `Authorization: Bearer`.
-- Respuestas en **JSON**: `{ "data": ..., "message": ..., "errors": ... }`.
-- Codigos HTTP correctos (200, 201, 400, 401, 403, 404, 422, 500).
+| Metodo | Ruta | Descripcion |
+| --- | --- | --- |
+| GET | `/api/health` | Estado del servicio y de la base de datos |
+| POST | `/api/auth/login` | Login (devuelve token JWT + usuario) |
+| GET | `/api/auth/me` | Usuario autenticado (requiere `Authorization: Bearer`) |
 
-> Los detalles de instalacion y variables de entorno se agregaran al iniciar la Fase 2.
+## Credenciales de ejemplo
+
+- `admin@clinica.test` / `admin123`
+- Resto de usuarios: `<correo>@clinica.test` / `123456`
+
+## Notas
+
+- Seguridad: contraseñas con `password_hash()`, sesion por **JWT (HS256)** y
+  consultas preparadas (PDO).
+- CORS habilitado para el frontend de Vite (`http://localhost:5173`).

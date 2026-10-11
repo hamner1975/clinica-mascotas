@@ -13,8 +13,7 @@
           <li><i class="bi bi-check2-circle"></i> Dashboard y reportes</li>
         </ul>
         <p class="auth__hint">
-          <i class="bi bi-lightbulb"></i> Demo: <code>admin@clinica.test</code> con cualquier
-          contrasena de 6+ caracteres.
+          <i class="bi bi-lightbulb"></i> Demo: <code>admin@clinica.test</code> / <code>admin123</code>
         </p>
       </div>
     </section>
@@ -140,14 +139,12 @@ async function onSubmit() {
 
   loading.value = true
   try {
-    // FASE 1: simulamos la peticion al servidor. En FASE 2 se llama a la API PHP.
-    await new Promise((resolve) => setTimeout(resolve, 700))
-    auth.login({ email: form.email })
+    await auth.login({ email: form.email, password: form.password })
     toastSuccess('Bienvenido', `Has iniciado sesion como ${auth.fullName}.`)
     const redirect = route.query.redirect
     router.push(typeof redirect === 'string' ? redirect : { name: 'dashboard' })
   } catch (error) {
-    toastError('Error al ingresar', 'Verifica tus credenciales e intenta de nuevo.')
+    toastError('No se pudo iniciar sesion', error?.message || 'Verifica tus credenciales.')
   } finally {
     loading.value = false
   }
