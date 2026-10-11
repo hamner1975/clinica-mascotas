@@ -23,6 +23,12 @@ export const useAuthStore = defineStore('auth', () => {
 
   const role = computed(() => user.value?.rol || user.value?.role || '')
   const email = computed(() => user.value?.email || '')
+  const permisos = computed(() => user.value?.permisos || [])
+
+  function can(permiso) {
+    const list = permisos.value
+    return list.includes('*') || list.includes(permiso)
+  }
 
   const initials = computed(() => {
     const base = fullName.value || 'CM'
@@ -58,5 +64,5 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem(TOKEN_KEY)
   }
 
-  return { user, token, isAuthenticated, fullName, role, email, initials, login, fetchMe, logout }
+  return { user, token, isAuthenticated, fullName, role, email, permisos, initials, can, login, fetchMe, logout }
 })

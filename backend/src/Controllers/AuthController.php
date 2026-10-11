@@ -27,7 +27,7 @@ class AuthController extends Controller
 
         try {
             $stmt = Database::connection()->prepare(
-                'SELECT u.*, r.nombre AS rol
+                'SELECT u.*, r.nombre AS rol, r.permisos AS rol_permisos
                  FROM usuarios u
                  LEFT JOIN roles r ON r.id = u.rol_id
                  WHERE u.email = ? LIMIT 1'
@@ -85,7 +85,8 @@ class AuthController extends Controller
             'apellidos' => $u['apellidos'],
             'email' => $u['email'],
             'telefono' => $u['telefono'] ?? '',
-            'rol' => $u['rol'] ?? null,
+            'rol' => $u['rol'] ?? $u['rol_nombre'] ?? null,
+            'permisos' => json_decode((string) ($u['rol_permisos'] ?? '[]'), true) ?: [],
             'activo' => (int) $u['activo'] === 1,
         ];
     }

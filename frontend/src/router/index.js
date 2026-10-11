@@ -42,20 +42,20 @@ const routes = [
     component: () => import('@/layouts/DashboardLayout.vue'),
     children: [
       { path: '', name: 'dashboard', component: () => import('@/views/DashboardView.vue'), meta: { title: 'Dashboard' } },
-      { path: 'citas', name: 'citas', component: () => import('@/views/citas/CitasView.vue'), meta: { title: 'Citas' } },
-      { path: 'consultas', name: 'consultas', component: () => import('@/views/consultas/ConsultasView.vue'), meta: { title: 'Consultas' } },
-      { path: 'historia-clinica', name: 'historia-clinica', component: () => import('@/views/historia-clinica/HistoriaClinicaView.vue'), meta: { title: 'Historia clinica' } },
-      { path: 'diagnosticos', name: 'diagnosticos', component: () => import('@/views/diagnosticos/DiagnosticosView.vue'), meta: { title: 'Diagnosticos' } },
-      { path: 'mascotas', name: 'mascotas', component: () => import('@/views/pacientes/MascotasView.vue'), meta: { title: 'Mascotas' } },
-      { path: 'duenos', name: 'duenos', component: () => import('@/views/pacientes/DuenosView.vue'), meta: { title: 'Duenos / Tutores' } },
-      { path: 'farmacia', name: 'farmacia', component: () => import('@/views/farmacia/FarmaciaView.vue'), meta: { title: 'Farmacia' } },
-      { path: 'inventario', name: 'inventario', component: () => import('@/views/farmacia/InventarioView.vue'), meta: { title: 'Inventario' } },
-      { path: 'pedidos', name: 'pedidos', component: () => import('@/views/ventas/VentasView.vue'), meta: { title: 'Pedidos y ventas' } },
-      { path: 'usuarios', name: 'usuarios', component: () => import('@/views/admin/UsuariosView.vue'), meta: { title: 'Usuarios' } },
-      { path: 'roles', name: 'roles', component: () => import('@/views/admin/RolesView.vue'), meta: { title: 'Roles y permisos' } },
-      { path: 'sitio-web', name: 'sitio-web', component: () => import('@/views/admin/SitioWebView.vue'), meta: { title: 'Contenido web' } },
-      { path: 'reportes', name: 'reportes', component: () => import('@/views/reportes/ReportesView.vue'), meta: { title: 'Reportes' } },
-      { path: 'configuracion', name: 'configuracion', component: () => import('@/views/configuracion/ConfiguracionView.vue'), meta: { title: 'Configuracion' } },
+      { path: 'citas', name: 'citas', component: () => import('@/views/citas/CitasView.vue'), meta: { title: 'Citas', permiso: 'citas.ver' } },
+      { path: 'consultas', name: 'consultas', component: () => import('@/views/consultas/ConsultasView.vue'), meta: { title: 'Consultas', permiso: 'consultas.ver' } },
+      { path: 'historia-clinica', name: 'historia-clinica', component: () => import('@/views/historia-clinica/HistoriaClinicaView.vue'), meta: { title: 'Historia clinica', permiso: 'historia.ver' } },
+      { path: 'diagnosticos', name: 'diagnosticos', component: () => import('@/views/diagnosticos/DiagnosticosView.vue'), meta: { title: 'Diagnosticos', permiso: 'diagnosticos.ver' } },
+      { path: 'mascotas', name: 'mascotas', component: () => import('@/views/pacientes/MascotasView.vue'), meta: { title: 'Mascotas', permiso: 'pacientes.ver' } },
+      { path: 'duenos', name: 'duenos', component: () => import('@/views/pacientes/DuenosView.vue'), meta: { title: 'Duenos / Tutores', permiso: 'pacientes.ver' } },
+      { path: 'farmacia', name: 'farmacia', component: () => import('@/views/farmacia/FarmaciaView.vue'), meta: { title: 'Farmacia', permiso: 'farmacia.ver' } },
+      { path: 'inventario', name: 'inventario', component: () => import('@/views/farmacia/InventarioView.vue'), meta: { title: 'Inventario', permiso: 'inventario.ver' } },
+      { path: 'pedidos', name: 'pedidos', component: () => import('@/views/ventas/VentasView.vue'), meta: { title: 'Pedidos y ventas', permiso: 'ventas.ver' } },
+      { path: 'usuarios', name: 'usuarios', component: () => import('@/views/admin/UsuariosView.vue'), meta: { title: 'Usuarios', permiso: 'usuarios.ver' } },
+      { path: 'roles', name: 'roles', component: () => import('@/views/admin/RolesView.vue'), meta: { title: 'Roles y permisos', permiso: 'roles.ver' } },
+      { path: 'sitio-web', name: 'sitio-web', component: () => import('@/views/admin/SitioWebView.vue'), meta: { title: 'Contenido web', permiso: 'configuracion.gestionar' } },
+      { path: 'reportes', name: 'reportes', component: () => import('@/views/reportes/ReportesView.vue'), meta: { title: 'Reportes', permiso: 'reportes.ver' } },
+      { path: 'configuracion', name: 'configuracion', component: () => import('@/views/configuracion/ConfiguracionView.vue'), meta: { title: 'Configuracion', permiso: 'configuracion.gestionar' } },
     ],
   },
 
@@ -84,6 +84,10 @@ router.beforeEach((to) => {
 
   if (isAdminArea && !auth.isAuthenticated) {
     return { name: 'login', query: { redirect: to.fullPath } }
+  }
+  if (isAdminArea && to.meta.permiso && !auth.can(to.meta.permiso)) {
+    // Sin permiso para esta seccion: a la pagina principal del panel.
+    return { name: 'dashboard' }
   }
   if (to.name === 'login' && auth.isAuthenticated) {
     return { name: 'dashboard' }
