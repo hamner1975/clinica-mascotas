@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Config\Database;
+use App\Core\Env;
 use App\Core\Response;
 use Throwable;
 
@@ -27,6 +28,11 @@ class HealthController
             'php' => PHP_VERSION,
             'db' => $db,
             'dbError' => $dbError,
+            // Datos de diagnostico (sin contrasena):
+            'dbHost' => Env::get('DB_HOST'),
+            'dbPort' => Env::get('DB_PORT'),
+            'dbName' => Env::get('DB_NAME'),
+            'dbUser' => Env::get('DB_USER'),
             'time' => date('c'),
         ]);
     }
