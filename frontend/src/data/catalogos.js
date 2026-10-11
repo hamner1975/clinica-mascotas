@@ -121,6 +121,13 @@ export function metodoPagoIcon(metodo) {
   return map[metodo] || 'bi-credit-card'
 }
 
+/** Precio final de un producto aplicando su descuento (% si es oferta). */
+export function precioConDescuento(producto) {
+  const base = Number(producto?.precio) || 0
+  const descuento = Number(producto?.descuento) || 0
+  return descuento > 0 ? Math.round(base * (1 - descuento / 100)) : base
+}
+
 /** Color de badge segun la especie (para la tabla de mascotas). */
 export function especieVariant(especie) {
   const map = {

@@ -29,9 +29,9 @@
       </template>
     </nav>
 
-    <a href="/" target="_blank" rel="noopener" class="sidebar-store-link">
+    <a href="/tienda" target="_blank" rel="noopener" class="sidebar-store-link">
       <i class="bi bi-shop"></i>
-      <span>Ver tienda online</span>
+      <span>Ver farmacia online</span>
     </a>
   </aside>
 </template>

@@ -59,6 +59,7 @@ export const useProductosStore = defineStore('productos', () => {
       costo: Number(payload.costo || 0),
       stock: Number(payload.stock),
       stockMinimo: Number(payload.stockMinimo || 0),
+      descuento: Number(payload.descuento || 0),
     }
     if (data.id) {
       const index = productos.value.findIndex((p) => p.id === data.id)

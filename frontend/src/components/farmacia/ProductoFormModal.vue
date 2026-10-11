@@ -78,6 +78,12 @@
           <input id="p-venc" v-model="form.vencimiento" type="date" class="form-control" />
         </div>
 
+        <div class="col-md-4">
+          <label class="form-label" for="p-descuento">Descuento (%)</label>
+          <input id="p-descuento" v-model="form.descuento" type="number" min="0" max="100" class="form-control" :class="invalid('descuento')" placeholder="0" @blur="validateField('descuento')" />
+          <p v-if="showError('descuento')" class="text-danger small mt-1 mb-0">{{ errors.descuento }}</p>
+        </div>
+
         <div class="col-md-6">
           <label class="form-label" for="p-lote">Lote</label>
           <input id="p-lote" v-model="form.lote" class="form-control" placeholder="Ej: AMX-2401" />
@@ -146,6 +152,7 @@ function emptyForm() {
     tipo: 'Medicamento',
     precio: '',
     costo: '',
+    descuento: 0,
     stock: 0,
     stockMinimo: 5,
     unidad: 'Unidad',
@@ -162,6 +169,7 @@ const { form, errors, touched, validate, validateField, firstError, reset } = us
   categoria: { label: 'Categoria', required: true },
   precio: { label: 'Precio de venta', required: true, number: true, minValue: 0 },
   costo: { label: 'Costo', number: true, minValue: 0 },
+  descuento: { label: 'Descuento (%)', number: true, minValue: 0, maxValue: 100 },
   stock: { label: 'Stock', required: true, number: true, minValue: 0 },
   stockMinimo: { label: 'Stock minimo', number: true, minValue: 0 },
 })

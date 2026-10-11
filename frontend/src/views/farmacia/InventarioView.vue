@@ -68,13 +68,20 @@
                     <div>
                       <div class="fw-semibold">{{ p.nombre }}</div>
                       <span class="badge rounded-pill me-1" :class="categoriaVariant(p.categoria)">{{ p.categoria }}</span>
+                      <span v-if="p.descuento > 0" class="badge rounded-pill text-bg-danger me-1">-{{ p.descuento }}%</span>
                       <span v-if="p.requiereReceta" class="badge rounded-pill text-bg-light border">
                         <i class="bi bi-shield-check me-1"></i>Receta
                       </span>
                     </div>
                   </div>
                 </td>
-                <td class="text-end">{{ money(p.precio) }}</td>
+                <td class="text-end">
+                  <div v-if="p.descuento > 0">
+                    <span class="text-muted text-decoration-line-through small">{{ money(p.precio) }}</span>
+                    <div class="fw-semibold text-danger">{{ money(precioConDescuento(p)) }}</div>
+                  </div>
+                  <span v-else>{{ money(p.precio) }}</span>
+                </td>
                 <td class="text-center">
                   <span class="badge rounded-pill" :class="stockVariant(p)">{{ p.stock }} {{ p.unidad }}</span>
                 </td>
@@ -116,7 +123,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { useProductosStore } from '@/stores/productos'
-import { CATEGORIAS_PRODUCTO, categoriaVariant, iconoCategoria } from '@/data/catalogos'
+import { CATEGORIAS_PRODUCTO, categoriaVariant, iconoCategoria, precioConDescuento } from '@/data/catalogos'
 import { addDias, formatFecha, money, todayISO } from '@/utils/format'
 import { usePagination } from '@/composables/usePagination'
 import TablePagination from '@/components/ui/TablePagination.vue'

@@ -981,3 +981,141 @@ a {
     background: $brand-soft;
   }
 }
+
+// ============================================================================
+//  Web publica (landing) y slider de ofertas
+// ============================================================================
+.store-nav__link {
+  color: #4b5563;
+  text-decoration: none;
+  font-weight: 500;
+
+  &:hover {
+    color: $brand-darker;
+  }
+  &.router-link-active {
+    color: $brand;
+  }
+}
+
+.hero__art {
+  height: 320px;
+  border-radius: 1.25rem;
+  background: linear-gradient(140deg, $brand-darker, $brand 60%, #ff6060 140%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8rem;
+  box-shadow: var(--cm-shadow);
+}
+
+.service-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--cm-shadow);
+  }
+
+  &__icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 0.85rem;
+    background: $brand-soft;
+    color: $brand;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+  }
+}
+
+.pharmacy-banner {
+  background: linear-gradient(120deg, #fff, $brand-softer);
+  border: 1px solid $primary-border-subtle;
+
+  .card-body {
+    padding: 1.75rem;
+  }
+
+  &__icon {
+    width: 64px;
+    height: 64px;
+    flex: 0 0 64px;
+    border-radius: 1rem;
+    background: $brand;
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    box-shadow: 0 10px 20px -8px rgba($brand, 0.6);
+  }
+}
+
+.offers-carousel {
+  border-radius: 1rem;
+  overflow: hidden;
+
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon {
+    filter: invert(1) grayscale(1);
+    opacity: 0.9;
+  }
+}
+
+.offer-slide {
+  display: flex;
+  align-items: center;
+  min-height: 240px;
+  border-radius: 1rem;
+  overflow: hidden;
+  color: #fff;
+  background: linear-gradient(120deg, $brand-darker, $brand 65%, #ff6060 130%);
+
+  &__media {
+    flex: 0 0 38%;
+    align-self: stretch;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem;
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.08);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__body {
+    flex: 1;
+    padding: 1.75rem;
+
+    .text-muted {
+      color: rgba(255, 255, 255, 0.8) !important;
+    }
+  }
+}
+
+@media (max-width: 575.98px) {
+  .offer-slide {
+    flex-direction: column;
+    text-align: center;
+
+    &__media {
+      flex: 0 0 auto;
+      width: 100%;
+      min-height: 130px;
+      font-size: 3.5rem;
+    }
+    &__body {
+      width: 100%;
+      padding: 1.25rem;
+    }
+  }
+}

@@ -2,9 +2,56 @@
   <div>
     <div class="page-head">
       <div>
-        <h1 class="page-title">Nuestros productos</h1>
+        <h1 class="page-title">Farmacia online</h1>
         <p class="page-subtitle">Medicamentos, alimentos y accesorios para tu mascota</p>
       </div>
+    </div>
+
+    <!-- Slider de ofertas -->
+    <div
+      v-if="ofertas.length"
+      id="ofertas-carrusel"
+      class="carousel slide offers-carousel mb-4"
+      data-bs-ride="carousel"
+    >
+      <div class="carousel-inner">
+        <div
+          v-for="(o, i) in ofertas"
+          :key="o.id"
+          class="carousel-item"
+          :class="{ active: i === 0 }"
+        >
+          <div class="offer-slide">
+            <div class="offer-slide__media">
+              <img v-if="o.imagen" :src="o.imagen" :alt="o.nombre" />
+              <i v-else :class="['bi', iconoCategoria(o.categoria)]"></i>
+            </div>
+            <div class="offer-slide__body">
+              <span class="badge text-bg-danger mb-2">
+                <i class="bi bi-lightning-charge-fill me-1"></i>Oferta -{{ o.descuento }}%
+              </span>
+              <h3 class="h4 mb-1">{{ o.nombre }}</h3>
+              <p class="text-muted mb-3">{{ o.descripcion || 'Producto disponible en nuestra farmacia.' }}</p>
+              <div class="d-flex align-items-baseline gap-2 mb-3">
+                <span class="display-6 fw-bold">{{ money(precioConDescuento(o)) }}</span>
+                <span class="text-muted text-decoration-line-through">{{ money(o.precio) }}</span>
+              </div>
+              <button class="btn btn-primary" type="button" :disabled="o.stock <= 0" @click="agregar(o)">
+                <i class="bi bi-cart-plus me-1"></i>{{ o.stock <= 0 ? 'Agotado' : 'Agregar al pedido' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="carousel-control-prev" type="button" data-bs-target="#ofertas-carrusel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+        <span class="visually-hidden">Anterior</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#ofertas-carrusel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+        <span class="visually-hidden">Siguiente</span>
+      </button>
     </div>
 
     <div class="row g-3">
@@ -16,7 +63,7 @@
               <div class="col-12 col-md-7">
                 <div class="position-relative">
                   <i class="bi bi-search search-icon"></i>
-                  <input v-model="search" class="form-control ps-5" placeholder="Buscar en la tienda..." />
+                  <input v-model="search" class="form-control ps-5" placeholder="Buscar en la farmacia..." />
                 </div>
               </div>
               <div class="col-12 col-md-5">
@@ -41,13 +88,17 @@
                   <img v-if="p.imagen" :src="p.imagen" :alt="p.nombre" />
                   <i v-else :class="['bi', iconoCategoria(p.categoria)]"></i>
                 </div>
-                <span class="badge rounded-pill align-self-start mb-2" :class="categoriaVariant(p.categoria)">
-                  {{ p.categoria }}
-                </span>
+                <div class="d-flex flex-wrap gap-1 mb-2">
+                  <span class="badge rounded-pill" :class="categoriaVariant(p.categoria)">{{ p.categoria }}</span>
+                  <span v-if="p.descuento > 0" class="badge rounded-pill text-bg-danger">-{{ p.descuento }}%</span>
+                </div>
                 <h3 class="h6 mb-1">{{ p.nombre }}</h3>
                 <p class="text-muted small mb-2 flex-grow-1">{{ p.descripcion || 'Sin descripcion.' }}</p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <span class="fw-bold">{{ money(p.precio) }}</span>
+                <div class="d-flex justify-content-between align-items-center gap-2">
+                  <div>
+                    <span v-if="p.descuento > 0" class="text-muted text-decoration-line-through small d-block">{{ money(p.precio) }}</span>
+                    <span class="fw-bold">{{ money(precioConDescuento(p)) }}</span>
+                  </div>
                   <button class="btn btn-sm btn-primary" type="button" :disabled="p.stock <= 0" @click="agregar(p)">
                     <i class="bi bi-cart-plus me-1"></i>{{ p.stock <= 0 ? 'Agotado' : 'Agregar' }}
                   </button>
@@ -92,7 +143,13 @@ import { computed, ref } from 'vue'
 import { useProductosStore } from '@/stores/productos'
 import { useCarritoTiendaStore } from '@/stores/carrito'
 import { useVentasStore } from '@/stores/ventas'
-import { CATEGORIAS_PRODUCTO, METODOS_PAGO_TIENDA, categoriaVariant, iconoCategoria } from '@/data/catalogos'
+import {
+  CATEGORIAS_PRODUCTO,
+  METODOS_PAGO_TIENDA,
+  categoriaVariant,
+  iconoCategoria,
+  precioConDescuento,
+} from '@/data/catalogos'
 import { money } from '@/utils/format'
 import CarritoPanel from '@/components/farmacia/CarritoPanel.vue'
 import SearchSelect from '@/components/ui/SearchSelect.vue'
@@ -106,12 +163,14 @@ const search = ref('')
 const categoriaFiltro = ref('')
 const cliente = ref('')
 const metodoPago = ref('')
-const metodosOptions = METODOS_PAGO_TIENDA.map((m) => ({ value: m, label: m }))
 
+const metodosOptions = METODOS_PAGO_TIENDA.map((m) => ({ value: m, label: m }))
 const categoriaOptions = [
   { value: '', label: 'Todas las categorias' },
   ...CATEGORIAS_PRODUCTO.map((c) => ({ value: c, label: c })),
 ]
+
+const ofertas = computed(() => productos.activos.filter((p) => p.descuento > 0))
 
 const filtrados = computed(() => {
   const q = search.value.trim().toLowerCase()

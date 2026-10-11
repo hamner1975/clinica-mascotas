@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
+import { precioConDescuento } from '@/data/catalogos'
 
 /**
  * Logica de carrito compartida. Se instancia dos veces:
@@ -17,6 +18,7 @@ function cartSetup() {
   function add(producto, cantidad = 1) {
     const max = producto.stock > 0 ? producto.stock : 0
     if (max === 0) return
+    const precio = precioConDescuento(producto)
     const existente = items.value.find((item) => item.productoId === producto.id)
     if (existente) {
       existente.cantidad = Math.min(existente.cantidad + cantidad, max)
@@ -24,7 +26,7 @@ function cartSetup() {
       items.value.push({
         productoId: producto.id,
         nombre: producto.nombre,
-        precio: Number(producto.precio),
+        precio,
         cantidad: Math.min(cantidad, max),
         stock: max,
       })

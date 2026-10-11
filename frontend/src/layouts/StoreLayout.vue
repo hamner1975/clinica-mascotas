@@ -2,7 +2,7 @@
   <div class="store-shell">
     <header class="store-header">
       <div class="container d-flex align-items-center justify-content-between">
-        <router-link :to="{ name: 'tienda' }" class="store-brand">
+        <router-link :to="{ name: 'home' }" class="store-brand">
           <span class="store-brand__logo"><i class="bi bi-heart-pulse-fill"></i></span>
           <span class="d-flex flex-column lh-1">
             <strong>{{ config.config.nombre }}</strong>
@@ -11,6 +11,12 @@
         </router-link>
 
         <div class="d-flex align-items-center gap-3">
+          <nav class="store-nav d-none d-lg-flex align-items-center gap-3">
+            <router-link :to="{ name: 'home' }" class="store-nav__link">Inicio</router-link>
+            <router-link :to="{ path: '/', hash: '#servicios' }" class="store-nav__link">Servicios</router-link>
+            <router-link :to="{ name: 'tienda' }" class="store-nav__link">Farmacia</router-link>
+            <router-link :to="{ path: '/', hash: '#contacto' }" class="store-nav__link">Contacto</router-link>
+          </nav>
           <span class="d-none d-md-inline text-muted small">
             <i class="bi bi-telephone me-1"></i>{{ config.config.telefono }}
           </span>

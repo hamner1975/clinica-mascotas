@@ -38,7 +38,10 @@
                   </span>
                   <div class="flex-grow-1 overflow-hidden">
                     <div class="fw-semibold text-truncate">{{ p.nombre }}</div>
-                    <small class="text-muted">{{ money(p.precio) }} &middot; {{ p.stock }} {{ p.unidad }}</small>
+                    <small class="text-muted">
+                      <span v-if="p.descuento > 0" class="text-decoration-line-through me-1">{{ money(p.precio) }}</span>
+                      {{ money(precioConDescuento(p)) }} &middot; {{ p.stock }} {{ p.unidad }}
+                    </small>
                   </div>
                   <button
                     class="btn btn-sm btn-primary flex-shrink-0"
@@ -89,7 +92,7 @@ import { computed, ref } from 'vue'
 import { useProductosStore } from '@/stores/productos'
 import { useCarritoFarmaciaStore } from '@/stores/carrito'
 import { useVentasStore } from '@/stores/ventas'
-import { CATEGORIAS_PRODUCTO, METODOS_PAGO_MOSTRADOR, iconoCategoria } from '@/data/catalogos'
+import { CATEGORIAS_PRODUCTO, METODOS_PAGO_MOSTRADOR, iconoCategoria, precioConDescuento } from '@/data/catalogos'
 import { money } from '@/utils/format'
 import CarritoPanel from '@/components/farmacia/CarritoPanel.vue'
 import SearchSelect from '@/components/ui/SearchSelect.vue'

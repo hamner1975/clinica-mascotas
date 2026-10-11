@@ -15,9 +15,15 @@ const routes = [
     children: [
       {
         path: '',
+        name: 'home',
+        component: () => import('@/views/site/HomeView.vue'),
+        meta: { public: true, title: 'Inicio' },
+      },
+      {
+        path: 'tienda',
         name: 'tienda',
         component: () => import('@/views/tienda/TiendaView.vue'),
-        meta: { public: true, title: 'Tienda' },
+        meta: { public: true, title: 'Farmacia' },
       },
     ],
   },
@@ -64,7 +70,8 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
-  scrollBehavior() {
+  scrollBehavior(to) {
+    if (to.hash) return { el: to.hash, behavior: 'smooth', top: 80 }
     return { top: 0 }
   },
 })
