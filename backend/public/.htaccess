@@ -1,0 +1,14 @@
+# Configuracion del API para Apache/cPanel.
+# Redirige todas las peticiones a index.php (front controller).
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ index.php [QSA,L]
+</IfModule>
+
+# No exponer archivos sensibles (por si quedan dentro del docroot).
+<FilesMatch "^\.env">
+  Require all denied
+</FilesMatch>
