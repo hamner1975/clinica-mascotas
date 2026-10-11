@@ -134,18 +134,15 @@
 
         <div class="col-12">
           <label class="form-label" for="co-diag">Diagnostico <span class="text-danger">*</span></label>
-          <input
+          <SearchSelect
             id="co-diag"
             v-model="form.diagnostico"
-            class="form-control"
-            :class="invalid('diagnostico')"
-            list="lista-diagnosticos"
-            placeholder="Ej: Dermatitis alergica (o elige del catalogo)"
+            :options="diagnosticoOptions"
+            icon="bi-heart-pulse"
+            placeholder="Buscar diagnostico..."
+            :invalid="!!(touched.diagnostico && errors.diagnostico)"
             @blur="validateField('diagnostico')"
           />
-          <datalist id="lista-diagnosticos">
-            <option v-for="nombre in diagnosticos.listaNombres" :key="nombre" :value="nombre"></option>
-          </datalist>
           <p v-if="showError('diagnostico')" class="text-danger small mt-1 mb-0">{{ errors.diagnostico }}</p>
         </div>
 
@@ -210,6 +207,11 @@ const mascotaOptions = computed(() =>
   pacientes.mascotas.map((m) => ({ value: m.id, label: m.nombre, sublabel: pacientes.duenoNombre(m.duenoId) })),
 )
 const veterinarioOptions = computed(() => VETERINARIOS.map((v) => ({ value: v, label: v })))
+const diagnosticoOptions = computed(() =>
+  diagnosticos.diagnosticos
+    .filter((d) => d.activo !== false)
+    .map((d) => ({ value: d.nombre, label: d.nombre, sublabel: `${d.codigo} · ${d.categoria}` })),
+)
 
 function emptyForm() {
   return {
