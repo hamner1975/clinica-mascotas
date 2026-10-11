@@ -10,6 +10,8 @@ declare(strict_types=1);
 require __DIR__ . '/../bootstrap.php';
 
 use App\Controllers\AuthController;
+use App\Controllers\CitaController;
+use App\Controllers\ConsultaController;
 use App\Controllers\DuenoController;
 use App\Controllers\HealthController;
 use App\Controllers\MascotaController;
@@ -46,5 +48,19 @@ $router->get('/api/mascotas/{id}', static fn (string $id) => MascotaController::
 $router->post('/api/mascotas', static fn () => MascotaController::store());
 $router->put('/api/mascotas/{id}', static fn (string $id) => MascotaController::update($id));
 $router->delete('/api/mascotas/{id}', static fn (string $id) => MascotaController::destroy($id));
+
+// Atencion medica: citas
+$router->get('/api/citas', static fn () => CitaController::index());
+$router->get('/api/citas/{id}', static fn (string $id) => CitaController::show($id));
+$router->post('/api/citas', static fn () => CitaController::store());
+$router->put('/api/citas/{id}', static fn (string $id) => CitaController::update($id));
+$router->delete('/api/citas/{id}', static fn (string $id) => CitaController::destroy($id));
+
+// Atencion medica: consultas
+$router->get('/api/consultas', static fn () => ConsultaController::index());
+$router->get('/api/consultas/{id}', static fn (string $id) => ConsultaController::show($id));
+$router->post('/api/consultas', static fn () => ConsultaController::store());
+$router->put('/api/consultas/{id}', static fn (string $id) => ConsultaController::update($id));
+$router->delete('/api/consultas/{id}', static fn (string $id) => ConsultaController::destroy($id));
 
 $router->dispatch($method, $_SERVER['REQUEST_URI'] ?? '/');

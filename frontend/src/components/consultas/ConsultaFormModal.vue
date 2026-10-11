@@ -188,7 +188,7 @@ import { useDiagnosticosStore } from '@/stores/diagnosticos'
 import { useForm } from '@/composables/useForm'
 import { VETERINARIOS } from '@/data/catalogos'
 import { todayISO, nowHora } from '@/utils/format'
-import { notifyValidation, toastSuccess } from '@/utils/alerts'
+import { notifyValidation, toastError, toastSuccess } from '@/utils/alerts'
 
 const props = defineProps({
   open: { type: Boolean, default: false },
@@ -278,20 +278,24 @@ function num(value) {
   return value === '' || value === null ? null : Number(value)
 }
 
-function onSubmit() {
+async function onSubmit() {
   if (!validate()) {
     notifyValidation(firstError())
     return
   }
-  consultas.save({
-    ...form,
-    mascotaId: Number(form.mascotaId),
-    temperatura: num(form.temperatura),
-    peso: num(form.peso),
-    frecuenciaCardiaca: num(form.frecuenciaCardiaca),
-  })
-  toastSuccess(isEdit.value ? 'Consulta actualizada' : 'Consulta registrada', 'La consulta se guardo correctamente.')
-  emit('saved')
-  emit('close')
+  try {
+    await consultas.save({
+      ...form,
+      mascotaId: Number(form.mascotaId),
+      temperatura: num(form.temperatura),
+      peso: num(form.peso),
+      frecuenciaCardiaca: num(form.frecuenciaCardiaca),
+    })
+    toastSuccess(isEdit.value ? 'Consulta actualizada' : 'Consulta registrada', 'La consulta se guardo correctamente.')
+    emit('saved')
+    emit('close')
+  } catch (error) {
+    toastError('No se pudo guardar', error?.message || 'Intenta de nuevo.')
+  }
 }
 </script>

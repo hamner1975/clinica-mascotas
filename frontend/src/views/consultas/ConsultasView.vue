@@ -86,14 +86,14 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useConsultasStore } from '@/stores/consultas'
 import { usePacientesStore } from '@/stores/pacientes'
 import { formatFecha } from '@/utils/format'
 import { usePagination } from '@/composables/usePagination'
 import TablePagination from '@/components/ui/TablePagination.vue'
 import ConsultaFormModal from '@/components/consultas/ConsultaFormModal.vue'
-import { confirmDialog, toastSuccess } from '@/utils/alerts'
+import { confirmDialog, toastError, toastSuccess } from '@/utils/alerts'
 
 const consultas = useConsultasStore()
 const pacientes = usePacientesStore()
@@ -150,8 +150,17 @@ async function onDelete(consulta) {
     icon: 'warning',
   })
   if (result.isConfirmed) {
-    consultas.remove(consulta.id)
-    toastSuccess('Consulta eliminada', 'La consulta fue eliminada del sistema.')
+    try {
+      await consultas.remove(consulta.id)
+      toastSuccess('Consulta eliminada', 'La consulta fue eliminada del sistema.')
+    } catch (error) {
+      toastError('No se pudo eliminar', error?.message || 'Intenta de nuevo.')
+    }
   }
 }
+
+onMounted(() => {
+  consultas.load().catch(() => {})
+  pacientes.load().catch(() => {})
+})
 </script>

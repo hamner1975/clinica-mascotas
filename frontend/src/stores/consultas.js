@@ -1,53 +1,51 @@
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
-import { seedConsultas } from '@/data/seed'
+import { ref } from 'vue'
+import api from '@/services/api'
 
-const KEY = 'cm_consultas'
-
-function load(fallback) {
-  try {
-    const raw = localStorage.getItem(KEY)
-    return raw ? JSON.parse(raw) : structuredClone(fallback)
-  } catch {
-    return structuredClone(fallback)
-  }
-}
-
-function nextId(list) {
-  return list.reduce((max, item) => Math.max(max, item.id), 0) + 1
-}
-
-/** Store de consultas. Fase 1: localStorage. Fase 2: API PHP/MySQL. */
+/**
+ * Store de consultas.
+ * FASE 2: los datos viven en MySQL; aqui se consultan via la API.
+ */
 export const useConsultasStore = defineStore('consultas', () => {
-  const consultas = ref(load(seedConsultas))
+  const consultas = ref([])
+  const loading = ref(false)
+  const loaded = ref(false)
 
-  function persist() {
-    localStorage.setItem(KEY, JSON.stringify(consultas.value))
+  async function load(force = false) {
+    if (loading.value) return
+    if (loaded.value && !force) return
+    loading.value = true
+    try {
+      const { data } = await api.get('/consultas')
+      consultas.value = data.data ?? []
+      loaded.value = true
+    } finally {
+      loading.value = false
+    }
   }
 
-  const total = computed(() => consultas.value.length)
-
-  /** Consultas de una mascota (para su historia clinica). */
+  /** Consultas de una mascota (para su historia clinica), mas recientes primero. */
   function byMascota(mascotaId) {
     return consultas.value
       .filter((consulta) => consulta.mascotaId === Number(mascotaId))
       .sort((a, b) => (a.fecha < b.fecha ? 1 : -1))
   }
 
-  function save(payload) {
+  async function save(payload) {
     if (payload.id) {
-      const index = consultas.value.findIndex((consulta) => consulta.id === payload.id)
-      if (index !== -1) consultas.value[index] = { ...consultas.value[index], ...payload }
+      const { data } = await api.put(`/consultas/${payload.id}`, payload)
+      const index = consultas.value.findIndex((c) => c.id === payload.id)
+      if (index !== -1) consultas.value[index] = data.data
     } else {
-      consultas.value.push({ ...payload, id: nextId(consultas.value) })
+      const { data } = await api.post('/consultas', payload)
+      consultas.value.unshift(data.data)
     }
-    persist()
   }
 
-  function remove(id) {
-    consultas.value = consultas.value.filter((consulta) => consulta.id !== id)
-    persist()
+  async function remove(id) {
+    await api.delete(`/consultas/${id}`)
+    consultas.value = consultas.value.filter((c) => c.id !== Number(id))
   }
 
-  return { consultas, total, byMascota, save, remove }
+  return { consultas, loading, loaded, load, byMascota, save, remove }
 })

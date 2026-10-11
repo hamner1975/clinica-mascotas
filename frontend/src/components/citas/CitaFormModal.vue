@@ -105,7 +105,7 @@ import { usePacientesStore } from '@/stores/pacientes'
 import { useForm } from '@/composables/useForm'
 import { ESTADOS_CITA, VETERINARIOS } from '@/data/catalogos'
 import { todayISO, nowHora } from '@/utils/format'
-import { notifyValidation, toastSuccess } from '@/utils/alerts'
+import { notifyValidation, toastError, toastSuccess } from '@/utils/alerts'
 
 const props = defineProps({
   open: { type: Boolean, default: false },
@@ -159,14 +159,18 @@ watch(
   },
 )
 
-function onSubmit() {
+async function onSubmit() {
   if (!validate()) {
     notifyValidation(firstError())
     return
   }
-  citas.save({ ...form, mascotaId: Number(form.mascotaId) })
-  toastSuccess(isEdit.value ? 'Cita actualizada' : 'Cita agendada', 'La cita se guardo correctamente.')
-  emit('saved')
-  emit('close')
+  try {
+    await citas.save({ ...form, mascotaId: Number(form.mascotaId) })
+    toastSuccess(isEdit.value ? 'Cita actualizada' : 'Cita agendada', 'La cita se guardo correctamente.')
+    emit('saved')
+    emit('close')
+  } catch (error) {
+    toastError('No se pudo guardar', error?.message || 'Intenta de nuevo.')
+  }
 }
 </script>

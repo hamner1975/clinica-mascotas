@@ -28,9 +28,13 @@ import AppNavbar from '@/components/layout/AppNavbar.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
 import { useUiStore } from '@/stores/ui'
 import { usePacientesStore } from '@/stores/pacientes'
+import { useCitasStore } from '@/stores/citas'
+import { useConsultasStore } from '@/stores/consultas'
 
 const ui = useUiStore()
 const pacientes = usePacientesStore()
+const citas = useCitasStore()
+const consultas = useConsultasStore()
 
 // Cierra el menu movil al agrandar la ventana.
 function onResize() {
@@ -42,6 +46,8 @@ onMounted(() => {
   window.addEventListener('resize', onResize)
   // Carga inicial de datos desde la API (Fase 2)
   pacientes.load().catch(() => {})
+  citas.load().catch(() => {})
+  consultas.load().catch(() => {})
 })
 onUnmounted(() => window.removeEventListener('resize', onResize))
 </script>

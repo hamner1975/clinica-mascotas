@@ -238,7 +238,7 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { usePacientesStore } from '@/stores/pacientes'
 import { useConsultasStore } from '@/stores/consultas'
@@ -317,5 +317,11 @@ function inicial(nombre) {
 // Al cambiar de mascota volvemos a la pestana "Resumen".
 watch(selectedId, () => {
   tab.value = 'resumen'
+})
+
+onMounted(() => {
+  pacientes.load().catch(() => {})
+  consultasStore.load().catch(() => {})
+  citasStore.load().catch(() => {})
 })
 </script>

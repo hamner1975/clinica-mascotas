@@ -80,6 +80,13 @@ Abrir `http://localhost:5173`.
 - [ ] **Fase 3** - PWA: instalable en movil (manifest + service worker).
 - [ ] **Fase 4** - Despliegue: GitHub + hosting cPanel (staging/produccion).
 
+## Pendientes / mejoras futuras
+
+- [ ] **Costo por delivery**: calcular y sumar el costo de envio en el checkout de
+      la tienda online (zonas/tarifas, envio gratis a partir de un monto, etc.).
+- [ ] Recetario en la consulta: seleccionar medicamentos del inventario.
+- [ ] PWA (instalable en movil).
+
 ## Paleta de marca
 
 | Uso | Color |

@@ -116,7 +116,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useCitasStore } from '@/stores/citas'
 import { usePacientesStore } from '@/stores/pacientes'
 import { ESTADOS_CITA, estadoCitaVariant } from '@/data/catalogos'
@@ -127,7 +127,7 @@ import StatCard from '@/components/ui/StatCard.vue'
 import SearchSelect from '@/components/ui/SearchSelect.vue'
 import CitaFormModal from '@/components/citas/CitaFormModal.vue'
 import ConsultaFormModal from '@/components/consultas/ConsultaFormModal.vue'
-import { confirmDialog, toastSuccess } from '@/utils/alerts'
+import { confirmDialog, toastError, toastSuccess } from '@/utils/alerts'
 
 const citas = useCitasStore()
 const pacientes = usePacientesStore()
@@ -191,7 +191,7 @@ function closeConsulta() {
 function onConsultaSaved() {
   // Marca la cita como atendida tras registrar la consulta.
   if (attending.value) {
-    citas.setEstado(attending.value.id, 'Atendida')
+    citas.setEstado(attending.value.id, 'Atendida').catch(() => {})
   }
 }
 
@@ -203,8 +203,17 @@ async function onDelete(cita) {
     icon: 'warning',
   })
   if (result.isConfirmed) {
-    citas.remove(cita.id)
-    toastSuccess('Cita eliminada', 'La cita fue eliminada del sistema.')
+    try {
+      await citas.remove(cita.id)
+      toastSuccess('Cita eliminada', 'La cita fue eliminada del sistema.')
+    } catch (error) {
+      toastError('No se pudo eliminar', error?.message || 'Intenta de nuevo.')
+    }
   }
 }
+
+onMounted(() => {
+  citas.load().catch(() => {})
+  pacientes.load().catch(() => {})
+})
 </script>
