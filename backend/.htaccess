@@ -1,0 +1,17 @@
+# ============================================================
+#  Proteccion del backend.
+#  Deniega el acceso web directo a TODO el backend (codigo, .env, etc.)
+#  cuando el proyecto esta dentro de la carpeta publica.
+#
+#  El API se sirve UNICAMENTE a traves del subdominio cuyo
+#  document root apunta a "backend/public" (ese .htaccess no se ve
+#  afectado por este, porque esta por encima del docroot).
+# ============================================================
+
+<IfModule mod_authz_core.c>
+  Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+  Order allow,deny
+  Deny from all
+</IfModule>
