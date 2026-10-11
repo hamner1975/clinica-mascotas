@@ -132,7 +132,10 @@ CREATE TABLE IF NOT EXISTS ventas (
   hora TIME NOT NULL,
   canal VARCHAR(20) NOT NULL DEFAULT 'Mostrador',
   cliente VARCHAR(150) NOT NULL DEFAULT '',
+  direccion VARCHAR(200) NOT NULL DEFAULT '',
   metodo_pago VARCHAR(60) NOT NULL DEFAULT '',
+  tipo_entrega VARCHAR(20) NOT NULL DEFAULT 'Mostrador',
+  costo_delivery DECIMAL(10,2) NOT NULL DEFAULT 0,
   total DECIMAL(10,2) NOT NULL DEFAULT 0,
   estado VARCHAR(30) NOT NULL DEFAULT 'Completada',
   KEY ix_ventas_fecha (fecha)

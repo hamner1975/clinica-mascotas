@@ -131,8 +131,21 @@ class VentaController extends Controller
                 return;
             }
 
-            $pdo->prepare('INSERT INTO ventas (fecha, hora, canal, cliente, metodo_pago, total, estado) VALUES (CURDATE(), CURTIME(), ?, ?, ?, ?, ?)')
-                ->execute([$canal, $cliente, $metodoPago, $total, $estado]);
+            // Costo de delivery (solo tienda online, segun la configuracion)
+            $tipoEntrega = $esTienda ? (self::str($in, 'tipoEntrega') ?: 'Delivery') : 'Mostrador';
+            $direccion = self::str($in, 'direccion');
+            $costoDelivery = 0.0;
+            if ($tipoEntrega === 'Delivery') {
+                $cfgRow = $pdo->query('SELECT contenido FROM configuracion WHERE id = 1')->fetch();
+                $cfg = $cfgRow ? json_decode((string) $cfgRow['contenido'], true) : [];
+                $costoBase = (float) ($cfg['costoDelivery'] ?? 0);
+                $gratisDesde = (float) ($cfg['deliveryGratisDesde'] ?? 0);
+                $costoDelivery = ($gratisDesde > 0 && $total >= $gratisDesde) ? 0.0 : $costoBase;
+            }
+            $total += $costoDelivery;
+
+            $pdo->prepare('INSERT INTO ventas (fecha, hora, canal, cliente, direccion, metodo_pago, tipo_entrega, costo_delivery, total, estado) VALUES (CURDATE(), CURTIME(), ?, ?, ?, ?, ?, ?, ?, ?)')
+                ->execute([$canal, $cliente, $direccion, $metodoPago, $tipoEntrega, $costoDelivery, $total, $estado]);
             $ventaId = (int) $pdo->lastInsertId();
 
             $insDetalle = $pdo->prepare('INSERT INTO venta_detalle (venta_id, producto_id, nombre, precio, cantidad) VALUES (?, ?, ?, ?, ?)');
@@ -179,7 +192,10 @@ class VentaController extends Controller
                 'hora' => substr((string) $v['hora'], 0, 5),
                 'canal' => $v['canal'],
                 'cliente' => $v['cliente'],
+                'direccion' => $v['direccion'] ?? '',
                 'metodoPago' => $v['metodo_pago'],
+                'tipoEntrega' => $v['tipo_entrega'] ?? 'Mostrador',
+                'costoDelivery' => (float) ($v['costo_delivery'] ?? 0),
                 'total' => (float) $v['total'],
                 'estado' => $v['estado'],
                 'items' => $porVenta[(int) $v['id']] ?? [],
@@ -212,7 +228,10 @@ class VentaController extends Controller
             'hora' => substr((string) $v['hora'], 0, 5),
             'canal' => $v['canal'],
             'cliente' => $v['cliente'],
+            'direccion' => $v['direccion'] ?? '',
             'metodoPago' => $v['metodo_pago'],
+            'tipoEntrega' => $v['tipo_entrega'] ?? 'Mostrador',
+            'costoDelivery' => (float) ($v['costo_delivery'] ?? 0),
             'total' => (float) $v['total'],
             'estado' => $v['estado'],
             'items' => $detalle,

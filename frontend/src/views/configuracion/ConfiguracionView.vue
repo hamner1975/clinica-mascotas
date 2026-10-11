@@ -74,6 +74,16 @@
                   <input id="cfg-iva" v-model="form.iva" type="number" min="0" max="100" class="form-control" :class="invalid('iva')" @blur="validateField('iva')" />
                   <p v-if="showError('iva')" class="text-danger small mt-1 mb-0">{{ errors.iva }}</p>
                 </div>
+                <div class="col-md-3">
+                  <label class="form-label" for="cfg-delivery">Costo de delivery (S/)</label>
+                  <input id="cfg-delivery" v-model="form.costoDelivery" type="number" min="0" class="form-control" :class="invalid('costoDelivery')" @blur="validateField('costoDelivery')" />
+                  <p v-if="showError('costoDelivery')" class="text-danger small mt-1 mb-0">{{ errors.costoDelivery }}</p>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label" for="cfg-delivery-gratis">Delivery gratis desde (S/)</label>
+                  <input id="cfg-delivery-gratis" v-model="form.deliveryGratisDesde" type="number" min="0" class="form-control" :class="invalid('deliveryGratisDesde')" @blur="validateField('deliveryGratisDesde')" />
+                  <p v-if="showError('deliveryGratisDesde')" class="text-danger small mt-1 mb-0">{{ errors.deliveryGratisDesde }}</p>
+                </div>
               </div>
 
               <div class="mt-4">
@@ -145,6 +155,8 @@ const { form, errors, touched, validate, validateField, firstError, reset } = us
     telefono: { label: 'Telefono', phone: true },
     duracionCita: { label: 'Duracion cita', number: true, minValue: 5 },
     iva: { label: 'IVA', number: true, minValue: 0, maxValue: 100 },
+    costoDelivery: { label: 'Costo de delivery', number: true, minValue: 0 },
+    deliveryGratisDesde: { label: 'Delivery gratis desde', number: true, minValue: 0 },
   },
 )
 
@@ -161,7 +173,13 @@ async function onSave() {
     return
   }
   try {
-    await store.save({ ...form, duracionCita: Number(form.duracionCita), iva: Number(form.iva) })
+    await store.save({
+      ...form,
+      duracionCita: Number(form.duracionCita),
+      iva: Number(form.iva),
+      costoDelivery: Number(form.costoDelivery) || 0,
+      deliveryGratisDesde: Number(form.deliveryGratisDesde) || 0,
+    })
     toastSuccess('Configuracion guardada', 'Los cambios se aplicaron correctamente.')
   } catch (error) {
     toastError('No se pudo guardar', error?.message || 'Intenta de nuevo.')

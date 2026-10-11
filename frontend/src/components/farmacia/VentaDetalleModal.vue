@@ -21,6 +21,17 @@
         <strong>Metodo de pago:</strong> {{ venta.metodoPago || '—' }}
       </p>
 
+      <p v-if="venta.canal === 'Online'" class="mb-3 small">
+        <i class="bi bi-truck me-1 text-muted"></i>
+        <strong>Entrega:</strong> {{ venta.tipoEntrega || 'Recojo' }}
+        <span v-if="venta.costoDelivery > 0"> &middot; Delivery {{ money(venta.costoDelivery) }}</span>
+        <span v-else-if="venta.tipoEntrega === 'Delivery'"> &middot; Gratis</span>
+      </p>
+
+      <p v-if="venta.direccion" class="mb-3 small">
+        <i class="bi bi-geo-alt me-1 text-muted"></i><strong>Direccion:</strong> {{ venta.direccion }}
+      </p>
+
       <div class="table-responsive">
         <table class="table table-sm align-middle">
           <thead>

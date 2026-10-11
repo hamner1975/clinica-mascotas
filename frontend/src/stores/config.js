@@ -14,6 +14,8 @@ const DEFAULT = {
   horaCierre: '18:00',
   duracionCita: 30,
   iva: 19,
+  costoDelivery: 8,
+  deliveryGratisDesde: 60,
 }
 
 /**

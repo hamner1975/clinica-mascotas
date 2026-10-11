@@ -90,16 +90,16 @@ foreach ($diagnosticos as $d) {
 
 // -------------------------------- Productos --------------------------------
 $productos = [
-    [1, 'Amoxicilina 500mg', 'Medicamentos', 'Medicamento', 12000, 7000, 0, 2, 10, 'Caja', 'AMX-2401', $day(150), 1, 1, 'Antibiotico de amplio espectro.'],
-    [2, 'Vacuna antirrabica', 'Vacunas', 'Medicamento', 45000, 30000, 0, 3, 5, 'Unidad', 'VAR-2312', $day(200), 1, 1, 'Dosis unica anual.'],
-    [3, 'Antipulgas (pipeta)', 'Medicamentos', 'Medicamento', 18000, 11000, 15, 5, 8, 'Unidad', 'APU-2403', $day(300), 0, 1, 'Proteccion por 30 dias.'],
-    [4, 'Suero fisiologico 500ml', 'Medicamentos', 'Medicamento', 9000, 5000, 0, 24, 6, 'Frasco', 'SUE-2405', $day(400), 0, 1, 'Solucion isotonica esteril.'],
-    [5, 'Shampoo dermatologico', 'Higiene', 'Producto', 26000, 15000, 20, 15, 5, 'Frasco', 'SHA-2402', $day(500), 0, 1, 'Para pieles sensibles.'],
-    [6, 'Alimento premium perro 3kg', 'Alimentos', 'Producto', 58000, 40000, 10, 20, 6, 'Bolsa', 'ALP-2406', $day(360), 0, 1, 'Balanceado adulto razas medianas.'],
-    [7, 'Alimento gato 1.5kg', 'Alimentos', 'Producto', 38000, 26000, 0, 0, 5, 'Bolsa', 'ALG-2406', $day(330), 0, 1, 'Balanceado gatos adultos.'],
-    [8, 'Collar antipulgas', 'Accesorios', 'Producto', 22000, 12000, 25, 12, 4, 'Unidad', 'COL-2404', $day(540), 0, 1, 'Proteccion hasta 5 meses.'],
-    [9, 'Vitamina B complex', 'Medicamentos', 'Medicamento', 15000, 8000, 0, 6, 6, 'Blister', 'VIT-2405', $day(210), 0, 1, 'Suplemento vitaminico.'],
-    [10, 'Desparasitante oral', 'Medicamentos', 'Medicamento', 20000, 12000, 0, 9, 4, 'Blister', 'DES-2407', $day(20), 1, 1, 'Contra parasitos internos.'],
+    [1, 'Amoxicilina 500mg', 'Medicamentos', 'Medicamento', 25, 15, 0, 2, 10, 'Caja', 'AMX-2401', $day(150), 1, 1, 'Antibiotico de amplio espectro.'],
+    [2, 'Vacuna antirrabica', 'Vacunas', 'Medicamento', 50, 32, 0, 3, 5, 'Unidad', 'VAR-2312', $day(200), 1, 1, 'Dosis unica anual.'],
+    [3, 'Antipulgas (pipeta)', 'Medicamentos', 'Medicamento', 35, 20, 15, 5, 8, 'Unidad', 'APU-2403', $day(300), 0, 1, 'Proteccion por 30 dias.'],
+    [4, 'Suero fisiologico 500ml', 'Medicamentos', 'Medicamento', 12, 7, 0, 24, 6, 'Frasco', 'SUE-2405', $day(400), 0, 1, 'Solucion isotonica esteril.'],
+    [5, 'Shampoo dermatologico', 'Higiene', 'Producto', 30, 18, 20, 15, 5, 'Frasco', 'SHA-2402', $day(500), 0, 1, 'Para pieles sensibles.'],
+    [6, 'Alimento premium perro 3kg', 'Alimentos', 'Producto', 65, 45, 10, 20, 6, 'Bolsa', 'ALP-2406', $day(360), 0, 1, 'Balanceado adulto razas medianas.'],
+    [7, 'Alimento gato 1.5kg', 'Alimentos', 'Producto', 45, 30, 0, 0, 5, 'Bolsa', 'ALG-2406', $day(330), 0, 1, 'Balanceado gatos adultos.'],
+    [8, 'Collar antipulgas', 'Accesorios', 'Producto', 25, 14, 25, 12, 4, 'Unidad', 'COL-2404', $day(540), 0, 1, 'Proteccion hasta 5 meses.'],
+    [9, 'Vitamina B complex', 'Medicamentos', 'Medicamento', 20, 11, 0, 6, 6, 'Blister', 'VIT-2405', $day(210), 0, 1, 'Suplemento vitaminico.'],
+    [10, 'Desparasitante oral', 'Medicamentos', 'Medicamento', 22, 13, 0, 9, 4, 'Blister', 'DES-2407', $day(20), 1, 1, 'Contra parasitos internos.'],
 ];
 $stmt = $pdo->prepare('INSERT INTO productos (id, nombre, categoria, tipo, precio, costo, descuento, stock, stock_minimo, unidad, lote, vencimiento, requiere_receta, activo, descripcion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
 foreach ($productos as $p) {
@@ -160,9 +160,9 @@ foreach ($consultas as $c) {
 
 // --------------------------------- Ventas ----------------------------------
 $ventas = [
-    [1, $day(0), '10:30', 'Mostrador', 'Cliente mostrador', 'Efectivo', 36000, 'Completada'],
-    [2, $day(-1), '16:05', 'Online', 'Maria Gomez', 'Mercado Pago', 70000, 'Enviado'],
-    [3, $day(0), '11:15', 'Online', 'Jose Perez', 'Yape', 58000, 'Pendiente'],
+    [1, $day(0), '10:30', 'Mostrador', 'Cliente mostrador', 'Efectivo', 60, 'Completada'],
+    [2, $day(-1), '16:05', 'Online', 'Maria Gomez', 'Mercado Pago', 62, 'Enviado'],
+    [3, $day(0), '11:15', 'Online', 'Jose Perez', 'Yape', 59, 'Pendiente'],
 ];
 $stmt = $pdo->prepare('INSERT INTO ventas (id, fecha, hora, canal, cliente, metodo_pago, total, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
 foreach ($ventas as $v) {
@@ -170,10 +170,10 @@ foreach ($ventas as $v) {
 }
 
 $detalle = [
-    [1, 3, 'Antipulgas (pipeta)', 18000, 2],
-    [2, 5, 'Shampoo dermatologico', 26000, 1],
-    [2, 8, 'Collar antipulgas', 22000, 2],
-    [3, 6, 'Alimento premium perro 3kg', 58000, 1],
+    [1, 3, 'Antipulgas (pipeta)', 30, 2],
+    [2, 5, 'Shampoo dermatologico', 24, 1],
+    [2, 8, 'Collar antipulgas', 19, 2],
+    [3, 6, 'Alimento premium perro 3kg', 59, 1],
 ];
 $stmt = $pdo->prepare('INSERT INTO venta_detalle (venta_id, producto_id, nombre, precio, cantidad) VALUES (?, ?, ?, ?, ?)');
 foreach ($detalle as $d) {
@@ -193,6 +193,8 @@ $config = [
     'horaCierre' => '18:00',
     'duracionCita' => 30,
     'iva' => 19,
+    'costoDelivery' => 8,
+    'deliveryGratisDesde' => 60,
 ];
 $pdo->prepare('INSERT INTO configuracion (id, contenido) VALUES (1, ?)')->execute([json_encode($config)]);
 

@@ -117,17 +117,44 @@
             <input id="t-cliente" v-model="cliente" class="form-control" placeholder="Ej: Maria Gomez" />
             <label class="form-label mt-3" for="t-pago">Metodo de pago <span class="text-danger">*</span></label>
             <SearchSelect id="t-pago" v-model="metodoPago" :options="metodosOptions" icon="bi-credit-card" :clearable="false" placeholder="Elige como pagar" />
+
+            <label class="form-label mt-3" for="t-entrega">Tipo de entrega</label>
+            <SearchSelect id="t-entrega" v-model="tipoEntrega" :options="entregaOptions" icon="bi-truck" :clearable="false" placeholder="Tipo de entrega" />
+
+            <div v-if="tipoEntrega === 'Delivery'" class="mt-3">
+              <label class="form-label" for="t-direccion">Direccion de entrega <span class="text-danger">*</span></label>
+              <input id="t-direccion" v-model="direccion" class="form-control" placeholder="Ej: Calle 45 #12-30" />
+              <p class="text-muted small mb-0 mt-1">
+                <i class="bi bi-truck me-1"></i>Delivery {{ money(Number(config.config.costoDelivery) || 0) }}
+                <span v-if="Number(config.config.deliveryGratisDesde) > 0">
+                  &middot; gratis desde {{ money(Number(config.config.deliveryGratisDesde)) }}
+                </span>
+              </p>
+            </div>
           </div>
         </div>
 
         <CarritoPanel
           :items="carrito.items"
           :total="carrito.total"
+          :mostrar-total="false"
           titulo="Mi pedido"
           @update-cantidad="carrito.setCantidad"
           @remove="carrito.remove"
         >
           <template #footer>
+            <div class="d-flex justify-content-between small mb-1">
+              <span class="text-muted">Subtotal</span>
+              <span>{{ money(carrito.total) }}</span>
+            </div>
+            <div class="d-flex justify-content-between small mb-1">
+              <span class="text-muted">Delivery</span>
+              <span>{{ tipoEntrega === 'Delivery' ? (costoDelivery > 0 ? money(costoDelivery) : 'Gratis') : '—' }}</span>
+            </div>
+            <div class="d-flex justify-content-between fw-bold mb-2">
+              <span>Total a pagar</span>
+              <span>{{ money(totalFinal) }}</span>
+            </div>
             <button class="btn btn-primary w-100" type="button" :disabled="carrito.vacio" @click="realizarPedido">
               <i class="bi bi-bag-check me-2"></i>Realizar pedido
             </button>
@@ -143,6 +170,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useProductosStore } from '@/stores/productos'
 import { useCarritoTiendaStore } from '@/stores/carrito'
 import { useVentasStore } from '@/stores/ventas'
+import { useConfigStore } from '@/stores/config'
 import {
   CATEGORIAS_PRODUCTO,
   METODOS_PAGO_TIENDA,
@@ -158,13 +186,28 @@ import { notifyValidation, toastError, toastInfo, toastSuccess } from '@/utils/a
 const productos = useProductosStore()
 const carrito = useCarritoTiendaStore()
 const ventas = useVentasStore()
+const config = useConfigStore()
 
 const search = ref('')
 const categoriaFiltro = ref('')
 const cliente = ref('')
 const metodoPago = ref('')
+const tipoEntrega = ref('Recojo')
+const direccion = ref('')
 
 const metodosOptions = METODOS_PAGO_TIENDA.map((m) => ({ value: m, label: m }))
+const entregaOptions = [
+  { value: 'Recojo', label: 'Recojo en la clinica' },
+  { value: 'Delivery', label: 'Delivery a domicilio' },
+]
+
+const costoDelivery = computed(() => {
+  if (tipoEntrega.value !== 'Delivery') return 0
+  const gratisDesde = Number(config.config.deliveryGratisDesde) || 0
+  if (gratisDesde > 0 && carrito.total >= gratisDesde) return 0
+  return Number(config.config.costoDelivery) || 0
+})
+const totalFinal = computed(() => carrito.total + costoDelivery.value)
 const categoriaOptions = [
   { value: '', label: 'Todas las categorias' },
   ...CATEGORIAS_PRODUCTO.map((c) => ({ value: c, label: c })),
@@ -199,18 +242,26 @@ async function realizarPedido() {
     notifyValidation('Selecciona un metodo de pago.')
     return
   }
+  if (tipoEntrega.value === 'Delivery' && !direccion.value.trim()) {
+    notifyValidation('Ingresa la direccion de entrega.')
+    return
+  }
   try {
     const venta = await ventas.registrarPedido({
       canal: 'Online',
       cliente: cliente.value.trim(),
       items: carrito.items,
       metodoPago: metodoPago.value,
+      tipoEntrega: tipoEntrega.value,
+      direccion: tipoEntrega.value === 'Delivery' ? direccion.value.trim() : '',
     })
     toastSuccess('Pedido realizado', `Pedido #${venta.id} por ${money(venta.total)}. Pago: ${venta.metodoPago}.`)
     toastInfo('Seguimiento', 'Te contactaremos para coordinar el pago y la entrega.')
     carrito.clear()
     cliente.value = ''
     metodoPago.value = ''
+    tipoEntrega.value = 'Recojo'
+    direccion.value = ''
     productos.load(true).catch(() => {})
   } catch (error) {
     toastError('No se pudo realizar el pedido', error?.message || 'Intenta de nuevo.')

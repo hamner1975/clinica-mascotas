@@ -44,7 +44,7 @@
     </div>
 
     <div class="card-footer bg-white">
-      <div class="d-flex justify-content-between align-items-center mb-2">
+      <div v-if="mostrarTotal" class="d-flex justify-content-between align-items-center mb-2">
         <span class="text-muted">Total</span>
         <span class="fs-5 fw-bold">{{ money(total) }}</span>
       </div>
@@ -60,6 +60,8 @@ defineProps({
   items: { type: Array, default: () => [] },
   total: { type: Number, default: 0 },
   titulo: { type: String, default: 'Carrito' },
+  /** Mostrar la fila de total dentro del panel (los pedidos usan su propio resumen). */
+  mostrarTotal: { type: Boolean, default: true },
 })
 
 const emit = defineEmits(['update-cantidad', 'remove'])

@@ -53,11 +53,13 @@ export const useVentasStore = defineStore('ventas', () => {
   }
 
   /** Pedido desde la tienda publica (sin sesion). */
-  async function registrarPedido({ canal, cliente, items, metodoPago }) {
+  async function registrarPedido({ canal, cliente, items, metodoPago, tipoEntrega, direccion }) {
     const payload = {
       canal: canal || 'Online',
       cliente,
       metodoPago,
+      tipoEntrega,
+      direccion,
       items: items.map((i) => ({ productoId: i.productoId, cantidad: i.cantidad })),
     }
     const { data } = await api.post('/tienda/pedidos', payload)
