@@ -69,7 +69,8 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  // Importante: usa la base de Vite ("/" en dev, "/clinica/" en produccion).
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes,
   scrollBehavior(to) {
     if (to.hash) return { el: to.hash, behavior: 'smooth', top: 80 }
