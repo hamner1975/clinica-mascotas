@@ -3,7 +3,12 @@
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
+
+  # Protege carpetas que no deben ser publicas.
+  RewriteRule ^(database|frontend|docs)/ - [F,L]
+
   RewriteRule ^index\.html$ - [L]
+
   # No interceptar la API ni el backend.
   RewriteCond %{REQUEST_URI} !/(backend|api)
   RewriteCond %{REQUEST_FILENAME} !-f
