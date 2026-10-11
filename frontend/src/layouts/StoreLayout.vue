@@ -6,7 +6,6 @@
           <span class="store-brand__logo"><i class="bi bi-heart-pulse-fill"></i></span>
           <span class="d-flex flex-column lh-1">
             <strong>{{ config.config.nombre }}</strong>
-            <small class="text-muted">{{ config.config.eslogan }}</small>
           </span>
         </router-link>
 

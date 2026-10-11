@@ -6,7 +6,6 @@
       </span>
       <span class="sidebar-brand__text">
         <span class="fw-bold">{{ config.config.nombre }}</span>
-        <small>{{ config.config.eslogan }}</small>
       </span>
     </div>
 

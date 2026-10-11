@@ -23,11 +23,6 @@
                 </div>
 
                 <div class="col-md-6">
-                  <label class="form-label" for="cfg-eslogan">Eslogan</label>
-                  <input id="cfg-eslogan" v-model="form.eslogan" class="form-control" />
-                </div>
-
-                <div class="col-md-6">
                   <label class="form-label" for="cfg-doc">Documento / NIT</label>
                   <input id="cfg-doc" v-model="form.documento" class="form-control" />
                 </div>
