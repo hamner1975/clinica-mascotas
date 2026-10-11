@@ -23,6 +23,7 @@ use App\Controllers\RolController;
 use App\Controllers\SitioController;
 use App\Controllers\UsuarioController;
 use App\Controllers\VentaController;
+use App\Core\Env;
 use App\Core\Response;
 use App\Core\Router;
 
@@ -112,4 +113,15 @@ $router->put('/api/configuracion', static fn () => ConfiguracionController::upda
 // Desarrollo (solo local)
 $router->post('/api/dev/reseed', static fn () => DevController::reseed(), 'configuracion.gestionar');
 
-$router->dispatch($method, $_SERVER['REQUEST_URI'] ?? '/');
+// Soporta servir la API dentro de una subcarpeta (ej. /clinica/backend/public).
+// Define API_BASE en el .env (sin barra final) cuando el API no este en la raiz.
+$uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+$base = rtrim((string) Env::get('API_BASE', ''), '/');
+if ($base !== '' && str_starts_with($uri, $base)) {
+    $uri = substr($uri, strlen($base));
+}
+if ($uri === '') {
+    $uri = '/';
+}
+
+$router->dispatch($method, $uri);

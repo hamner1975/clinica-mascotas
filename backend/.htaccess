@@ -1,17 +1,25 @@
 # ============================================================
-#  Proteccion del backend.
-#  Deniega el acceso web directo a TODO el backend (codigo, .env, etc.)
-#  cuando el proyecto esta dentro de la carpeta publica.
+#  Proteccion del backend (cuando el proyecto esta dentro de la
+#  carpeta publica del hosting).
 #
-#  El API se sirve UNICAMENTE a traves del subdominio cuyo
-#  document root apunta a "backend/public" (ese .htaccess no se ve
-#  afectado por este, porque esta por encima del docroot).
+#  Oculta los archivos/carpetas sensibles del backend, pero DEJA
+#  accesible la carpeta "public" (que es la API).
 # ============================================================
 
-<IfModule mod_authz_core.c>
-  Require all denied
-</IfModule>
-<IfModule !mod_authz_core.c>
-  Order allow,deny
-  Deny from all
+# Nunca exponer el archivo .env
+<FilesMatch "^\.env">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # Bloquea el codigo y los scripts SQL (pero permite public/).
+  RewriteRule ^(src|database)/ - [F,L]
+  RewriteRule ^(bootstrap\.php|README\.md)$ - [F,L]
 </IfModule>
