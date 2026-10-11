@@ -36,6 +36,7 @@ export const menuSections = [
     items: [
       { title: 'Usuarios', icon: 'bi-person-badge', to: '/admin/usuarios' },
       { title: 'Roles y permisos', icon: 'bi-shield-lock', to: '/admin/roles' },
+      { title: 'Contenido web', icon: 'bi-window-stack', to: '/admin/sitio-web' },
       { title: 'Reportes', icon: 'bi-bar-chart-line', to: '/admin/reportes' },
       { title: 'Configuracion', icon: 'bi-gear', to: '/admin/configuracion' },
     ],

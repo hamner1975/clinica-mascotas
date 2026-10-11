@@ -53,6 +53,7 @@ const routes = [
       { path: 'pedidos', name: 'pedidos', component: () => import('@/views/ventas/VentasView.vue'), meta: { title: 'Pedidos y ventas' } },
       { path: 'usuarios', name: 'usuarios', component: () => import('@/views/admin/UsuariosView.vue'), meta: { title: 'Usuarios' } },
       { path: 'roles', name: 'roles', component: () => import('@/views/admin/RolesView.vue'), meta: { title: 'Roles y permisos' } },
+      { path: 'sitio-web', name: 'sitio-web', component: () => import('@/views/admin/SitioWebView.vue'), meta: { title: 'Contenido web' } },
       { path: 'reportes', name: 'reportes', component: () => import('@/views/reportes/ReportesView.vue'), meta: { title: 'Reportes' } },
       { path: 'configuracion', name: 'configuracion', component: () => import('@/views/configuracion/ConfiguracionView.vue'), meta: { title: 'Configuracion' } },
     ],

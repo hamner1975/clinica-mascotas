@@ -14,7 +14,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 // Version del juego de datos de ejemplo (Fase 1). Al incrementarla, el navegador
 // descarta los datos locales y vuelve a cargar los de ejemplo. Util mientras el
 // proyecto es solo diseno; en la Fase 2 la persistencia la maneja MySQL.
-const SEED_VERSION = '2'
+const SEED_VERSION = '3'
 const SEED_KEYS = [
   'cm_duenos',
   'cm_mascotas',
@@ -25,6 +25,7 @@ const SEED_KEYS = [
   'cm_roles',
   'cm_usuarios',
   'cm_diagnosticos',
+  'cm_sitio',
 ]
 if (localStorage.getItem('cm_seed_version') !== SEED_VERSION) {
   SEED_KEYS.forEach((key) => localStorage.removeItem(key))

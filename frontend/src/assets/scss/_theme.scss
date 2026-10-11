@@ -985,6 +985,56 @@ a {
 // ============================================================================
 //  Web publica (landing) y slider de ofertas
 // ============================================================================
+.store-social {
+  color: var(--cm-text-muted);
+  font-size: 1.1rem;
+
+  &:hover {
+    color: $brand;
+  }
+}
+
+.hero__art--img {
+  padding: 0;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+// Selector de iconos (editor de la web)
+.icon-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.icon-picker__item {
+  width: 38px;
+  height: 38px;
+  border-radius: 0.5rem;
+  border: 1px solid var(--cm-border);
+  background: #fff;
+  color: #55606e;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+
+  &:hover {
+    border-color: $primary-border-subtle;
+    color: $brand;
+  }
+  &.is-active {
+    background: $brand;
+    border-color: $brand;
+    color: #fff;
+  }
+}
+
 .store-nav__link {
   color: #4b5563;
   text-decoration: none;
