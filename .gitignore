@@ -17,6 +17,9 @@ Thumbs.db
 .idea/
 *.log
 
+# ---- Paquetes de despliegue ----
+*.zip
+
 # ---- Backend PHP (Fase 2) ----
 # Estas carpetas contienen datos generados en tiempo de ejecucion.
 backend/storage/logs/

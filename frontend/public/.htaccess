@@ -1,13 +1,12 @@
 # Configuracion del frontend (SPA) para Apache/cPanel.
-# Permite que las rutas de Vue Router (history mode) funcionen al recargar.
+# Portable: funciona igual en la raiz o en una subcarpeta.
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  RewriteBase /
   RewriteRule ^index\.html$ - [L]
   # No interceptar la API ni el backend.
-  RewriteCond %{REQUEST_URI} !^/(api|backend)
+  RewriteCond %{REQUEST_URI} !/(backend|api)
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule . /index.html [L]
+  RewriteRule . index.html [L]
 </IfModule>
