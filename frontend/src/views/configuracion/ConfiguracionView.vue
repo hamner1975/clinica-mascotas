@@ -90,21 +90,13 @@
       <div class="col-12 col-lg-4">
         <div class="card mb-3">
           <div class="card-body">
-            <h2 class="card-title mb-2"><i class="bi bi-download me-2 text-primary"></i>Respaldo de datos</h2>
+            <h2 class="card-title mb-2"><i class="bi bi-database me-2 text-primary"></i>Datos y respaldo</h2>
             <p class="text-muted small">
-              Los datos de la Fase 1 se guardan en este navegador. Puedes exportarlos, importarlos o restaurar los de ejemplo.
+              Los datos se guardan en la base de datos MySQL del servidor. Para respaldos, exporta la base de datos
+              (por ejemplo desde phpMyAdmin).
             </p>
 
             <div class="d-grid gap-2">
-              <button class="btn btn-outline-secondary" type="button" @click="exportarDatos">
-                <i class="bi bi-file-earmark-arrow-down me-2"></i>Exportar respaldo (JSON)
-              </button>
-
-              <label class="btn btn-outline-secondary mb-0">
-                <i class="bi bi-file-earmark-arrow-up me-2"></i>Importar respaldo
-                <input ref="archivoInput" type="file" accept="application/json,.json" class="d-none" @change="importarDatos" />
-              </label>
-
               <button class="btn btn-outline-danger" type="button" @click="restaurarEjemplo">
                 <i class="bi bi-arrow-counterclockwise me-2"></i>Restaurar datos de ejemplo
               </button>
@@ -133,16 +125,15 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onMounted } from 'vue'
 import { useConfigStore } from '@/stores/config'
 import { MONEDAS } from '@/data/catalogos'
 import SearchSelect from '@/components/ui/SearchSelect.vue'
 import { useForm } from '@/composables/useForm'
-import { todayISO } from '@/utils/format'
+import api from '@/services/api'
 import { confirmDialog, notifyValidation, toastError, toastSuccess } from '@/utils/alerts'
 
 const store = useConfigStore()
-const archivoInput = ref(null)
 
 const monedaOptions = MONEDAS.map((m) => ({ value: m, label: m }))
 
@@ -164,64 +155,38 @@ function showError(field) {
   return touched[field] && errors[field]
 }
 
-function onSave() {
+async function onSave() {
   if (!validate()) {
     notifyValidation(firstError())
     return
   }
-  store.save({ ...form, duracionCita: Number(form.duracionCita), iva: Number(form.iva) })
-  toastSuccess('Configuracion guardada', 'Los cambios se aplicaron correctamente.')
-}
-
-function exportarDatos() {
-  const data = {}
-  Object.keys(localStorage)
-    .filter((key) => key.startsWith('cm_'))
-    .forEach((key) => {
-      data[key] = localStorage.getItem(key)
-    })
-  const payload = { app: 'Clinica Mascotas', version: '0.1.0', fecha: new Date().toISOString(), data }
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })
-  const url = URL.createObjectURL(blob)
-  const enlace = document.createElement('a')
-  enlace.href = url
-  enlace.download = `clinica-mascotas-respaldo-${todayISO()}.json`
-  enlace.click()
-  URL.revokeObjectURL(url)
-  toastSuccess('Respaldo generado', 'Se descargo el archivo JSON con todos los datos.')
-}
-
-function importarDatos(event) {
-  const archivo = event.target.files?.[0]
-  if (!archivo) return
-  const reader = new FileReader()
-  reader.onload = () => {
-    try {
-      const payload = JSON.parse(reader.result)
-      const data = payload.data || payload
-      Object.entries(data).forEach(([key, value]) => localStorage.setItem(key, value))
-      toastSuccess('Respaldo restaurado', 'Los datos se cargaron correctamente. Recargando...')
-      setTimeout(() => location.reload(), 900)
-    } catch {
-      toastError('Archivo invalido', 'El archivo no tiene el formato esperado.')
-    } finally {
-      if (archivoInput.value) archivoInput.value.value = ''
-    }
+  try {
+    await store.save({ ...form, duracionCita: Number(form.duracionCita), iva: Number(form.iva) })
+    toastSuccess('Configuracion guardada', 'Los cambios se aplicaron correctamente.')
+  } catch (error) {
+    toastError('No se pudo guardar', error?.message || 'Intenta de nuevo.')
   }
-  reader.readAsText(archivo)
 }
 
 async function restaurarEjemplo() {
   const result = await confirmDialog({
     title: 'Restaurar datos de ejemplo',
-    text: 'Se borraran todos los datos actuales de este navegador y se volveran a cargar los de ejemplo. ¿Continuar?',
+    text: 'Se borraran los datos actuales de la base de datos y se volveran a cargar los de ejemplo. ¿Continuar?',
     confirmText: 'Si, restaurar',
     icon: 'warning',
   })
   if (!result.isConfirmed) return
-  Object.keys(localStorage)
-    .filter((key) => key.startsWith('cm_'))
-    .forEach((key) => localStorage.removeItem(key))
-  location.reload()
+  try {
+    await api.post('/dev/reseed')
+    toastSuccess('Datos restaurados', 'Recargando el sistema...')
+    setTimeout(() => location.reload(), 900)
+  } catch (error) {
+    toastError('No se pudo restaurar', error?.message || 'Intenta de nuevo.')
+  }
 }
+
+onMounted(async () => {
+  await store.load().catch(() => {})
+  reset({ ...store.config })
+})
 </script>

@@ -55,13 +55,18 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useConfigStore } from '@/stores/config'
 import { useSitioStore } from '@/stores/sitio'
 
 const config = useConfigStore()
 const sitio = useSitioStore()
 const year = new Date().getFullYear()
+
+onMounted(() => {
+  config.load().catch(() => {})
+  sitio.load().catch(() => {})
+})
 
 const redes = computed(() => sitio.contenido.redes || {})
 const tieneRedes = computed(() =>

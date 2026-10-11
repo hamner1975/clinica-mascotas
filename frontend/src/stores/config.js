@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-
-const KEY = 'cm_config'
+import api from '@/services/api'
 
 const DEFAULT = {
   nombre: 'Veterinaria Mascotas',
@@ -17,28 +16,35 @@ const DEFAULT = {
   iva: 19,
 }
 
-function load() {
-  try {
-    const raw = localStorage.getItem(KEY)
-    return raw ? { ...DEFAULT, ...JSON.parse(raw) } : { ...DEFAULT }
-  } catch {
-    return { ...DEFAULT }
-  }
-}
-
-/** Store de configuracion del sistema. */
+/**
+ * Store de configuracion del sistema.
+ * FASE 2: los datos viven en MySQL; aqui se consultan via la API.
+ */
 export const useConfigStore = defineStore('config', () => {
-  const config = ref(load())
+  const config = ref(structuredClone(DEFAULT))
+  const loaded = ref(false)
 
-  function save(payload) {
-    config.value = { ...config.value, ...payload }
-    localStorage.setItem(KEY, JSON.stringify(config.value))
+  async function load(force = false) {
+    if (loaded.value && !force) return
+    try {
+      const { data } = await api.get('/configuracion')
+      if (data.data) {
+        config.value = { ...structuredClone(DEFAULT), ...data.data }
+      }
+      loaded.value = true
+    } catch {
+      // Se mantiene la configuracion por defecto.
+    }
   }
 
-  function reset() {
-    config.value = { ...DEFAULT }
-    localStorage.setItem(KEY, JSON.stringify(config.value))
+  async function save(payload) {
+    const { data } = await api.put('/configuracion', payload)
+    config.value = data.data ?? payload
   }
 
-  return { config, save, reset, DEFAULT }
+  async function reset() {
+    await save(structuredClone(DEFAULT))
+  }
+
+  return { config, loaded, load, save, reset, DEFAULT }
 })

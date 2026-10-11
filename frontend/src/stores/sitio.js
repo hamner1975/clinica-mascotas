@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-
-const KEY = 'cm_sitio'
+import api from '@/services/api'
 
 /** Contenido por defecto del sitio publico. */
 const DEFAULT = {
@@ -44,28 +43,35 @@ const DEFAULT = {
   redes: { facebook: '', instagram: '', whatsapp: '', tiktok: '' },
 }
 
-function load() {
-  try {
-    const raw = localStorage.getItem(KEY)
-    return raw ? { ...structuredClone(DEFAULT), ...JSON.parse(raw) } : structuredClone(DEFAULT)
-  } catch {
-    return structuredClone(DEFAULT)
-  }
-}
-
-/** Store del contenido editable de la web publica. */
+/**
+ * Store del contenido editable de la web publica.
+ * FASE 2: los datos viven en MySQL; aqui se consultan via la API.
+ */
 export const useSitioStore = defineStore('sitio', () => {
-  const contenido = ref(load())
+  const contenido = ref(structuredClone(DEFAULT))
+  const loaded = ref(false)
 
-  function save(payload) {
-    contenido.value = structuredClone(payload)
-    localStorage.setItem(KEY, JSON.stringify(contenido.value))
+  async function load(force = false) {
+    if (loaded.value && !force) return
+    try {
+      const { data } = await api.get('/sitio')
+      if (data.data) {
+        contenido.value = { ...structuredClone(DEFAULT), ...data.data }
+      }
+      loaded.value = true
+    } catch {
+      // Si falla, se mantiene el contenido por defecto.
+    }
   }
 
-  function reset() {
-    contenido.value = structuredClone(DEFAULT)
-    localStorage.setItem(KEY, JSON.stringify(contenido.value))
+  async function save(payload) {
+    const { data } = await api.put('/sitio', payload)
+    contenido.value = data.data ?? payload
   }
 
-  return { contenido, save, reset, DEFAULT }
+  async function reset() {
+    await save(structuredClone(DEFAULT))
+  }
+
+  return { contenido, loaded, load, save, reset, DEFAULT }
 })

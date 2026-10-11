@@ -203,11 +203,11 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { useSitioStore } from '@/stores/sitio'
 import IconPicker from '@/components/admin/IconPicker.vue'
 import ImageInput from '@/components/ui/ImageInput.vue'
-import { confirmDialog, toastSuccess } from '@/utils/alerts'
+import { confirmDialog, toastError, toastSuccess } from '@/utils/alerts'
 
 const sitio = useSitioStore()
 
@@ -229,9 +229,13 @@ function agregarItem() {
   form.elegirnos.items.push({ id: Date.now(), icon: 'bi-star', titulo: '', texto: '' })
 }
 
-function guardar() {
-  sitio.save(JSON.parse(JSON.stringify(form)))
-  toastSuccess('Contenido guardado', 'Los cambios ya se ven en la web publica.')
+async function guardar() {
+  try {
+    await sitio.save(JSON.parse(JSON.stringify(form)))
+    toastSuccess('Contenido guardado', 'Los cambios ya se ven en la web publica.')
+  } catch (error) {
+    toastError('No se pudo guardar', error?.message || 'Intenta de nuevo.')
+  }
 }
 
 async function restaurar() {
@@ -242,8 +246,17 @@ async function restaurar() {
     icon: 'warning',
   })
   if (!result.isConfirmed) return
-  sitio.reset()
-  Object.assign(form, JSON.parse(JSON.stringify(sitio.contenido)))
-  toastSuccess('Contenido restaurado', 'La web volvio al contenido por defecto.')
+  try {
+    await sitio.reset()
+    Object.assign(form, JSON.parse(JSON.stringify(sitio.contenido)))
+    toastSuccess('Contenido restaurado', 'La web volvio al contenido por defecto.')
+  } catch (error) {
+    toastError('No se pudo restaurar', error?.message || 'Intenta de nuevo.')
+  }
 }
+
+onMounted(async () => {
+  await sitio.load().catch(() => {})
+  Object.assign(form, JSON.parse(JSON.stringify(sitio.contenido)))
+})
 </script>

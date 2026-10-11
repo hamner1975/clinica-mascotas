@@ -12,12 +12,15 @@ require __DIR__ . '/../bootstrap.php';
 use App\Controllers\AuthController;
 use App\Controllers\CitaController;
 use App\Controllers\ConsultaController;
+use App\Controllers\ConfiguracionController;
+use App\Controllers\DevController;
 use App\Controllers\DiagnosticoController;
 use App\Controllers\DuenoController;
 use App\Controllers\HealthController;
 use App\Controllers\MascotaController;
 use App\Controllers\ProductoController;
 use App\Controllers\RolController;
+use App\Controllers\SitioController;
 use App\Controllers\UsuarioController;
 use App\Controllers\VentaController;
 use App\Core\Response;
@@ -106,5 +109,14 @@ $router->get('/api/diagnosticos/{id}', static fn (string $id) => DiagnosticoCont
 $router->post('/api/diagnosticos', static fn () => DiagnosticoController::store());
 $router->put('/api/diagnosticos/{id}', static fn (string $id) => DiagnosticoController::update($id));
 $router->delete('/api/diagnosticos/{id}', static fn (string $id) => DiagnosticoController::destroy($id));
+
+// Contenido web (sitio) y configuracion
+$router->get('/api/sitio', static fn () => SitioController::show());
+$router->put('/api/sitio', static fn () => SitioController::update());
+$router->get('/api/configuracion', static fn () => ConfiguracionController::show());
+$router->put('/api/configuracion', static fn () => ConfiguracionController::update());
+
+// Desarrollo (solo entorno local)
+$router->post('/api/dev/reseed', static fn () => DevController::reseed());
 
 $router->dispatch($method, $_SERVER['REQUEST_URI'] ?? '/');

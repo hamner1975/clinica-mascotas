@@ -35,6 +35,8 @@ import { useVentasStore } from '@/stores/ventas'
 import { useUsuariosStore } from '@/stores/usuarios'
 import { useRolesStore } from '@/stores/roles'
 import { useDiagnosticosStore } from '@/stores/diagnosticos'
+import { useConfigStore } from '@/stores/config'
+import { useSitioStore } from '@/stores/sitio'
 
 const ui = useUiStore()
 const pacientes = usePacientesStore()
@@ -45,6 +47,8 @@ const ventas = useVentasStore()
 const usuarios = useUsuariosStore()
 const roles = useRolesStore()
 const diagnosticos = useDiagnosticosStore()
+const config = useConfigStore()
+const sitio = useSitioStore()
 
 // Cierra el menu movil al agrandar la ventana.
 function onResize() {
@@ -63,6 +67,8 @@ onMounted(() => {
   usuarios.load().catch(() => {})
   roles.load().catch(() => {})
   diagnosticos.load().catch(() => {})
+  config.load().catch(() => {})
+  sitio.load().catch(() => {})
 })
 onUnmounted(() => window.removeEventListener('resize', onResize))
 </script>

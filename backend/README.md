@@ -47,14 +47,23 @@ backend/
 | --- | --- | --- |
 | GET | `/api/health` | Estado del servicio y de la base de datos |
 | POST | `/api/auth/login` | Login (devuelve token JWT + usuario) |
-| GET | `/api/auth/me` | Usuario autenticado (requiere `Authorization: Bearer`) |
-| GET / POST | `/api/duenos` | Listar / crear dueños |
-| GET / PUT / DELETE | `/api/duenos/{id}` | Ver / editar / eliminar dueño |
-| GET / POST | `/api/mascotas` | Listar / crear mascotas |
-| GET / PUT / DELETE | `/api/mascotas/{id}` | Ver / editar / eliminar mascota |
+| GET | `/api/auth/me` | Usuario autenticado |
+| GET/POST | `/api/duenos` · `/api/mascotas` | Pacientes |
+| GET/PUT/DELETE | `/api/duenos/{id}` · `/api/mascotas/{id}` | Paciente |
+| GET/POST | `/api/citas` · `/api/consultas` | Atencion medica |
+| GET/PUT/DELETE | `/api/citas/{id}` · `/api/consultas/{id}` | Atencion medica |
+| GET/POST | `/api/productos` · `/api/ventas` | Farmacia |
+| GET/PUT/DELETE | `/api/productos/{id}` · `/api/ventas/{id}` | Farmacia |
+| GET/POST | `/api/usuarios` · `/api/roles` · `/api/diagnosticos` | Administracion |
+| GET/PUT/DELETE | `/api/usuarios/{id}` · `/api/roles/{id}` · `/api/diagnosticos/{id}` | Administracion |
+| PUT | `/api/usuarios/{id}/estado` | Activar/desactivar usuario |
+| GET/PUT | `/api/sitio` · `/api/configuracion` | Contenido web y ajustes |
+| POST | `/api/tienda/pedidos` | Pedido online (publico, sin login) |
+| POST | `/api/dev/reseed` | Restaurar datos de ejemplo (solo local) |
 
-> Todas las rutas (excepto `/api/health` y `/api/auth/login`) requieren el header
-> `Authorization: Bearer <token>`.
+> Rutas **publicas**: `/api/health`, `/api/auth/login`, `GET /api/productos`,
+> `POST /api/tienda/pedidos`, `GET /api/sitio` y `GET /api/configuracion`.
+> El resto requiere `Authorization: Bearer <token>`.
 
 ## Credenciales de ejemplo
 
