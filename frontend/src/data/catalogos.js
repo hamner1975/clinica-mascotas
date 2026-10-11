@@ -88,7 +88,7 @@ export function categoriaDiagVariant(categoria) {
 }
 
 // ---- Configuracion ----
-export const MONEDAS = ['COP', 'USD', 'MXN', 'PEN', 'EUR', 'ARS', 'CLP']
+export const MONEDAS = ['PEN', 'USD', 'COP', 'MXN', 'EUR', 'ARS', 'CLP']
 
 /** Icono representativo segun la categoria del producto. */
 export function iconoCategoria(categoria) {

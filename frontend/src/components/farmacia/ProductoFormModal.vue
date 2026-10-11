@@ -46,7 +46,7 @@
         <div class="col-md-6">
           <label class="form-label" for="p-precio">Precio de venta <span class="text-danger">*</span></label>
           <div class="input-group">
-            <span class="input-group-text">$</span>
+            <span class="input-group-text">S/</span>
             <input id="p-precio" v-model="form.precio" type="number" step="0.01" min="0" class="form-control" :class="invalid('precio')" @blur="validateField('precio')" />
           </div>
           <p v-if="showError('precio')" class="text-danger small mt-1 mb-0">{{ errors.precio }}</p>
@@ -55,7 +55,7 @@
         <div class="col-md-6">
           <label class="form-label" for="p-costo">Costo</label>
           <div class="input-group">
-            <span class="input-group-text">$</span>
+            <span class="input-group-text">S/</span>
             <input id="p-costo" v-model="form.costo" type="number" step="0.01" min="0" class="form-control" :class="invalid('costo')" @blur="validateField('costo')" />
           </div>
           <p v-if="showError('costo')" class="text-danger small mt-1 mb-0">{{ errors.costo }}</p>

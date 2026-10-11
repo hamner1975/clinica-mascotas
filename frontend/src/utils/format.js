@@ -40,10 +40,10 @@ export function isFuture(iso) {
   return !!iso && iso > todayISO()
 }
 
-/** Formatea un numero como moneda: 12000 -> "$12.000,00". */
+/** Formatea un numero como moneda en Soles: 12000 -> "S/ 12,000.00". */
 export function money(value) {
   const n = Number(value) || 0
-  return `$${n.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+  return `S/ ${n.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 }
 
 /** Suma N dias a una fecha ISO (en hora local). */

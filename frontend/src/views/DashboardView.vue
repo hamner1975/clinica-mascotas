@@ -73,7 +73,7 @@
                   <div
                     class="sales-chart__bar"
                     :style="{ height: day.value + '%' }"
-                    :title="'$' + day.total"
+                    :title="'S/ ' + day.total"
                   ></div>
                 </div>
                 <small class="sales-chart__label">{{ day.label }}</small>
@@ -115,7 +115,7 @@ const today = new Date().toLocaleDateString('es-ES', {
 const stats = [
   { label: 'Citas hoy', value: 18, icon: 'bi-calendar2-week', variant: 'primary', trend: 12 },
   { label: 'Pacientes activos', value: '1.284', icon: 'bi-heart', variant: 'info', trend: 6 },
-  { label: 'Ventas del mes', value: '$4.820', icon: 'bi-cart-check', variant: 'success', trend: 9 },
+  { label: 'Ventas del mes', value: 'S/ 4,820', icon: 'bi-cart-check', variant: 'success', trend: 9 },
   { label: 'Bajo stock', value: 7, icon: 'bi-box-seam', variant: 'warning', trend: -4 },
 ]
 
