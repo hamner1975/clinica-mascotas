@@ -33,6 +33,7 @@ class HealthController
             'dbPort' => Env::get('DB_PORT'),
             'dbName' => Env::get('DB_NAME'),
             'dbUser' => Env::get('DB_USER'),
+            'configSource' => defined('APP_CONFIG_SOURCE') ? APP_CONFIG_SOURCE : 'ninguno',
             'time' => date('c'),
         ]);
     }
