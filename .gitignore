@@ -25,3 +25,5 @@ Thumbs.db
 backend/storage/logs/
 backend/storage/uploads/
 backend/storage/cache/
+# Configuracion local con credenciales (no versionar).
+backend/config.local.php
